@@ -54,7 +54,7 @@ class subtitles(object):
                 'sync': 'false',
                 'impaired': 'false' if result['SubHearingImpaired'] == '0' else 'true',
                 'action_args': {
-                    'url': result['SubDownloadLink']
+                    'url': result['ZipDownloadLink']
                 }
             }
 
@@ -75,6 +75,6 @@ class subtitles(object):
         token = '%s:%s' % (username, password)
 
         if username != '' and password != '':
-            request['headers']['Authorization'] = 'Basic %s' % core.b64encode(token)
+            request['headers']['Authorization'] = 'Basic %s' % core.b64encode(token).decode('ascii')
 
         return request

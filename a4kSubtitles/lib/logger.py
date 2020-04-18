@@ -12,9 +12,18 @@ __debug_logenabled_jsonrpc = json.dumps({
     },
 })
 
+__get_debug_logenabled_err = False
 def __get_debug_logenabled():
-    response = xbmc.executeJSONRPC(__debug_logenabled_jsonrpc)
-    return json.loads(response)['result']['value']
+    global __get_debug_logenabled_err
+    if __get_debug_logenabled_err:
+        return False
+
+    try:
+        response = xbmc.executeJSONRPC(__debug_logenabled_jsonrpc)
+        return json.loads(response)['result']['value']
+    except:
+        __get_debug_logenabled_err = True
+        return False
 
 def __log(message, level=xbmc.LOGDEBUG):
     is_lazy_msg = callable(message)

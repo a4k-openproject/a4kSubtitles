@@ -5,9 +5,9 @@ from .kodi import addon_profile
 
 try:
     from urlparse import unquote, parse_qsl
-    from urllib import quote
+    from urllib import quote_plus
 except:
-    from urllib.parse import quote, unquote, parse_qsl
+    from urllib.parse import quote_plus, unquote, parse_qsl
 
 temp_dir = os.path.join(addon_profile, 'temp')
 

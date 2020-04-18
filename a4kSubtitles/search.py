@@ -13,7 +13,7 @@ def __add_results(core, service_name, results):
 
         action_args = item['action_args']
         action_args['filename'] = item['name']
-        action_args = core.utils.quote(core.json.dumps(item['action_args']))
+        action_args = core.utils.quote_plus(core.json.dumps(item['action_args']))
 
         core.kodi.xbmcplugin.addDirectoryItem(
             handle=core.handle,
@@ -30,10 +30,6 @@ def search(core, params):
 
     if meta.imdb_id == '':
         core.logger.error('Missing imdb id!')
-        return
-
-    if meta.tvshow and (meta.episode == '' or meta.season == ''):
-        core.logger.error('Missing episode/season info!')
         return
 
     threads = []
@@ -58,5 +54,6 @@ def search(core, params):
         x['service']
     )
     results = sorted(results, key=sorter)
+    results = results[:20]
 
     __add_results(core, service_name, results)
