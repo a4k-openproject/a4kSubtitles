@@ -22,6 +22,21 @@ def __add_results(core, service_name, results):
             url='plugin://%s/?action=download&service=%s&action_args=%s' % (core.kodi.addon_id, service_name, action_args)
         )
 
+def __apply_limit(core, all_results, meta):
+    limit = core.kodi.get_int_setting('general.results_limit')
+    lang_limit = int(limit / len(meta.languages))
+    if lang_limit * len(meta.languages) < limit:
+        lang_limit += 1
+
+    results = []
+    for lang in meta.languages:
+        lang_results = filter(lambda x: x['lang'] == lang, all_results)
+        if lang_results < lang_limit:
+            lang_limit += lang_limit - lang_results
+        results.extend(lang_results[:lang_limit])
+
+    return results[:limit]
+
 def search(core, params):
     core.logger.debug(lambda: core.json.dumps(params, indent=2))
     meta = core.video.get_meta()
@@ -35,6 +50,9 @@ def search(core, params):
     threads = []
     results = []
     for service_name in core.services:
+        if not core.kodi.get_bool_setting(service_name, 'enabled'):
+            continue
+
         service = core.services[service_name]
         requests = service.build_search_requests(core, service_name, meta)
         core.logger.debug(lambda: '%s - %s' % (service_name, core.json.dumps(requests, indent=2)))
@@ -51,9 +69,10 @@ def search(core, params):
     sorter = lambda x: (
         not x['lang'] == meta.preferredlanguage,
         meta.languages.index(x['lang']),
-        x['service']
+        x['service'],
+        -core.difflib.SequenceMatcher(None, x['name'], meta.filename).ratio(),
     )
     results = sorted(results, key=sorter)
-    results = results[:20]
+    results = __apply_limit(core, results, meta)
 
     __add_results(core, service_name, results)

@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-    <!-- Accounts -->
+    <!-- General -->
     <category label="32011">
+        <!-- General -->
+        <setting type="lsep" label="32011"/>
+        <setting type="sep"/>
+        <setting id="general.timeout" type="slider" label="32103" option="int" range="10,20" default="15"/>
+        <setting id="general.results_limit" type="slider" label="32104" option="int" range="10,100" default="20"/>
+    </category>
+    <!-- Services -->
+    <category label="32012">
         <!-- OpenSubtitles -->
-        <setting type="lsep" label="32051" />
-        <setting type="sep" />
-        <setting id="opensubtitles.username" type="text" label="32101" default=""/>
-        <setting id="opensubtitles.password" type="text" option = "hidden" label="32102" default=""/>
+        <setting type="lsep" label="32051"/>
+        <setting type="sep"/>
+        <setting id="opensubtitles.enabled" type="bool" label="32105" default="true"/>
+        <setting id="opensubtitles.username" type="text" label="32101" default="" enable="eq(-1,true)"/>
+        <setting id="opensubtitles.password" type="text" option="hidden" label="32102" default="" enable="eq(-2,true)"/>
     </category>
 </settings>

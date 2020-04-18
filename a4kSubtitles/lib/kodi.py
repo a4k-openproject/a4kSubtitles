@@ -21,7 +21,7 @@ def create_listitem(item):
         item['lang'] = 'Portuguese (Brazil)'
 
     (item_name, item_ext) = os.path.splitext(item['name'])
-    item_name = item_name.replace('.', '')
+    item_name = item_name.replace('.', ' ')
     item_ext = item_ext.upper()[1:]
 
     listitem = xbmcgui.ListItem(
@@ -36,5 +36,12 @@ def create_listitem(item):
 
     return listitem
 
-def get_setting(service_name, id):
-    return addon.getSetting('%s.%s' % (service_name, id)).strip()
+def get_setting(group, id=None):
+    key = '%s.%s' % (group, id) if id else group
+    return addon.getSetting(key).strip()
+
+def get_int_setting(group, id=None):
+    return int(get_setting(group, id))
+
+def get_bool_setting(group, id=None):
+    return get_setting(group, id).lower() == 'true'

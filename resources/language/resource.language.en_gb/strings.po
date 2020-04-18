@@ -8,7 +8,11 @@ msgstr ""
 
 # Categories
 msgctxt "#32011"
-msgid "Accounts"
+msgid "General"
+msgstr ""
+
+msgctxt "#32012"
+msgid "Services"
 msgstr ""
 
 # Services
@@ -16,11 +20,23 @@ msgctxt "#32051"
 msgid "OpenSubtitles"
 msgstr ""
 
-# General Labels
+# Labels
 msgctxt "#32101"
-msgid "Username"
+msgid "Username (Optional)"
 msgstr ""
 
 msgctxt "#32102"
-msgid "Password"
+msgid "Password (Optional)"
+msgstr ""
+
+msgctxt "#32103"
+msgid "Request Timeout"
+msgstr ""
+
+msgctxt "#32104"
+msgid "Results Limit"
+msgstr ""
+
+msgctxt "#32105"
+msgid "Enabled"
 msgstr ""

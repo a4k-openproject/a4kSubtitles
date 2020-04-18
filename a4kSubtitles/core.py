@@ -7,6 +7,7 @@ import threading
 import copy
 import shutil
 import gzip
+import difflib
 from base64 import b64encode
 
 from .lib import (
