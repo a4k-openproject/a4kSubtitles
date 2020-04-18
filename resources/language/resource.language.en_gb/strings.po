@@ -1,0 +1,26 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+
+# Categories
+msgctxt "#32011"
+msgid "Accounts"
+msgstr ""
+
+# Services
+msgctxt "#32051"
+msgid "OpenSubtitles"
+msgstr ""
+
+# General Labels
+msgctxt "#32101"
+msgid "Username"
+msgstr ""
+
+msgctxt "#32102"
+msgid "Password"
+msgstr ""

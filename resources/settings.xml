@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <!-- Accounts -->
+    <category label="32011">
+        <!-- OpenSubtitles -->
+        <setting type="lsep" label="32051" />
+        <setting type="sep" />
+        <setting id="opensubtitles.username" type="text" label="32101" default=""/>
+        <setting id="opensubtitles.password" type="text" option = "hidden" label="32102" default=""/>
+    </category>
+</settings>
