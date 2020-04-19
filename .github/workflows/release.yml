@@ -1,0 +1,15 @@
+name: Create Release
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Create release
+      run: |
+        sh ./scripts/release.sh ${{ secrets.GITHUB_TOKEN }}
