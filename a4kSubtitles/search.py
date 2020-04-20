@@ -7,7 +7,7 @@ def __query_service(core, service_name, request, results):
     core.logger.debug(lambda: core.json.dumps(service_results, indent=2))
     results.extend(service_results)
 
-def __add_results(core, service_name, results):
+def __add_results(core, results):
     for item in results:
         listitem = core.kodi.create_listitem(item)
 
@@ -19,7 +19,7 @@ def __add_results(core, service_name, results):
             handle=core.handle,
             listitem=listitem,
             isFolder=False,
-            url='plugin://%s/?action=download&service=%s&action_args=%s' % (core.kodi.addon_id, service_name, action_args)
+            url='plugin://%s/?action=download&service=%s&action_args=%s' % (core.kodi.addon_id, item['service_name'], action_args)
         )
 
 def __apply_limit(core, all_results, meta):
@@ -30,9 +30,9 @@ def __apply_limit(core, all_results, meta):
 
     results = []
     for lang in meta.languages:
-        lang_results = filter(lambda x: x['lang'] == lang, all_results)
-        if lang_results < lang_limit:
-            lang_limit += lang_limit - lang_results
+        lang_results = list(filter(lambda x: x['lang'] == lang, all_results))
+        if len(lang_results) < lang_limit:
+            lang_limit += lang_limit - len(lang_results)
         results.extend(lang_results[:lang_limit])
 
     return results[:limit]
@@ -75,4 +75,6 @@ def search(core, params):
     results = sorted(results, key=sorter)
     results = __apply_limit(core, results, meta)
 
-    __add_results(core, service_name, results)
+    if core.api_mode_enabled:
+        return results
+    __add_results(core, results)

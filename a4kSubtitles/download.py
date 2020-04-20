@@ -39,5 +39,7 @@ def download(core, params):
     __download(core, archivepath, request)
     filepath = __extract(core, archivepath, filename)
 
+    if core.api_mode_enabled:
+        return filepath
     listitem = core.kodi.xbmcgui.ListItem(label=filepath)
     core.kodi.xbmcplugin.addDirectoryItem(handle=core.handle, url=filepath, listitem=listitem, isFolder=False)

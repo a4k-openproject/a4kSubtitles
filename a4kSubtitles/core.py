@@ -23,6 +23,7 @@ from .download import download
 
 core = sys.modules[__name__]
 handle = int(sys.argv[1])
+api_mode_enabled = os.getenv('A4KSUBTITLES_API_MODE') != None
 
 def main(paramstring):
     params = dict(utils.parse_qsl(paramstring))
