@@ -1,3 +1,8 @@
+a4kSubtitles
+============
+
+![CI](https://github.com/newt-sc/a4kSubtitles/workflows/CI/badge.svg)
+
 ## Install
 
 Steps to install a4kSubtitles:
