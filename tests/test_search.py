@@ -15,8 +15,6 @@ sys.path.append(a4kSubtitles)
 sys.path.append(lib)
 sys.path.append(services)
 
-sys.argv = ['_', '1']
-
 from a4kSubtitles import api
 from tests import utils
 

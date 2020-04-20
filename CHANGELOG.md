@@ -1,3 +1,6 @@
+* [v0.0.6](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.6):
+  * fix core requiring handle even with API usage
+
 * [v0.0.5](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.5):
   * expose API for usage without KODI
   * add tests for search
