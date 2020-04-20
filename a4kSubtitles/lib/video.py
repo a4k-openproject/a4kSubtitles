@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import json
 
 from .kodi import xbmc
@@ -19,7 +20,7 @@ def get_meta():
     try:
         meta['filename'] = xbmc.Player().getPlayingFile().split('/')[-1]
     except:
-        pass
+        meta['filename'] = meta['title']
 
     meta_json = json.dumps(meta, indent=2)
     logger.debug(meta_json)
