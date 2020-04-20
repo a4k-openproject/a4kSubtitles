@@ -1,9 +1,11 @@
-a4kSubtitles
-============
+<img align="left" width="115px" height="115px" src="icon.png">
 
+# a4kSubtitles
 ![CI](https://github.com/newt-sc/a4kSubtitles/workflows/CI/badge.svg)
 
-## Install
+</br>
+
+# Install
 
 Steps to install a4kSubtitles:
 1. Go to the KODI **File manager**.
@@ -16,9 +18,16 @@ Steps to install a4kSubtitles:
 8. Go back to **Addons** and select **Install from repository**
 9. Select the **a4kSubtitles** menu item
 
-## Contributing
+# Contributing
 
 Configure hooks for auto update of `addons.xml`:
 ```sh
 git config core.hooksPath .githooks
 ```
+# License
+
+MIT
+
+# Icon
+
+Logo `quill` by Ramy Wafaa ([RoundIcons](https://roundicons.com))
