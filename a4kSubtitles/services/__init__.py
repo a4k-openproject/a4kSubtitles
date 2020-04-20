@@ -7,4 +7,4 @@ __all__ = utils.get_all_relative_py_files(__file__)
 
 services = {}
 for service in __all__:
-    services[service] = importlib.import_module('a4kSubtitles.services.%s' % service).subtitles
+    services[service] = importlib.import_module('a4kSubtitles.services.%s' % service)

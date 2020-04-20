@@ -1,3 +1,7 @@
+* [v0.0.5](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.5):
+  * expose API for usage without KODI
+  * add tests for search
+
 * [v0.0.4](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.4):
   * distribution process:
     * KODI repository with updates based on github releases

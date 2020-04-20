@@ -7,14 +7,14 @@ from . import logger
 
 def get_meta():
     meta = {}
-    meta['year'] = xbmc.getInfoLabel("VideoPlayer.Year")
-    meta['season'] = xbmc.getInfoLabel("VideoPlayer.Season")
-    meta['episode'] = xbmc.getInfoLabel("VideoPlayer.Episode")
-    meta['tvshow'] = xbmc.getInfoLabel("VideoPlayer.TVShowTitle")
-    meta['title'] = xbmc.getInfoLabel("VideoPlayer.OriginalTitle")
+    meta['year'] = xbmc.getInfoLabel('VideoPlayer.Year')
+    meta['season'] = xbmc.getInfoLabel('VideoPlayer.Season')
+    meta['episode'] = xbmc.getInfoLabel('VideoPlayer.Episode')
+    meta['tvshow'] = xbmc.getInfoLabel('VideoPlayer.TVShowTitle')
+    meta['title'] = xbmc.getInfoLabel('VideoPlayer.OriginalTitle')
     if meta['title'] == '':
-        meta['title'] = xbmc.getInfoLabel("VideoPlayer.Title")
-    meta['imdb_id'] = xbmc.getInfoLabel("VideoPlayer.IMDBNumber")
+        meta['title'] = xbmc.getInfoLabel('VideoPlayer.Title')
+    meta['imdb_id'] = xbmc.getInfoLabel('VideoPlayer.IMDBNumber')
 
     try:
         meta['filename'] = xbmc.Player().getPlayingFile().split('/')[-1]
