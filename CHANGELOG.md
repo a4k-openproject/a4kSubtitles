@@ -1,3 +1,8 @@
+* [v0.0.8](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.8):
+  * opensubtitles should make max 2 requests for separate languages
+  * lint updates
+  * add tests for download
+
 * [v0.0.7](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.7):
   * API class rename
 

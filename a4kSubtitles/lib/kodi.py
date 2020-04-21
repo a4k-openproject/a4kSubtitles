@@ -35,7 +35,7 @@ else:
     import xbmcvfs
 
 addon = xbmcaddon.Addon('service.subtitles.a4ksubtitles')
-addon_id   = addon.getAddonInfo('id')
+addon_id = addon.getAddonInfo('id')
 addon_name = addon.getAddonInfo('name')
 addon_profile = xbmc.translatePath(addon.getAddonInfo('profile'))
 
@@ -47,13 +47,14 @@ def create_listitem(item):
     item_name = item_name.replace('.', ' ')
     item_ext = item_ext.upper()[1:]
 
-    listitem = xbmcgui.ListItem(
-        label          = item['lang'],
-        label2         = '%s (%s) (%s)' % (item_name, item_ext, item['service']),
-        iconImage      = item['icon'],
-        thumbnailImage = item['thumbnail']
-    )
+    args = {
+        'label': item['lang'],
+        'label2': '%s (%s) (%s)' % (item_name, item_ext, item['service']),
+        'iconImage': item['icon'],
+        'thumbnailImage': item['thumbnail'],
+    }
 
+    listitem = xbmcgui.ListItem(**args)
     listitem.setProperty('sync', item['sync'])
     listitem.setProperty('hearing_imp', item['impaired'])
 

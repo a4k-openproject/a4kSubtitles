@@ -12,8 +12,8 @@ class Spy(object):
 
 def spy_fn(target, fn_name):
     spy = Spy()
-
     fn = getattr(target, fn_name)
+
     def fn_wrap(*args, **kwargs):
         spy.args.append(args)
         spy.kwargs.append(kwargs)
