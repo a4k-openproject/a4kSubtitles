@@ -1,7 +1,7 @@
 #!/bin/bash
 
 token=$1
-user="newt-sc"
+user="a4k-openproject"
 repo="a4kSubtitles"
 sha="$(git rev-parse HEAD)"
 ver=$(git show -s --format=%s)
