@@ -1,3 +1,6 @@
+* [v0.0.7](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.7):
+  * API class rename
+
 * [v0.0.6](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.6):
   * fix core requiring handle even with API usage
 

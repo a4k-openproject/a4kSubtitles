@@ -19,7 +19,7 @@ from a4kSubtitles import api
 from tests import utils
 
 def test_search_missing_imdb_id():
-    a4kSubtitlesApi = api.a4kSubtitlesApi({ 'kodi': True })
+    a4kSubtitlesApi = api.A4kSubtitlesApi({ 'kodi': True })
     log_error_spy = utils.spy_fn(a4kSubtitlesApi.core.logger, 'error')
 
     params = {
@@ -31,7 +31,7 @@ def test_search_missing_imdb_id():
     log_error_spy.called_with('Missing imdb id!')
 
 def test_search_opensubtitles():
-    a4kSubtitlesApi = api.a4kSubtitlesApi({ 'kodi': True })
+    a4kSubtitlesApi = api.A4kSubtitlesApi({ 'kodi': True })
 
     params = {
         'languages': 'English',

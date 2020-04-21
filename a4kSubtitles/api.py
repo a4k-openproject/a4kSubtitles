@@ -4,7 +4,7 @@ import os
 import json
 import importlib
 
-class a4kSubtitlesApi(object):
+class A4kSubtitlesApi(object):
     def __init__(self, mocks = {}):
         api_mode = {
             'kodi': False,
