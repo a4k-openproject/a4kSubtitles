@@ -1,5 +1,18 @@
 # -*- coding: utf-8 -*-
 
+def __set_auth_header(core, service_name, request):
+    username = core.kodi.get_setting(service_name, 'username')
+    password = core.kodi.get_setting(service_name, 'password')
+
+    if username == '' or password == '':
+        return
+
+    token = '%s:%s' % (username, password)
+    if core.utils.PY3:
+        token = token.encode('ascii')
+
+    request['headers']['Authorization'] = 'Basic %s' % core.b64encode(token).decode('ascii')
+
 def build_search_requests(core, service_name, meta):
     params = [
         'imdbid-%s' % meta.imdb_id[2:]
@@ -23,8 +36,10 @@ def build_search_requests(core, service_name, meta):
         }
     }
 
+    __set_auth_header(core, service_name, request)
+
     if len(lang_ids) > 2:
-        [request]
+        return [request]
 
     requests = []
     for lang_id in lang_ids:
@@ -47,7 +62,7 @@ def parse_response(core, service_name, response):
             'service': 'OpenSubtitles',
             'lang': result['LanguageName'],
             'name': result['SubFileName'],
-            'icon': str(int(round(float(result['SubRating'])/2))),
+            'icon': str(int(round(float(result['SubRating']) / 2))),
             'thumbnail': result['ISO639'],
             'sync': 'false',
             'impaired': 'false' if result['SubHearingImpaired'] == '0' else 'true',
@@ -67,11 +82,6 @@ def build_download_request(core, service_name, args):
         }
     }
 
-    username = core.kodi.get_setting(service_name, 'username')
-    password = core.kodi.get_setting(service_name, 'password')
-    token = '%s:%s' % (username, password)
-
-    if username != '' and password != '':
-        request['headers']['Authorization'] = 'Basic %s' % core.b64encode(token).decode('ascii')
+    __set_auth_header(core, service_name, request)
 
     return request

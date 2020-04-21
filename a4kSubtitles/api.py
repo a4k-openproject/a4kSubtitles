@@ -5,7 +5,7 @@ import json
 import importlib
 
 class A4kSubtitlesApi(object):
-    def __init__(self, mocks = {}):
+    def __init__(self, mocks={}):
         api_mode = {
             'kodi': False,
             'xbmc': False,
@@ -65,7 +65,7 @@ class A4kSubtitlesApi(object):
             self.core.kodi.addon.getSetting = default
         return restore
 
-    def search(self, params, settings = None, video_meta = None):
+    def search(self, params, settings=None, video_meta=None):
         restore_settings = None
         restore_video_meta = None
 
@@ -83,5 +83,14 @@ class A4kSubtitlesApi(object):
             if restore_video_meta:
                 restore_video_meta()
 
-    def download(self, params):
-        return self.core.download(self.core, params)
+    def download(self, params, settings=None):
+        restore_settings = None
+
+        try:
+            if settings:
+                restore_settings = self.__mock_settings(settings)
+
+            return self.core.download(self.core, params)
+        finally:
+            if restore_settings:
+                restore_settings()

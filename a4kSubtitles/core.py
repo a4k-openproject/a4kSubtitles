@@ -22,7 +22,7 @@ from .search import search
 from .download import download
 
 core = sys.modules[__name__]
-api_mode_enabled = os.getenv('A4KSUBTITLES_API_MODE') != None
+api_mode_enabled = os.getenv('A4KSUBTITLES_API_MODE') is not None
 
 handle = None
 if not api_mode_enabled:

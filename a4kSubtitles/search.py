@@ -4,7 +4,7 @@ def __query_service(core, service_name, request, results):
     service = core.services[service_name]
     response = core.request.execute(request)
     service_results = service.parse_response(core, service_name, response.text)
-    core.logger.debug(lambda: core.json.dumps(service_results, indent=2))
+    core.logger.debug(lambda: core.json.dumps(service_results[:1], indent=2))
     results.extend(service_results)
 
 def __add_results(core, results):

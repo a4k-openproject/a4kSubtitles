@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
+# flake8: noqa
 
 import os
+import shutil
+
+from zipfile import ZipFile
+
+try:
+    from urlparse import unquote
+except ImportError:
+    from urllib.parse import unquote
 
 # xbmc
 xbmc = lambda: None
@@ -51,3 +60,19 @@ xbmcgui.ListItem = __create_listitem
 
 # xbmcvfs
 xbmcvfs = lambda: None
+def __mkdirs(f):
+    try: os.makedirs(f)
+    except Exception: pass
+xbmcvfs.mkdirs = __mkdirs
+__archive_proto = 'archive://'
+def __listdir(archive_uri):
+    archive_path = unquote(archive_uri).replace(__archive_proto, '')
+    with ZipFile(archive_path, 'r') as zip_obj:
+        return ([], zip_obj.namelist())
+xbmcvfs.listdir = __listdir
+def __copy(src_uri, dest):
+    archive_path = unquote(src_uri[:src_uri.find('.zip') + 4]).replace(__archive_proto, '')
+    member = unquote(src_uri[src_uri.find('.zip') + 5:]).replace(__archive_proto, '')
+    with ZipFile(archive_path, 'r') as zip_obj:
+        zip_obj.extract(member, os.path.dirname(dest))
+xbmcvfs.copy = __copy
