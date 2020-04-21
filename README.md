@@ -1,7 +1,7 @@
 <img align="left" width="115px" height="115px" src="icon.png">
 
 # a4kSubtitles
-![CI](https://github.com/newt-sc/a4kSubtitles/workflows/CI/badge.svg)
+![CI](https://github.com/a4k-openproject/a4kSubtitles/workflows/CI/badge.svg)
 
 </br>
 
@@ -10,7 +10,7 @@
 Steps to install a4kSubtitles:
 1. Go to the KODI **File manager**.
 2. Click on **Add source**.
-3. The path for the source is https://newt-sc.github.io/a4kSubtitles/packages/
+3. The path for the source is https://a4k-openproject.github.io/a4kSubtitles/packages/
 4. (Optional) Name it **a4kSubtitles-repo** without the quotes.
 5. Head to **Addons**.
 6. Select **Install from zip file**.
