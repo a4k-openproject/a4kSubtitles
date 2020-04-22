@@ -32,7 +32,7 @@ def download(core, params):
     filename = actions_args['filename']
     archivepath = core.os.path.join(core.utils.temp_dir, 'sub.zip')
 
-    service_name = params['service']
+    service_name = params['service_name']
     service = core.services[service_name]
     request = service.build_download_request(core, service_name, actions_args)
 

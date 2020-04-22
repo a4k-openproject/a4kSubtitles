@@ -39,6 +39,26 @@ addon_id = addon.getAddonInfo('id')
 addon_name = addon.getAddonInfo('name')
 addon_profile = xbmc.translatePath(addon.getAddonInfo('profile'))
 
+def json_rpc(method, params, log_error=True):
+    try:
+        result = xbmc.executeJSONRPC(
+            json.dumps({
+                'jsonrpc': '2.0',
+                'method': method,
+                'id': 1,
+                'params': params or {}
+            })
+        )
+        if 'error' in result and log_error:
+            from . import logger
+            logger.error(result)
+        return json.loads(result)['result']['value']
+    except KeyError:
+        return None
+
+def get_kodi_setting(setting, log_error=True):
+    return json_rpc('Settings.GetSettingValue', {"setting": setting}, log_error)
+
 def create_listitem(item):
     if item['lang'] == 'Brazilian':
         item['lang'] = 'Portuguese (Brazil)'
