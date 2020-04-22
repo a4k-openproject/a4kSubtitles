@@ -7,6 +7,7 @@
         <setting type="sep"/>
         <setting id="general.timeout" type="slider" label="32103" option="int" range="10,20" default="15"/>
         <setting id="general.results_limit" type="slider" label="32104" option="int" range="10,100" default="20"/>
+        <setting id="general.remove_ads" type="bool" label="32106" default="false"/>
     </category>
     <!-- Services -->
     <category label="32012">

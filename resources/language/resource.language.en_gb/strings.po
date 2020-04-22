@@ -40,3 +40,7 @@ msgstr ""
 msgctxt "#32105"
 msgid "Enabled"
 msgstr ""
+
+msgctxt "#32106"
+msgid "Remove ads (Experimental)"
+msgstr ""
