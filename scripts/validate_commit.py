@@ -12,7 +12,7 @@ is_pull_request = github['event_name'] == 'pull_request'
 
 if is_pull_request:
     os.system('git fetch --deepen=1 --no-tags --quiet')
-    sha = github['event'].get('after', github['event']['pull_request']['sha'])
+    sha = github['event']['pull_request']['head']['sha']
     command_args = ['git', 'log', '--format=%B', '-n', '1', sha]
 else:
     command_args = ['git', 'show', '-s', '--format=%s']
