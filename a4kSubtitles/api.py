@@ -5,7 +5,10 @@ import json
 import importlib
 
 class A4kSubtitlesApi(object):
-    def __init__(self, mocks={}):
+    def __init__(self, mocks=None):
+        if mocks is None:
+            mocks = {}
+
         api_mode = {
             'kodi': False,
             'xbmc': False,

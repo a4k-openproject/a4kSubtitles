@@ -1,16 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import json
-from .kodi import xbmc, addon_id
-
-__debug_logenabled_jsonrpc = json.dumps({
-    'jsonrpc': '2.0',
-    'id': '1',
-    'method': 'Settings.GetSettingValue',
-    'params': {
-        "setting": "debug.showloginfo"
-    },
-})
+from .kodi import xbmc, addon_id, get_kodi_setting
 
 __get_debug_logenabled_err = False
 def __get_debug_logenabled():
@@ -19,8 +9,7 @@ def __get_debug_logenabled():
         return False
 
     try:
-        response = xbmc.executeJSONRPC(__debug_logenabled_jsonrpc)
-        return json.loads(response)['result']['value']
+        return get_kodi_setting("debug.showloginfo", log_error=False)
     except:
         __get_debug_logenabled_err = True
         return False

@@ -71,7 +71,7 @@ def test_opensubtitles():
 
     params = {
         'action': 'download',
-        'service': 'opensubtitles',
+        'service_name': 'opensubtitles',
         'action_args': item['action_args']
     }
 

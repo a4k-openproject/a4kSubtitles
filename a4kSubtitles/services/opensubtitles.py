@@ -67,7 +67,8 @@ def parse_response(core, service_name, response):
             'sync': 'false',
             'impaired': 'false' if result['SubHearingImpaired'] == '0' else 'true',
             'action_args': {
-                'url': result['ZipDownloadLink']
+                'url': result['ZipDownloadLink'].replace('/subad/', '/sub/'),
+                'filename': result['SubFileName']
             }
         }
 
