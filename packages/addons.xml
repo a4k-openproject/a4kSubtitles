@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="0.0.9"
+       version="0.0.10"
        provider-name="Unknown">
   <requires>
     <import addon="xbmc.python" version="2.25.0"/>

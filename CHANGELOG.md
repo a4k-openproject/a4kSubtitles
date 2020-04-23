@@ -1,3 +1,6 @@
+* [v0.0.10](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.10):
+  * Inserted language code in sub filename
+
 * [v0.0.9](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.9):
   * Implemented (orginal, default, none, forced_only) as KODI language setting
   * Fixed minor bugs in API implementation
@@ -37,4 +40,4 @@
 * [v0.0.1](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.1):
   * initial working version (search and download subtitles)
   * OpenSubtitles support with optional authentication
-  * results ordering with preffered language ordered first
+  * results ordering with preferred language ordered first
