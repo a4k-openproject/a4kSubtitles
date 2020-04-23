@@ -7,30 +7,50 @@ on:
     branches: [ master ]
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    outputs:
+      commit: ${{ steps.validate.outputs.commit }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Validate
+      id: validate
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: |
+        python ./scripts/validate_commit.py
+
   build:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'chore:')"
+    needs: validate
     strategy:
       matrix:
         python-version: [2.7, 3.7]
 
     steps:
     - uses: actions/checkout@v2
+      if: "startsWith(needs.validate.outputs.commit, 'release: v')"
 
     - name: Set up Python ${{ matrix.python-version }}
+      if: "startsWith(needs.validate.outputs.commit, 'release: v')"
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Install dependencies
+      if: "startsWith(needs.validate.outputs.commit, 'release: v')"
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Lint
+      if: "startsWith(needs.validate.outputs.commit, 'release: v')"
       run: |
         flake8
 
     - name: Test
+      if: "startsWith(needs.validate.outputs.commit, 'release: v')"
       run: |
         pytest -v
