@@ -17,14 +17,15 @@ xbmc.translatePath = lambda p: p
 xbmc.getInfoLabel = lambda t: ''
 xbmc.executeJSONRPC = lambda _: '{ "result": { "value": true } }'
 
-xbmc.convertLanguage = lambda l, f: l[:3].lower()
-xbmc.ISO_639_2 = None
+xbmc.convertLanguage = lambda l, f: l[:f].lower()
+xbmc.ISO_639_1 = 2
+xbmc.ISO_639_2 = 3
 
 __player = lambda: None
 __player.getPlayingFile = lambda: ''
 xbmc.Player = lambda: __player
 
-def __log(msg, lebel):
+def __log(msg, label):
     print(msg)
 xbmc.log = __log
 xbmc.LOGDEBUG = 'debug'
