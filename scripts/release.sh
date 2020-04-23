@@ -1,18 +1,12 @@
 #!/bin/bash
 
 token=$1
+ver=$(echo "$2" | sed "s/release: //")
 user="a4k-openproject"
 repo="a4kSubtitles"
-sha="$(git rev-parse HEAD)"
-ver=$(git show -s --format=%s)
 tag_ver="${ver#?}"
 tag="service.subtitles.a4ksubtitles/service.subtitles.a4ksubtitles-$tag_ver"
 api="https://api.github.com/repos/$user/$repo"
-
-if [ ${#ver} -ge 7 ]; then
-    echo 'skipping release'
-    exit
-fi
 
 generate_release_data()
 {

@@ -1,3 +1,6 @@
+* [v0.0.11](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.11):
+  * Changelog in KODI
+
 * [v0.0.10](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.10):
   * Inserted language code in sub filename
 
@@ -5,7 +8,7 @@
   * Implemented (orginal, default, none, forced_only) as KODI language setting
   * Fixed minor bugs in API implementation
   * Added .idea folder to .gitignore
-  
+
 * [v0.0.8](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.8):
   * opensubtitles should make max 2 requests for separate languages
   * lint updates
