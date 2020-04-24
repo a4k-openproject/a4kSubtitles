@@ -1,0 +1,5 @@
+.*                  export-ignore
+packages            export-ignore
+scripts             export-ignore
+tests               export-ignore
+requirements.txt    export-ignore
