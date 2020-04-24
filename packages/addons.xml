@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="0.0.12"
+       version="0.0.13"
        provider-name="Unknown">
     <requires>
       <import addon="xbmc.python" version="2.25.0"/>
@@ -27,6 +27,9 @@ Supports: OpenSubtitles
             <icon>icon.png</icon>
         </assets>
         <news>
+[v0.0.13]:
+  * Exclude development files from release
+
 [v0.0.12]:
   * Removal of ads (Experimental)
   * Fix extract issue when file contains unicode symbols

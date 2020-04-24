@@ -1,3 +1,6 @@
+* [v0.0.13](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.13):
+  * Exclude development files from release
+
 * [v0.0.12](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.12):
   * Removal of ads (Experimental)
   * Fix extract issue when file contains unicode symbols
