@@ -10,7 +10,7 @@ Steps to install a4kSubtitles:
 1. Go to the KODI **File manager**.
 2. Click on **Add source**.
 3. The path for the source is https://a4k-openproject.github.io/a4kSubtitles/packages/
-4. (Optional) Name it **a4kSubtitles-repo** without the quotes.
+4. (Optional) Name it **a4kSubtitles-repo**.
 5. Head to **Addons**.
 6. Select **Install from zip file**.
 7. When it asks for the location select **a4kSubtitles-repo** and install `a4kSubtitles-repository.zip`.
