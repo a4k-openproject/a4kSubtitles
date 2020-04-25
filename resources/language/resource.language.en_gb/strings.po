@@ -20,6 +20,10 @@ msgctxt "#32051"
 msgid "OpenSubtitles"
 msgstr ""
 
+msgctxt "#32052"
+msgid "BSPlayer"
+msgstr ""
+
 # Labels
 msgctxt "#32101"
 msgid "Username (Optional)"
@@ -42,5 +46,9 @@ msgid "Enabled"
 msgstr ""
 
 msgctxt "#32106"
-msgid "Remove ads (Experimental)"
+msgid "Remove ads"
+msgstr ""
+
+msgctxt "#32107"
+msgid "Use file hash (Limits results to exact matches)"
 msgstr ""

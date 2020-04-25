@@ -46,9 +46,17 @@ class A4kSubtitlesApi(object):
         default_ = self.core.kodi.xbmc.Player().getPlayingFile
         self.core.kodi.xbmc.Player().getPlayingFile = lambda: meta.get('filename', '')
 
+        default__ = self.core.kodi.xbmcvfs.File.size
+        self.core.kodi.xbmcvfs.File.size = lambda: meta.get('filesize', '')
+
+        default___ = self.core.kodi.xbmcvfs.File.hash
+        self.core.kodi.xbmcvfs.File.hash = lambda: meta.get('filehash', '')
+
         def restore():
             self.core.kodi.xbmc.getInfoLabel = default
             self.core.kodi.xbmc.Player().getPlayingFile = default_
+            self.core.kodi.xbmcvfs.File.size = default__
+            self.core.kodi.xbmcvfs.File.hash = default___
         return restore
 
     def __mock_settings(self, settings):

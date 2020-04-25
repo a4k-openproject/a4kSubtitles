@@ -5,6 +5,7 @@ statistics = True
 show-source = True
 
 ignore = 
+    E131,
     E302,
     E305,
     E402,

@@ -1,9 +1,18 @@
 # -*- coding: utf-8 -*-
 
-def __query_service(core, service_name, request, results):
+def __auth_service(core, service_name, request):
     service = core.services[service_name]
     response = core.request.execute(request)
-    service_results = service.parse_response(core, service_name, response.text)
+    if response.status_code == 200 and response.text:
+        service.parse_auth_response(core, service_name, response.text)
+
+def __query_service(core, service_name, meta, request, results):
+    service = core.services[service_name]
+    response = core.request.execute(request)
+    if response.status_code == 200 and response.text:
+        service_results = service.parse_search_response(core, service_name, meta, response.text)
+    else:
+        service_results = []
     core.logger.debug(lambda: core.json.dumps(service_results[:1], indent=2))
     results.extend(service_results)
 
@@ -60,6 +69,36 @@ def __parse_language(core, language):
     else:
         return language
 
+def __chain_auth_and_search_threads(core, auth_thread, search_thread):
+    auth_thread.start()
+    auth_thread.join()
+    search_thread.start()
+    search_thread.join()
+
+def __wait_threads(core, request_threads):
+    threads = []
+
+    for (auth_thread, search_thread) in request_threads:
+        if not auth_thread:
+            threads.append(search_thread)
+        else:
+            thread = core.threading.Thread(target=__chain_auth_and_search_threads, args=(core, auth_thread, search_thread))
+            threads.append(thread)
+
+    core.utils.wait_threads(threads)
+
+def __search(core, service_name, meta, results):
+    service = core.services[service_name]
+    requests = service.build_search_requests(core, service_name, meta)
+    core.logger.debug(lambda: '%s - %s' % (service_name, core.json.dumps(requests, default=lambda o: '', indent=2)))
+
+    threads = []
+    for request in requests:
+        thread = core.threading.Thread(target=__query_service, args=(core, service_name, meta, request, results))
+        threads.append(thread)
+
+    core.utils.wait_threads(threads)
+
 def search(core, params):
     core.logger.debug(lambda: core.json.dumps(params, indent=2))
     meta = core.video.get_meta()
@@ -77,18 +116,17 @@ def search(core, params):
             continue
 
         service = core.services[service_name]
-        requests = service.build_search_requests(core, service_name, meta)
-        core.logger.debug(lambda: '%s - %s' % (service_name, core.json.dumps(requests, indent=2)))
+        auth_thread = None
 
-        for request in requests:
-            thread = core.threading.Thread(target=__query_service, args=(core, service_name, request, results))
-            threads.append(thread)
+        auth_request = service.build_auth_request(core, service_name)
+        if auth_request:
+            auth_thread = core.threading.Thread(target=__auth_service, args=(core, service_name, auth_request))
 
-    for thread in threads:
-        thread.start()
-    for thread in threads:
-        thread.join()
+        search_thread = core.threading.Thread(target=__search, args=(core, service_name, meta, results))
 
+        threads.append((auth_thread, search_thread))
+
+    __wait_threads(core, threads)
     results = __apply_language_filter(results, meta)
 
     sorter = lambda x: (

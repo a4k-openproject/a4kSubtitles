@@ -1,3 +1,8 @@
+* [v0.0.15](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.15):
+  * Remove ads by default
+  * Support for BSPlayer
+  * Additional option for OpenSubtitles to use file hash (Limits results to exact matches)
+
 * [v0.0.14](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.14):
   * Fix API and normal usage at the same time
 

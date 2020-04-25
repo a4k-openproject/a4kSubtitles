@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+__user_agent = 'TemporaryUserAgent'
+
 def __set_auth_header(core, service_name, request):
     username = core.kodi.get_setting(service_name, 'username')
     password = core.kodi.get_setting(service_name, 'password')
@@ -18,26 +20,24 @@ def build_search_requests(core, service_name, meta):
         'imdbid-%s' % meta.imdb_id[2:]
     ]
 
-    lang_ids = []
-    for language in meta.languages:
-        if language == "Portuguese (Brazil)":
-            lang_id = "pob"
-        elif language == "Greek":
-            lang_id = "ell"
-        else:
-            lang_id = core.kodi.xbmc.convertLanguage(language, core.kodi.xbmc.ISO_639_2)
-        lang_ids.append(lang_id)
+    if core.kodi.get_bool_setting(service_name, 'use_filehash'):
+        if meta.filesize:
+            params.append('moviebytesize-%s' % meta.filesize)
+
+        if meta.filehash:
+            params.append('moviehash-%s' % meta.filehash)
 
     request = {
         'method': 'GET',
         'url': 'https://rest.opensubtitles.org/search/%s' % '/'.join(params),
         'headers': {
-            'X-User-Agent': 'TemporaryUserAgent'
+            'X-User-Agent': __user_agent
         }
     }
 
     __set_auth_header(core, service_name, request)
 
+    lang_ids = core.utils.get_lang_ids(meta.languages)
     if len(lang_ids) > 2:
         return [request]
 
@@ -49,7 +49,7 @@ def build_search_requests(core, service_name, meta):
 
     return requests
 
-def parse_response(core, service_name, response):
+def parse_search_response(core, service_name, meta, response):
     try:
         results = core.json.loads(response)
     except Exception as exc:
@@ -64,7 +64,7 @@ def parse_response(core, service_name, response):
             'name': result['SubFileName'],
             'icon': str(int(round(float(result['SubRating']) / 2))),
             'thumbnail': result['ISO639'],
-            'sync': 'false',
+            'sync': 'true' if result['MovieHash'] == meta.filehash else 'false',
             'impaired': 'false' if result['SubHearingImpaired'] == '0' else 'true',
             'action_args': {
                 'url': result['ZipDownloadLink'].replace('/subad/', '/sub/'),
@@ -80,7 +80,7 @@ def build_download_request(core, service_name, args):
         'method': 'GET',
         'url': args['url'],
         'headers': {
-            'X-User-Agent': 'TemporaryUserAgent'
+            'X-User-Agent': __user_agent
         }
     }
 
