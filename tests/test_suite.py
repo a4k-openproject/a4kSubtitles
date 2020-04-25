@@ -3,6 +3,8 @@
 import sys
 import os
 import json
+import re
+import pytest
 
 dir_name = os.path.dirname(__file__)
 main = os.path.join(dir_name, '..')
@@ -28,6 +30,7 @@ def __search(a4ksubtitles_api, creds=None):
     search.settings = {
         'general.timeout': '15',
         'general.results_limit': '20',
+        'general.remove_ads': 'false',
         'opensubtitles.enabled': 'true',
         'opensubtitles.username': creds.username,
         'opensubtitles.password': creds.password,
@@ -42,6 +45,33 @@ def __search(a4ksubtitles_api, creds=None):
     search.results = a4ksubtitles_api.search(search.params, search.settings, search.video_meta)
 
     return search
+
+def test_api():
+    def get_error_msg(e):
+        return str(e.value).replace('\'', '')
+
+    with pytest.raises(ImportError) as e:
+        api.A4kSubtitlesApi()
+    assert get_error_msg(e) == "No module named xbmc"
+
+    with pytest.raises(ImportError) as e:
+        api.A4kSubtitlesApi({'xbmc': True})
+    assert get_error_msg(e) == "No module named xbmcaddon"
+
+    with pytest.raises(ImportError) as e:
+        api.A4kSubtitlesApi({'xbmc': True, 'xbmcaddon': True})
+    assert get_error_msg(e) == "No module named xbmcplugin"
+
+    with pytest.raises(ImportError) as e:
+        api.A4kSubtitlesApi({'xbmc': True, 'xbmcaddon': True, 'xbmcplugin': True})
+    assert get_error_msg(e) == "No module named xbmcgui"
+
+    with pytest.raises(ImportError) as e:
+        api.A4kSubtitlesApi({'xbmc': True, 'xbmcaddon': True, 'xbmcplugin': True, 'xbmcgui': True})
+    assert get_error_msg(e) == "No module named xbmcvfs"
+
+    api.A4kSubtitlesApi({'xbmc': True, 'xbmcaddon': True, 'xbmcplugin': True, 'xbmcgui': True, 'xbmcvfs': True})
+    api.A4kSubtitlesApi({'kodi': True})
 
 def test_search_missing_imdb_id():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
@@ -58,6 +88,7 @@ def test_search_missing_imdb_id():
 def test_opensubtitles():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
 
+    # search
     creds = lambda: None
     creds.username = os.getenv('A4KSUBTITLES_OPENSUBTITLES_USERNAME', '')
     creds.password = os.getenv('A4KSUBTITLES_OPENSUBTITLES_PASSWORD', '')
@@ -66,6 +97,7 @@ def test_opensubtitles():
     assert len(search.results) == 20
     assert search.results[0]['name'] == search.video_meta['filename']
 
+    # download
     item = search.results[0]
     item['action_args']['filename'] = item['name']
 
@@ -75,6 +107,22 @@ def test_opensubtitles():
         'action_args': item['action_args']
     }
 
-    result = a4ksubtitles_api.download(params, search.settings)
+    filepath = a4ksubtitles_api.download(params, search.settings)
 
-    assert result != ''
+    assert filepath != ''
+
+    # remove_ads
+    with open(filepath, 'r') as f:
+        sub_contents = f.read()
+
+    assert re.match(r'.*OpenSubtitles.*', sub_contents, re.DOTALL) is not None
+
+    search.settings['general.remove_ads'] = 'true'
+    filepath = a4ksubtitles_api.download(params, search.settings)
+
+    assert filepath != ''
+
+    with open(filepath, 'r') as f:
+        sub_contents = f.read()
+
+    assert re.match(r'.*OpenSubtitles.*', sub_contents, re.DOTALL) is None

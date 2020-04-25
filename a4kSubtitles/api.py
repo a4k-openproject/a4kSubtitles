@@ -4,6 +4,8 @@ import os
 import json
 import importlib
 
+api_mode_env_name = 'A4KSUBTITLES_API_MODE'
+
 class A4kSubtitlesApi(object):
     def __init__(self, mocks=None):
         if mocks is None:
@@ -19,12 +21,8 @@ class A4kSubtitlesApi(object):
         }
 
         api_mode.update(mocks)
-        os.environ['A4KSUBTITLES_API_MODE'] = json.dumps(api_mode)
-
+        os.environ[api_mode_env_name] = json.dumps(api_mode)
         self.core = importlib.import_module('a4kSubtitles.core')
-
-    def __del__(self):
-        os.environ.pop('A4KSUBTITLES_API_MODE')
 
     def __mock_video_meta(self, meta):
         def get_info_label(label):

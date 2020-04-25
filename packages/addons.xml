@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="0.0.13"
+       version="0.0.14"
        provider-name="Unknown">
     <requires>
       <import addon="xbmc.python" version="2.25.0"/>
@@ -27,6 +27,9 @@ Supports: OpenSubtitles
             <icon>icon.png</icon>
         </assets>
         <news>
+[v0.0.14]:
+  * Fix API and normal usage at the same time
+
 [v0.0.13]:
   * Exclude development files from release
 

@@ -1,3 +1,6 @@
+* [v0.0.14](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.14):
+  * Fix API and normal usage at the same time
+
 * [v0.0.13](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.13):
   * Exclude development files from release
 
