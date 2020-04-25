@@ -1,9 +1,48 @@
 # -*- coding: utf-8 -*-
 
 import json
+import struct
 
-from .kodi import xbmc
+from .kodi import xbmc, xbmcvfs
 from . import logger
+
+__64k = 65536
+__longlong_format_char = 'q'
+__byte_size = struct.calcsize(__longlong_format_char)
+
+def __sum_64k_bytes(file, result):
+    for _ in range(__64k / __byte_size):
+        chunk = file.read(__byte_size)
+        (value,) = struct.unpack(__longlong_format_char, chunk)
+        result.filehash += value
+        result.filehash &= 0xFFFFFFFFFFFFFFFF
+
+def __set_size_and_hash(meta, filepath):
+    f = xbmcvfs.File(filepath)
+    try:
+        filesize = meta['filesize'] = f.size()
+
+        # used for mocking
+        try:
+            meta['filehash'] = f.hash()
+            return
+        except: pass
+
+        if filesize < __64k * 2:
+            return
+
+        # ref: https://trac.opensubtitles.org/projects/opensubtitles/wiki/HashSourceCodes
+        # filehash = filesize + 64bit sum of the first and last 64k of the file
+        result = lambda: None
+        result.filehash = filesize
+
+        __sum_64k_bytes(f, result)
+        f.seek(filesize - __64k, 0)
+        __sum_64k_bytes(f, result)
+
+        meta['filehash'] = "%016x" % result.filehash
+    finally:
+        f.close()
 
 def get_meta():
     meta = {}
@@ -16,10 +55,17 @@ def get_meta():
         meta['title'] = xbmc.getInfoLabel('VideoPlayer.Title')
     meta['imdb_id'] = xbmc.getInfoLabel('VideoPlayer.IMDBNumber')
 
+    meta['filename'] = meta['title']
+    meta['filesize'] = ''
+    meta['filehash'] = ''
+
     try:
-        meta['filename'] = xbmc.Player().getPlayingFile().split('/')[-1]
+        filepath = xbmc.Player().getPlayingFile()
+        meta['filename'] = filepath.split('/')[-1]
+        __set_size_and_hash(meta, filepath)
     except:
-        meta['filename'] = meta['title']
+        import traceback
+        traceback.print_exc()
 
     meta_json = json.dumps(meta, indent=2)
     logger.debug(meta_json)
@@ -28,6 +74,6 @@ def get_meta():
     item = lambda: None
     for key in meta.keys():
         value = meta[key]
-        setattr(item, key, value.strip())
+        setattr(item, key, str(value).strip())
 
     return item

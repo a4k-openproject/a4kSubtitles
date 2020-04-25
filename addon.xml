@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="0.0.14"
+       version="0.0.15"
        provider-name="Unknown">
     <requires>
       <import addon="xbmc.python" version="2.25.0"/>
@@ -13,7 +13,7 @@
         <summary lang="en">a4kSubtitles - Multi-Source Subtitles Addon</summary>
         <description>
 Multi-source subtitles addon optimized for Seren.
-Supports: OpenSubtitles
+Supports: OpenSubtitles, BSPlayer
         </description>
         <platform>all</platform>
         <reuselanguageinvoker>false</reuselanguageinvoker>
@@ -24,6 +24,11 @@ Supports: OpenSubtitles
             <icon>icon.png</icon>
         </assets>
         <news>
+[v0.0.15]:
+  * Remove ads by default
+  * Support for BSPlayer
+  * Additional option for OpenSubtitles to use file hash (Limits results to exact matches)
+
 [v0.0.14]:
   * Fix API and normal usage at the same time
 

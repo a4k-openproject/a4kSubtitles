@@ -65,12 +65,14 @@ def __mkdirs(f):
     try: os.makedirs(f)
     except Exception: pass
 xbmcvfs.mkdirs = __mkdirs
+
 __archive_proto = 'archive://'
 def __listdir(archive_uri):
     archive_path = unquote(archive_uri).replace(__archive_proto, '')
     with ZipFile(archive_path, 'r') as zip_obj:
         return ([], zip_obj.namelist())
 xbmcvfs.listdir = __listdir
+
 def __copy(src_uri, dest):
     archive_path = unquote(src_uri[:src_uri.find('.zip') + 4]).replace(__archive_proto, '')
     member = unquote(src_uri[src_uri.find('.zip') + 5:]).replace(__archive_proto, '')
@@ -79,3 +81,10 @@ def __copy(src_uri, dest):
         zip_obj.extract(member, dest_dir)
         os.rename(os.path.join(dest_dir, member), dest)
 xbmcvfs.copy = __copy
+
+def __File(_):
+    return __File
+__File.size = lambda: 0
+__File.hash = lambda: 0
+__File.close = lambda: None
+xbmcvfs.File = __File
