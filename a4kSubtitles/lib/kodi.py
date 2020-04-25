@@ -18,10 +18,10 @@ if api_mode:
     else:
         from . import kodi_mock
 
-        for target in api_mode.keys():
+        for target in ['xbmc', 'xbmcaddon', 'xbmcplugin', 'xbmcgui', 'xbmcvfs']:
             if target == 'kodi':
                 continue
-            elif api_mode[target]:
+            elif api_mode.get(target, False):
                 mod = getattr(kodi_mock, target)
             else:
                 mod = importlib.import_module(target)

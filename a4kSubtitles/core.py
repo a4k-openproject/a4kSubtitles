@@ -22,13 +22,13 @@ from .search import search
 from .download import download
 
 core = sys.modules[__name__]
-api_mode_enabled = os.getenv('A4KSUBTITLES_API_MODE') is not None
-
+api_mode_enabled = True
 handle = None
-if not api_mode_enabled:
-    handle = int(sys.argv[1])
 
-def main(paramstring):
+def main(handle, paramstring):
+    core.api_mode_enabled = False
+    core.handle = handle
+
     params = dict(utils.parse_qsl(paramstring))
     if params['action'] in ('search', 'manualsearch'):
         search(core, params)

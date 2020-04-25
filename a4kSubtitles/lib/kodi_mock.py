@@ -75,5 +75,7 @@ def __copy(src_uri, dest):
     archive_path = unquote(src_uri[:src_uri.find('.zip') + 4]).replace(__archive_proto, '')
     member = unquote(src_uri[src_uri.find('.zip') + 5:]).replace(__archive_proto, '')
     with ZipFile(archive_path, 'r') as zip_obj:
-        zip_obj.extract(member, os.path.dirname(dest))
+        dest_dir = os.path.dirname(dest)
+        zip_obj.extract(member, dest_dir)
+        os.rename(os.path.join(dest_dir, member), dest)
 xbmcvfs.copy = __copy
