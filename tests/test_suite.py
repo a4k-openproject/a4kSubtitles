@@ -21,6 +21,11 @@ sys.path.append(services)
 from a4kSubtitles import api
 from tests import utils
 
+def __remove_last_results(a4ksubtitles_api):
+    try:
+        os.remove(a4ksubtitles_api.core.utils.results_filepath)
+    except: pass
+
 def __search(a4ksubtitles_api, settings={}, video_meta={}):
     search = lambda: None
     search.params = {
@@ -35,7 +40,6 @@ def __search(a4ksubtitles_api, settings={}, video_meta={}):
         'opensubtitles.enabled': 'false',
         'opensubtitles.username': '',
         'opensubtitles.password': '',
-        'opensubtitles.use_filehash': 'false',
         'bsplayer.enabled': 'false',
     }
     search.settings.update(settings)
@@ -91,10 +95,11 @@ def test_search_missing_imdb_id():
     }
     a4ksubtitles_api.search(params)
 
-    log_error_spy.called_with('Missing imdb id!')
+    log_error_spy.called_with('missing imdb id!')
 
 def test_opensubtitles():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_last_results(a4ksubtitles_api)
 
     # search
     settings = {
@@ -106,14 +111,20 @@ def test_opensubtitles():
 
     assert len(search.results) == 20
 
-    expected_result_name = 'Fantastic.Beasts.and.Where.to.Find.Them.2016.1080p.BluRay.x264.DTS-FGT.srt'
-    assert search.results[0]['name'] == expected_result_name
+    expected_result_name = 'Fantastic.Beasts.and.Where.to.Find.Them.2016.1080p.BluRay.x264.DTS-JYK.srt'
+    expected_result_name2 = 'Fantastic.Beasts.and.Where.to.Find.Them.2016.1080p.BluRay.x264.DTS-FGT.srt'
+    assert search.results[0]['name'] == expected_result_name or search.results[0]['name'] == expected_result_name2
+
+    __remove_last_results(a4ksubtitles_api)
 
     # search (imdb only)
-    settings['opensubtitles.use_filehash'] = 'true'
-    search = __search(a4ksubtitles_api, settings)
+    video_meta = {
+        'filesize': '',
+        'filehash': '',
+    }
+    search = __search(a4ksubtitles_api, settings, video_meta)
 
-    assert len(search.results) == 1
+    assert len(search.results) == 20
 
     # download
     item = search.results[0]
@@ -147,6 +158,7 @@ def test_opensubtitles():
 
 def test_bsplayer():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_last_results(a4ksubtitles_api)
 
     # search
     settings = {
@@ -160,6 +172,15 @@ def test_bsplayer():
     result_name = os.path.splitext(search.results[0]['name'])[0]
     assert expected_result_name == result_name
 
+    # cache
+    request_execute_spy = utils.spy_fn(a4ksubtitles_api.core.request, 'execute')
+    __search(a4ksubtitles_api, settings)
+
+    assert request_execute_spy.call_count == 0
+
+    request_execute_spy.restore()
+
+    # download
     item = search.results[0]
 
     params = {

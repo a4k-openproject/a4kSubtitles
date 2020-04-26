@@ -12,7 +12,8 @@ def __get_debug_logenabled():
         return get_kodi_setting("debug.showloginfo", log_error=False)
     except:
         __get_debug_logenabled_err = True
-        return False
+
+    return False
 
 def __log(message, level=xbmc.LOGDEBUG):
     is_lazy_msg = callable(message)

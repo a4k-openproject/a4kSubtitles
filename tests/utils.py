@@ -5,6 +5,7 @@ class Spy(object):
         self.args = []
         self.kwargs = []
         self.result = []
+        self.call_count = 0
 
     def called_with(self, *args, **kwargs):
         assert self.args[0] == args
@@ -18,6 +19,9 @@ def spy_fn(target, fn_name):
         spy.args.append(args)
         spy.kwargs.append(kwargs)
         spy.result.append(fn(*args, **kwargs))
+        spy.call_count += 1
 
     setattr(target, fn_name, fn_wrap)
+    spy.restore = lambda: setattr(target, fn_name, fn)
+
     return spy

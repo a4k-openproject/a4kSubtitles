@@ -157,8 +157,8 @@ def parse_search_response(core, service_name, meta, response):
             'service': 'BSPlayer',
             'lang': lang,
             'name': name,
-            'icon': str(int(round(float(rating) / 2))) if rating else '0',
-            'thumbnail': core.kodi.xbmc.convertLanguage(lang, core.kodi.xbmc.ISO_639_1),
+            'rating': int(round(float(rating) / 2)) if rating else 0,
+            'lang_code': core.kodi.xbmc.convertLanguage(lang, core.kodi.xbmc.ISO_639_1),
             'sync': 'true' if meta.filehash else 'false',
             'impaired': 'false',
             'action_args': {

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+__search_url = 'https://rest.opensubtitles.org/search/'
 __user_agent = 'TemporaryUserAgent'
 
 def __set_auth_header(core, service_name, request):
@@ -16,20 +17,36 @@ def __set_auth_header(core, service_name, request):
     request['headers']['Authorization'] = 'Basic %s' % core.b64encode(token).decode('ascii')
 
 def build_search_requests(core, service_name, meta):
+    if meta.is_tvshow:
+        query = "%s S%.2dE%.2d" % (meta.tvshow, int(meta.season), int(meta.episode))
+    else:
+        query = '%s %s' % (meta.title, meta.year)
+
     params = [
-        'imdbid-%s' % meta.imdb_id[2:]
+        'imdbid-%s' % meta.imdb_id[2:],
+        'query-%s' % core.utils.quote_plus(query)
     ]
 
-    if core.kodi.get_bool_setting(service_name, 'use_filehash'):
-        if meta.filesize:
-            params.append('moviebytesize-%s' % meta.filesize)
+    lang_id_params = []
+    lang_ids = core.utils.get_lang_ids(meta.languages)
+    for lang_id in lang_ids:
+        lang_id_params.append('/sublanguageid-%s' % lang_id)
 
-        if meta.filehash:
-            params.append('moviehash-%s' % meta.filehash)
+    if meta.is_tvshow:
+        params.extend([
+            'season-%s' % meta.season,
+            'episode-%s' % meta.episode,
+        ])
+
+    params_with_hash = [
+        'moviebytesize-%s' % meta.filesize,
+        'moviehash-%s' % meta.filehash,
+    ]
+    params_with_hash.extend(params)
 
     request = {
         'method': 'GET',
-        'url': 'https://rest.opensubtitles.org/search/%s' % '/'.join(params),
+        'url': __search_url + '/'.join(params),
         'headers': {
             'X-User-Agent': __user_agent
         }
@@ -37,15 +54,22 @@ def build_search_requests(core, service_name, meta):
 
     __set_auth_header(core, service_name, request)
 
-    lang_ids = core.utils.get_lang_ids(meta.languages)
-    if len(lang_ids) > 2:
-        return [request]
-
     requests = []
-    for lang_id in lang_ids:
-        request_copy = request.copy()
-        request_copy['url'] = request_copy['url'] + ('/sublanguageid-%s' % lang_id)
-        requests.append(request_copy)
+    if len(lang_ids) > 2:
+        request_hash = request.copy()
+        request_hash['url'] = __search_url + '/'.join(params_with_hash)
+        requests = [request, request_hash]
+    else:
+        requests = []
+        for lang_id_param in lang_id_params:
+            request_lang = request.copy()
+            request_lang['url'] = request_lang['url'] + lang_id_param
+            requests.append(request_lang)
+
+            if meta.filehash and meta.filesize:
+                request_hash = request.copy()
+                request_hash['url'] = __search_url + '/'.join(params_with_hash) + lang_id_param
+                requests.append(request_hash)
 
     return requests
 
@@ -62,8 +86,8 @@ def parse_search_response(core, service_name, meta, response):
             'service': 'OpenSubtitles',
             'lang': result['LanguageName'],
             'name': result['SubFileName'],
-            'icon': str(int(round(float(result['SubRating']) / 2))),
-            'thumbnail': result['ISO639'],
+            'rating': int(round(float(result['SubRating']) / 2)),
+            'lang_code': result['ISO639'],
             'sync': 'true' if result['MovieHash'] == meta.filehash else 'false',
             'impaired': 'false' if result['SubHearingImpaired'] == '0' else 'true',
             'action_args': {

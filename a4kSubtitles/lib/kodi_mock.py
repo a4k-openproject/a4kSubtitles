@@ -16,6 +16,7 @@ xbmc = lambda: None
 xbmc.translatePath = lambda p: p
 xbmc.getInfoLabel = lambda t: ''
 xbmc.executeJSONRPC = lambda _: '{ "result": { "value": true } }'
+xbmc.getCleanMovieTitle = lambda t: t
 
 xbmc.convertLanguage = lambda l, f: l[:f].lower()
 xbmc.ISO_639_1 = 2

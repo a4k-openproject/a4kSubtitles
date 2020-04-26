@@ -1,3 +1,18 @@
+* [v0.0.16](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.16):
+  * Cache last result
+  * OpenSubtitles always queries:
+    * by imdb id and title
+    * by video file hash
+  * Improve results ordering:
+    * preferred lang
+    * lang
+    * synced
+    * name match
+    * rating
+    * hearing impaired
+    * subtitle service
+  * Fix url with numbers matching in ads detection
+
 * [v0.0.15](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.15):
   * Remove ads by default
   * Support for BSPlayer

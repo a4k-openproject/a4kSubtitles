@@ -9,6 +9,7 @@ import shutil
 import gzip
 import difflib
 import time
+import hashlib
 from datetime import datetime
 from base64 import b64encode
 from xml.etree import ElementTree

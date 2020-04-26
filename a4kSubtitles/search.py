@@ -13,8 +13,14 @@ def __query_service(core, service_name, meta, request, results):
         service_results = service.parse_search_response(core, service_name, meta, response.text)
     else:
         service_results = []
-    core.logger.debug(lambda: core.json.dumps(service_results[:1], indent=2))
+
     results.extend(service_results)
+
+    core.logger.debug(lambda: core.json.dumps({
+        'url': request['url'],
+        'count': len(service_results),
+        'status_code': response.status_code
+    }, indent=2))
 
 def __add_results(core, results):
     for item in results:
@@ -30,7 +36,45 @@ def __add_results(core, results):
                 % (core.kodi.addon_id, item['service_name'], action_args)
         )
 
-def __apply_language_filter(results, meta):
+def __save_results(core, meta, results):
+    try:
+        if len(results) == 0:
+            return
+        meta_hash = core.utils.get_hash(meta)
+        json_data = core.json.dumps({'hash': meta_hash, 'results': results}, indent=2)
+        with open(core.utils.results_filepath, 'w') as f:
+            f.write(json_data)
+    except:
+        import traceback
+        traceback.print_exc()
+
+def __get_last_results(core, meta):
+    try:
+        with open(core.utils.results_filepath, 'r') as f:
+            last_results = core.json.loads(f.read())
+
+        meta_hash = core.utils.get_hash(meta)
+        if last_results['hash'] == meta_hash:
+            return last_results['results']
+    except: pass
+
+    return []
+
+def __sanitize_results(core, meta, results):
+    temp_dict = {}
+
+    for result in results:
+        temp_dict[result['action_args']['url']] = result
+
+        try:
+            if result['sync'] == 'true':
+                ext = core.os.path.splitext(result['name'])[1]
+                result['name'] = '%s%s' % (meta.filename_without_ext, ext)
+        except: pass
+
+    return list(temp_dict.values())
+
+def __apply_language_filter(meta, results):
     return list(filter(lambda x: x['lang'] in meta.languages, results))
 
 def __apply_limit(core, all_results, meta):
@@ -106,13 +150,20 @@ def search(core, params):
     meta.preferredlanguage = __parse_language(core, params['preferredlanguage'])
 
     if meta.imdb_id == '':
-        core.logger.error('Missing imdb id!')
+        core.logger.error('missing imdb id!')
         return
 
     threads = []
     results = []
+    last_query_results = __get_last_results(core, meta)
     for service_name in core.services:
         if not core.kodi.get_bool_setting(service_name, 'enabled'):
+            continue
+
+        last_results = list(filter(lambda r: r['service_name'] == service_name, last_query_results))
+        if len(last_results) > 0:
+            core.logger.notice('%s using cached results' % service_name)
+            results.extend(last_results)
             continue
 
         service = core.services[service_name]
@@ -127,18 +178,23 @@ def search(core, params):
         threads.append((auth_thread, search_thread))
 
     __wait_threads(core, threads)
-    results = __apply_language_filter(results, meta)
+    results = __apply_language_filter(meta, results)
+    results = __sanitize_results(core, meta, results)
 
     sorter = lambda x: (
         not x['lang'] == meta.preferredlanguage,
         meta.languages.index(x['lang']),
-        x['service'],
+        not x['sync'] == 'true',
         -core.difflib.SequenceMatcher(None, x['name'], meta.filename).ratio(),
+        -x['rating'],
+        not x['impaired'] == 'true',
+        x['service'],
     )
 
     results = sorted(results, key=sorter)
     results = __apply_limit(core, results, meta)
     results = sorted(results, key=sorter)
+    __save_results(core, meta, results)
 
     if core.api_mode_enabled:
         return results
