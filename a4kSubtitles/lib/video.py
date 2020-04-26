@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import os
 import json
 import struct
 
 from .kodi import xbmc, xbmcvfs
-from . import logger
+from . import logger, utils
 
 __64k = 65536
 __longlong_format_char = 'q'
@@ -67,13 +68,23 @@ def get_meta():
         import traceback
         traceback.print_exc()
 
+    meta['title'] = xbmc.getCleanMovieTitle(meta['title'])
+
+    try:
+        meta['filename_without_ext'] = os.path.splitext(meta['filename'])[0]
+    except: pass
+
     meta_json = json.dumps(meta, indent=2)
     logger.debug(meta_json)
     meta = json.loads(meta_json)
 
-    item = lambda: None
+    meta = utils.DictAsObject(meta)
+
     for key in meta.keys():
         value = meta[key]
-        setattr(item, key, str(value).strip())
+        meta[key] = str(value).strip()
 
-    return item
+    meta.is_tvshow = meta.tvshow != ''
+    meta.is_movie = not meta.is_tvshow
+
+    return meta

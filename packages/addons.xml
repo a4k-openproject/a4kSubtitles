@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="0.0.15"
+       version="0.0.16"
        provider-name="Unknown">
     <requires>
       <import addon="xbmc.python" version="2.25.0"/>
@@ -27,6 +27,21 @@ Supports: OpenSubtitles, BSPlayer
             <icon>icon.png</icon>
         </assets>
         <news>
+[v0.0.16]:
+  * Cache last result
+  * OpenSubtitles always queries:
+    * by imdb id and title
+    * by video file hash
+  * Improve results ordering:
+    * preferred lang
+    * lang
+    * synced
+    * name match
+    * rating
+    * hearing impaired
+    * subtitle service
+  * Fix url with numbers matching in ads detection
+
 [v0.0.15]:
   * Remove ads by default
   * Support for BSPlayer

@@ -70,8 +70,8 @@ def create_listitem(item):
     args = {
         'label': item['lang'],
         'label2': '%s (%s) (%s)' % (item_name, item_ext, item['service']),
-        'iconImage': item['icon'],
-        'thumbnailImage': item['thumbnail'],
+        'iconImage': str(item['rating']),
+        'thumbnailImage': item['lang_code'],
     }
 
     listitem = xbmcgui.ListItem(**args)

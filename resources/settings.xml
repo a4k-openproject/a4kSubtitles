@@ -17,7 +17,6 @@
         <setting id="opensubtitles.enabled" type="bool" label="32105" default="true"/>
         <setting id="opensubtitles.username" type="text" label="32101" default="" enable="eq(-1,true)"/>
         <setting id="opensubtitles.password" type="text" option="hidden" label="32102" default="" enable="eq(-2,true)"/>
-        <setting id="opensubtitles.use_filehash" type="bool" label="32107" default="false" enable="eq(-3,true)"/>
         <!-- BSPlayer -->
         <setting type="lsep" label="32052"/>
         <setting type="sep"/>

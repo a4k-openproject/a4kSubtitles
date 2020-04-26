@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import requests
+import re
+import time
 from .kodi import get_int_setting
 from . import logger
 
@@ -17,7 +19,7 @@ def execute(request):
         response = lambda: None
         response.text = ''
         response.status_code = 500
-    logger.debug('%s $ - %s' % (request['method'], request['url']))
+    logger.debug('%s $ - %s - %s' % (request['method'], request['url'], response.status_code))
 
     if validate_response:
         alternative_request = validate_response(response)

@@ -3,6 +3,8 @@
 import os
 import sys
 import re
+import json
+import hashlib
 from . import kodi
 from . import logger
 
@@ -14,7 +16,7 @@ except ImportError:
     from urllib.parse import quote_plus, unquote, parse_qsl
     from io import StringIO
 
-__url_regex = r'(([a-zA-Z0-9][a-zA-Z0-9-]{1,5}[a-zA-Z0-9]\.[a-zA-Z]{2,20})|(opensubtitles))\.[a-zA-Z]{2,5}'
+__url_regex = r'(([a-z0-9][a-z0-9-]{1,5}[a-z0-9]\.[a-z0-9]{2,20})|(opensubtitles))\.[a-z]{2,5}'
 __credit_part_regex = r'(sync|synced|fix|fixed|corrected|corrections)'
 __credit_regex = __credit_part_regex + r' ?&? ?' + __credit_part_regex + r'? by'
 
@@ -22,6 +24,14 @@ PY2 = sys.version_info[0] == 2
 PY3 = not PY2
 
 temp_dir = os.path.join(kodi.addon_profile, 'temp')
+results_filepath = os.path.join(kodi.addon_profile, 'last_results.json')
+
+class DictAsObject(dict):
+    def __getattr__(self, name):
+        return self.get(name, None)
+
+    def __setattr__(self, name, value):
+        self[name] = value
 
 def get_all_relative_py_files(file):
     files = os.listdir(os.path.dirname(file))
@@ -44,6 +54,10 @@ def wait_threads(threads):
         thread.start()
     for thread in threads:
         thread.join()
+
+def get_hash(obj):
+    json_data = json.dumps(obj).encode('utf-8')
+    return hashlib.sha256(json_data).hexdigest()
 
 def cleanup_subtitles(sub_contents):
     all_lines = sub_contents.split('\n')

@@ -48,7 +48,3 @@ msgstr ""
 msgctxt "#32106"
 msgid "Remove ads"
 msgstr ""
-
-msgctxt "#32107"
-msgid "Use file hash (Limits results to exact matches)"
-msgstr ""
