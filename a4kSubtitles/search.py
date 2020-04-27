@@ -72,6 +72,8 @@ def __sanitize_results(core, meta, results):
                 result['name'] = '%s%s' % (meta.filename_without_ext, ext)
         except: pass
 
+        result['name'] = core.utils.unquote(result['name'])
+
     return list(temp_dict.values())
 
 def __apply_language_filter(meta, results):
@@ -131,6 +133,11 @@ def __wait_threads(core, request_threads):
 
     core.utils.wait_threads(threads)
 
+def __complete_search(core, results):
+    if core.api_mode_enabled:
+        return results
+    __add_results(core, results)
+
 def __search(core, service_name, meta, results):
     service = core.services[service_name]
     requests = service.build_search_requests(core, service_name, meta)
@@ -177,6 +184,9 @@ def search(core, params):
 
         threads.append((auth_thread, search_thread))
 
+    if len(threads) == 0:
+        return __complete_search(core, last_query_results)
+
     __wait_threads(core, threads)
     results = __apply_language_filter(meta, results)
     results = __sanitize_results(core, meta, results)
@@ -196,6 +206,4 @@ def search(core, params):
     results = sorted(results, key=sorter)
     __save_results(core, meta, results)
 
-    if core.api_mode_enabled:
-        return results
-    __add_results(core, results)
+    return __complete_search(core, results)
