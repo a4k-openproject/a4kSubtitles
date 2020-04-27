@@ -1,3 +1,8 @@
+* [v0.0.17](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.17):
+  * Reuse KODI's Python language invoker
+    * Improves performance on low-end devices when switching subtitles for best match
+  * Url decode subtitle names
+
 * [v0.0.16](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.16):
   * Cache last result
   * OpenSubtitles always queries:
