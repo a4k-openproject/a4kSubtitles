@@ -6,8 +6,7 @@ def __download(core, filepath, request):
         with open(filepath, 'wb') as f:
             core.shutil.copyfileobj(r.raw, f)
 
-def __extract_gzip(core, archivepath, filename, lang):
-    filename = __insert_lang_code_in_filename(core, filename, lang)
+def __extract_gzip(core, archivepath, filename):
     filepath = core.os.path.join(core.utils.temp_dir, filename)
 
     if core.utils.PY2:
@@ -25,7 +24,7 @@ def __extract_gzip(core, archivepath, filename, lang):
 
     return filepath
 
-def __extract_zip(core, archivepath, filename, lang):
+def __extract_zip(core, archivepath, filename):
     path = core.utils.quote_plus(archivepath)
     ext = core.os.path.splitext(filename)[1].lower()
     (dirs, files) = core.kodi.xbmcvfs.listdir('archive://%s' % path)
@@ -39,7 +38,7 @@ def __extract_zip(core, archivepath, filename, lang):
             break
 
     src = 'archive://' + path + '/' + subfile
-    subfile = __insert_lang_code_in_filename(core, filename, lang)
+    subfile = filename
     dest = core.os.path.join(core.utils.temp_dir, subfile)
     core.kodi.xbmcvfs.copy(src, dest)
     return dest
@@ -71,19 +70,22 @@ def download(core, params):
     core.kodi.xbmcvfs.mkdirs(core.utils.temp_dir)
 
     actions_args = params['action_args']
-    filename = actions_args['filename']
-    lang = actions_args['lang']
+    filename = __insert_lang_code_in_filename(core, actions_args['filename'], actions_args['lang'])
     archivepath = core.os.path.join(core.utils.temp_dir, 'sub.zip')
 
     service_name = params['service_name']
     service = core.services[service_name]
     request = service.build_download_request(core, service_name, actions_args)
 
-    __download(core, archivepath, request)
-    if actions_args.get('gzip', False):
-        filepath = __extract_gzip(core, archivepath, filename, lang)
+    if actions_args.get('raw', False):
+        filepath = core.os.path.join(core.utils.temp_dir, filename)
+        __download(core, filepath, request)
     else:
-        filepath = __extract_zip(core, archivepath, filename, lang)
+        __download(core, archivepath, request)
+        if actions_args.get('gzip', False):
+            filepath = __extract_gzip(core, archivepath, filename)
+        else:
+            filepath = __extract_zip(core, archivepath, filename)
 
     if core.kodi.get_bool_setting('general.remove_ads'):
         __cleanup(core, filepath)

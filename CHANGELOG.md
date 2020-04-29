@@ -1,3 +1,7 @@
+* [v0.0.18](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.18):
+  * Support for Podnadpisi.NET
+  * Support for SubDB
+
 * [v0.0.17](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.17):
   * Reuse KODI's Python language invoker
     * Improves performance on low-end devices when switching subtitles for best match

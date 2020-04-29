@@ -3,6 +3,7 @@
 import os
 import json
 import struct
+import hashlib
 
 from .kodi import xbmc, xbmcvfs
 from . import logger, utils
@@ -38,10 +39,27 @@ def __set_size_and_hash(meta, filepath):
         result.filehash = filesize
 
         __sum_64k_bytes(f, result)
-        f.seek(filesize - __64k, 0)
+        f.seek(filesize - __64k, os.SEEK_SET)
         __sum_64k_bytes(f, result)
 
         meta['filehash'] = "%016x" % result.filehash
+    finally:
+        f.close()
+
+def __set_subdb_hash(meta, filepath):
+    f = xbmcvfs.File(filepath)
+    try:
+        # used for mocking
+        try:
+            meta['subdb_hash'] = f.subdb_hash()
+            return
+        except: pass
+
+        data = f.read(__64k)
+        f.seek(-__64k, os.SEEK_END)
+        data += f.read(__64k)
+
+        meta['subdb_hash'] = hashlib.md5(data).hexdigest()
     finally:
         f.close()
 
@@ -64,13 +82,13 @@ def get_meta():
         filepath = xbmc.Player().getPlayingFile()
         meta['filename'] = filepath.split('/')[-1]
         __set_size_and_hash(meta, filepath)
+        __set_subdb_hash(meta, filepath)
     except:
         import traceback
         traceback.print_exc()
 
-    meta['title'] = xbmc.getCleanMovieTitle(meta['title'])
-
     try:
+        meta['filename'] = utils.unquote(meta['filename'])
         meta['filename_without_ext'] = os.path.splitext(meta['filename'])[0]
     except: pass
 

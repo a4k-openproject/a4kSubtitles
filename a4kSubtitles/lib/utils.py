@@ -37,7 +37,7 @@ def get_all_relative_py_files(file):
     files = os.listdir(os.path.dirname(file))
     return [filename[:-3] for filename in files if not filename.startswith('__') and filename.endswith('.py')]
 
-def get_lang_ids(languages):
+def get_lang_ids(languages, lang_format=kodi.xbmc.ISO_639_2):
     lang_ids = []
     for language in languages:
         if language == "Portuguese (Brazil)":
@@ -45,7 +45,7 @@ def get_lang_ids(languages):
         elif language == "Greek":
             lang_id = "ell"
         else:
-            lang_id = kodi.xbmc.convertLanguage(language, kodi.xbmc.ISO_639_2)
+            lang_id = kodi.xbmc.convertLanguage(language, lang_format)
         lang_ids.append(lang_id)
     return lang_ids
 
