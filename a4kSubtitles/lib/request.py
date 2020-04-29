@@ -14,7 +14,7 @@ def execute(request):
 
     logger.debug('%s ^ - %s' % (request['method'], request['url']))
     try:
-        response = requests.request(**request)
+        response = requests.request(verify=False, **request)
     except:
         response = lambda: None
         response.text = ''

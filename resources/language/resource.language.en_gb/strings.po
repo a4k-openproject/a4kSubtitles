@@ -24,6 +24,14 @@ msgctxt "#32052"
 msgid "BSPlayer"
 msgstr ""
 
+msgctxt "#32053"
+msgid "Podnadpisi"
+msgstr ""
+
+msgctxt "#32054"
+msgid "SubDB"
+msgstr ""
+
 # Labels
 msgctxt "#32101"
 msgid "Username (Optional)"

@@ -48,7 +48,10 @@ def __validate_response(core, service_name, request, response):
     if response.status_code != 200:
         return get_retry_request()
 
-    response = __parse_response(core, response.text)
+    response = __parse_response(core, service_name, response.text)
+    if response is None:
+        return None
+
     status_code = response.find('result/result')
     if status_code is None:
         status_code = response.find('result')
@@ -71,9 +74,13 @@ def __get_request(core, service_name, action, params):
     }
     return request
 
-def __parse_response(core, response):
-    tree = core.ElementTree.fromstring(response.strip())
-    return tree.find('.//return')
+def __parse_response(core, service_name, response):
+    try:
+        tree = core.ElementTree.fromstring(response.strip())
+        return tree.find('.//return')
+    except Exception as exc:
+        core.logger.error('%s - %s' % (service_name, exc))
+        return None
 
 def __logout(core, service_name):
     context = core.services[service_name].context
@@ -101,7 +108,10 @@ def build_auth_request(core, service_name):
     return __get_request(core, service_name, action, params)
 
 def parse_auth_response(core, service_name, response):
-    response = __parse_response(core, response)
+    response = __parse_response(core, service_name, response)
+    if response is None:
+        return
+
     if response.find('result').text == '200':
         token = response.find('data').text
         core.services[service_name].context.token = token
@@ -132,7 +142,10 @@ def build_search_requests(core, service_name, meta):
 def parse_search_response(core, service_name, meta, response):
     __logout(core, service_name)
 
-    response = __parse_response(core, response)
+    response = __parse_response(core, service_name, response)
+    if response is None:
+        return []
+
     if response.find('result/result').text != '200':
         return []
 

@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="0.0.17"
+       version="0.0.18"
        provider-name="Unknown">
     <requires>
       <import addon="xbmc.python" version="2.25.0"/>
@@ -16,7 +16,7 @@
         <summary lang="en">a4kSubtitles - Multi-Source Subtitles Addon</summary>
         <description>
 Multi-source subtitles addon optimized for Seren.
-Supports: OpenSubtitles, BSPlayer
+Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDB
         </description>
         <platform>all</platform>
         <reuselanguageinvoker>true</reuselanguageinvoker>
@@ -27,6 +27,10 @@ Supports: OpenSubtitles, BSPlayer
             <icon>icon.png</icon>
         </assets>
         <news>
+[v0.0.18]:
+  * Support for Podnadpisi.NET
+  * Support for SubDB
+
 [v0.0.17]:
   * Reuse KODI's Python language invoker
     * Improves performance on low-end devices when switching subtitles for best match

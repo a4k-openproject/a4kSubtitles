@@ -41,6 +41,8 @@ def __search(a4ksubtitles_api, settings={}, video_meta={}):
         'opensubtitles.username': '',
         'opensubtitles.password': '',
         'bsplayer.enabled': 'false',
+        'podnadpisi.enabled': 'false',
+        'subdb.enabled': 'false',
     }
     search.settings.update(settings)
 
@@ -51,6 +53,7 @@ def __search(a4ksubtitles_api, settings={}, video_meta={}):
         'filename': 'Fantastic.Beasts.and.Where.to.Find.Them.2016.1080p.BluRay.x264.DTS-JYK.mkv',
         'filesize': '3592482379',
         'filehash': '4985126cbf92fe60',
+        'subdb_hash': 'fb7e5d6ac9c3f94813467988de753d0e'
     }
     search.video_meta.update(video_meta)
 
@@ -186,6 +189,52 @@ def test_bsplayer():
     params = {
         'action': 'download',
         'service_name': 'bsplayer',
+        'action_args': item['action_args']
+    }
+
+    filepath = a4ksubtitles_api.download(params, search.settings)
+
+    assert filepath != ''
+
+def test_podnadpisi():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_last_results(a4ksubtitles_api)
+
+    # search
+    settings = {
+        'podnadpisi.enabled': 'true',
+    }
+    search = __search(a4ksubtitles_api, settings)
+
+    # download
+    item = search.results[0]
+
+    params = {
+        'action': 'download',
+        'service_name': 'podnadpisi',
+        'action_args': item['action_args']
+    }
+
+    filepath = a4ksubtitles_api.download(params, search.settings)
+
+    assert filepath != ''
+
+def test_subdb():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_last_results(a4ksubtitles_api)
+
+    # search
+    settings = {
+        'subdb.enabled': 'true',
+    }
+    search = __search(a4ksubtitles_api, settings)
+
+    # download
+    item = search.results[0]
+
+    params = {
+        'action': 'download',
+        'service_name': 'subdb',
         'action_args': item['action_args']
     }
 

@@ -52,11 +52,15 @@ class A4kSubtitlesApi(object):
         default___ = self.core.kodi.xbmcvfs.File.hash
         self.core.kodi.xbmcvfs.File.hash = lambda: meta.get('filehash', '')
 
+        default____ = self.core.kodi.xbmcvfs.File.subdb_hash
+        self.core.kodi.xbmcvfs.File.subdb_hash = lambda: meta.get('subdb_hash', '')
+
         def restore():
             self.core.kodi.xbmc.getInfoLabel = default
             self.core.kodi.xbmc.Player().getPlayingFile = default_
             self.core.kodi.xbmcvfs.File.size = default__
             self.core.kodi.xbmcvfs.File.hash = default___
+            self.core.kodi.xbmcvfs.File.subdb_hash = default____
         return restore
 
     def __mock_settings(self, settings):

@@ -21,5 +21,13 @@
         <setting type="lsep" label="32052"/>
         <setting type="sep"/>
         <setting id="bsplayer.enabled" type="bool" label="32105" default="true"/>
+        <!-- Podnadpisi -->
+        <setting type="lsep" label="32053"/>
+        <setting type="sep"/>
+        <setting id="podnadpisi.enabled" type="bool" label="32105" default="true"/>
+        <!-- SubDB -->
+        <setting type="lsep" label="32054"/>
+        <setting type="sep"/>
+        <setting id="subdb.enabled" type="bool" label="32105" default="true"/>
     </category>
 </settings>

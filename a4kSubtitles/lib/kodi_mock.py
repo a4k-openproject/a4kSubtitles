@@ -5,6 +5,7 @@ import os
 import shutil
 
 from zipfile import ZipFile
+from xml.etree import ElementTree
 
 try:
     from urlparse import unquote
@@ -42,6 +43,10 @@ def __get_addon_info(name):
         return 'service.subtitles.a4ksubtitles'
     elif name == 'name':
         return 'a4ksubtitles'
+    elif name == 'version':
+        tree = ElementTree.parse(os.path.join(os.path.dirname(__file__), '..', '..', 'addon.xml'))
+        root = tree.getroot()
+        return root.get('version')
     elif name == 'profile':
         return os.path.join(os.path.dirname(__file__), '../../tmp')
 __addon.getAddonInfo = __get_addon_info
@@ -87,5 +92,6 @@ def __File(_):
     return __File
 __File.size = lambda: 0
 __File.hash = lambda: 0
+__File.subdb_hash = lambda: 0
 __File.close = lambda: None
 xbmcvfs.File = __File

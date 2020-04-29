@@ -37,6 +37,7 @@ else:
 addon = xbmcaddon.Addon('service.subtitles.a4ksubtitles')
 addon_id = addon.getAddonInfo('id')
 addon_name = addon.getAddonInfo('name')
+addon_version = addon.getAddonInfo('version')
 addon_profile = xbmc.translatePath(addon.getAddonInfo('profile'))
 
 def json_rpc(method, params, log_error=True):
