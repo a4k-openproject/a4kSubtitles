@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="0.0.18"
+       version="0.0.19"
        provider-name="Unknown">
     <requires>
       <import addon="xbmc.python" version="2.25.0"/>
@@ -16,7 +16,7 @@
         <summary lang="en">a4kSubtitles - Multi-Source Subtitles Addon</summary>
         <description>
 Multi-source subtitles addon optimized for Seren.
-Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDB
+Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDB, Subscene
         </description>
         <platform>all</platform>
         <reuselanguageinvoker>true</reuselanguageinvoker>
@@ -27,6 +27,11 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDB
             <icon>icon.png</icon>
         </assets>
         <news>
+[v0.0.19]:
+  * Update settings
+  * Fix language code suffix format in the subtitle file name
+  * Support for Subscene
+
 [v0.0.18]:
   * Support for Podnadpisi.NET
   * Support for SubDB

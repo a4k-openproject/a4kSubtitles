@@ -39,7 +39,7 @@ def __validate_response(core, service_name, request, response):
     def get_retry_request():
         core.time.sleep(2)
         if context.tries <= 2:
-            request['validate_response'] = lambda response: __validate_response(core, service_name, request, response)
+            request['validate'] = lambda response: __validate_response(core, service_name, request, response)
         return request
 
     if response is None:
@@ -70,7 +70,7 @@ def __get_request(core, service_name, action, params):
         'url': url,
         'data': __soap_format.format(url=url, action=action, params=params),
         'headers': headers,
-        'validate_response': lambda response: __validate_response(core, service_name, request, response)
+        'validate': lambda response: __validate_response(core, service_name, request, response)
     }
     return request
 
@@ -142,7 +142,7 @@ def build_search_requests(core, service_name, meta):
 def parse_search_response(core, service_name, meta, response):
     __logout(core, service_name)
 
-    response = __parse_response(core, service_name, response)
+    response = __parse_response(core, service_name, response.text)
     if response is None:
         return []
 

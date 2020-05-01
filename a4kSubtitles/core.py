@@ -10,6 +10,7 @@ import gzip
 import difflib
 import time
 import hashlib
+import re
 from datetime import datetime
 from base64 import b64encode
 from xml.etree import ElementTree
@@ -20,6 +21,7 @@ from .lib import (
     kodi,
     video,
     request,
+    num2ordinal,
 )
 from .services import services
 from .search import search

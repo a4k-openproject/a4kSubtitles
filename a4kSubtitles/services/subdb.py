@@ -4,7 +4,7 @@ __url = 'http://api.thesubdb.com?action={action}&hash={hash}'
 __user_agent = 'SubDB/1.0 (a4kSubtitles/{version}; https://github.com/a4k-openproject/a4kSubtitles)'
 
 def build_search_requests(core, service_name, meta):
-    if meta.filehash == '':
+    if meta.subdb_hash == '':
         return []
 
     request = {
@@ -22,7 +22,7 @@ def parse_search_response(core, service_name, meta, response):
     name = '%s.srt' % meta.filename_without_ext
     results = []
 
-    lang_iso_639_1_codes = response.split(',')
+    lang_iso_639_1_codes = response.text.split(',')
     for lang_iso_639_1_code in lang_iso_639_1_codes:
         if lang_iso_639_1_code in lang_ids:
             lang = meta.languages[lang_ids.index(lang_iso_639_1_code)]

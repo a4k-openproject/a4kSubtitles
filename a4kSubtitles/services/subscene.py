@@ -1,0 +1,113 @@
+# -*- coding: utf-8 -*-
+
+__url = 'https://subscene.com'
+
+def __find_title_result(core, service_name, meta, title, response):
+    title_with_year = '%s (%s)' % (title, meta.year)
+    core.logger.notice(title_with_year)
+
+    href_regex = r'<a href="(.*?)">' + core.re.escape(title_with_year) + r'</a>'
+    result = core.re.search(href_regex, response.text)
+    if not result:
+        return None
+
+    title_href = result.group(1)
+    if meta.is_tvshow:
+        ordinal_season = core.num2ordinal.convert(meta.season).strip()
+        title_href = title_href.replace('-first-season', '-%s-season' % ordinal_season)
+        core.logger.notice(title_href)
+
+    core.services[service_name].context.title_href = title_href
+
+    request = {
+        'method': 'GET',
+        'url': __url + title_href
+    }
+
+    return request
+
+def build_search_requests(core, service_name, meta):
+    title = meta.title
+
+    if meta.is_tvshow:
+        title = '%s - First Season' % meta.tvshow
+
+    request = {
+        'method': 'GET',
+        'url': __url + ('/subtitles/searchbytitle?query=' + core.utils.quote_plus(title)),
+        'next': lambda r: __find_title_result(core, service_name, meta, title, r)
+    }
+
+    return [request]
+
+def parse_search_response(core, service_name, meta, response):
+    title_href = core.services[service_name].context.title_href
+    any_regex = r'.*?'
+
+    results_regex = (
+            r'<a href="' + core.re.escape(title_href) + r'(.*?)">' +
+                any_regex + r'</span>' + any_regex +
+                r'<span>(.*?)</span>' + any_regex +
+            r'</a>' + any_regex +
+            r'(<td class="a41">)?' + any_regex +
+        r'</tr>'
+    )
+
+    results = core.re.findall(results_regex, response.text, core.re.DOTALL)
+    if not results:
+        return None
+
+    episodeid = 's%se%s' % (meta.season.zfill(2), meta.episode.zfill(2))
+    if meta.is_tvshow:
+        identifier = r'(\.s%s\.|%s)' % (meta.season.zfill(2), episodeid)
+        results = list(filter(lambda x: core.re.search(identifier, x[1], core.re.IGNORECASE), results))
+
+    def map_result(result):
+        download_href = '%s%s%s' % (__url, title_href, result[0])
+        lang = result[0].split('/')[1].capitalize()
+        lang_code = core.kodi.xbmc.convertLanguage(lang, core.kodi.xbmc.ISO_639_1)
+        name = result[1].strip()
+        name_with_ext = '%s.srt' % name
+        impaired = result[2] != ''
+
+        return {
+            'service_name': service_name,
+            'service': 'Subscene',
+            'lang': lang,
+            'name': name_with_ext,
+            'rating': 0,
+            'lang_code': lang_code,
+            'sync': 'true' if meta.filename_without_ext == name else 'false',
+            'impaired': 'true' if impaired else 'false',
+            'action_args': {
+                'url': download_href,
+                'lang': lang,
+                'filename': name_with_ext,
+                'episodeid': '' if meta.is_movie else episodeid
+            }
+        }
+
+    return list(map(map_result, results))
+
+def build_download_request(core, service_name, args):
+    download_url = '/subtitles/%s-text/' % args['lang'].lower()
+    href_regex = r'<a href="(' + core.re.escape(download_url) + r'.*?)"'
+
+    def find_download_href(response):
+        result = core.re.search(href_regex, response.text)
+        if not result:
+            return None
+
+        return {
+            'method': 'GET',
+            'url': '%s%s' % (__url, result.group(1)),
+            'stream': True
+        }
+
+    request = {
+        'method': 'GET',
+        'url': args['url'],
+        'next': lambda r: find_download_href(r)
+    }
+
+    return request

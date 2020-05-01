@@ -24,7 +24,7 @@ def __extract_gzip(core, archivepath, filename):
 
     return filepath
 
-def __extract_zip(core, archivepath, filename):
+def __extract_zip(core, archivepath, filename, episodeid):
     path = core.utils.quote_plus(archivepath)
     ext = core.os.path.splitext(filename)[1].lower()
     (dirs, files) = core.kodi.xbmcvfs.listdir('archive://%s' % path)
@@ -33,7 +33,9 @@ def __extract_zip(core, archivepath, filename):
     for file in files:
         if core.utils.PY2:
             file = file.decode('utf8')
-        if file.lower().endswith(ext):
+
+        file_lower = file.lower()
+        if file_lower.endswith(ext) and (episodeid == '' or episodeid in file_lower):
             subfile = file
             break
 
@@ -45,7 +47,7 @@ def __extract_zip(core, archivepath, filename):
 
 def __insert_lang_code_in_filename(core, filename, lang):
     filename_chunks = filename.split('.')
-    lang_code = core.kodi.xbmc.convertLanguage(lang, core.kodi.xbmc.ISO_639_1)
+    lang_code = core.kodi.xbmc.convertLanguage(lang, core.kodi.xbmc.ISO_639_2)
     filename_chunks.insert(-1, lang_code)
     return '.'.join(filename_chunks)
 
@@ -85,7 +87,8 @@ def download(core, params):
         if actions_args.get('gzip', False):
             filepath = __extract_gzip(core, archivepath, filename)
         else:
-            filepath = __extract_zip(core, archivepath, filename)
+            episodeid = actions_args.get('episodeid', '')
+            filepath = __extract_zip(core, archivepath, filename, episodeid)
 
     if core.kodi.get_bool_setting('general.remove_ads'):
         __cleanup(core, filepath)
