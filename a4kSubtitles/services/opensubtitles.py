@@ -75,7 +75,7 @@ def build_search_requests(core, service_name, meta):
 
 def parse_search_response(core, service_name, meta, response):
     try:
-        results = core.json.loads(response)
+        results = core.json.loads(response.text)
     except Exception as exc:
         core.logger.error('%s - %s' % (service_name, exc))
         return []

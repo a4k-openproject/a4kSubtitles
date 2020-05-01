@@ -1,3 +1,8 @@
+* [v0.0.19](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.19):
+  * Update settings
+  * Fix language code suffix format in the subtitle file name
+  * Support for Subscene
+
 * [v0.0.18](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.18):
   * Support for Podnadpisi.NET
   * Support for SubDB

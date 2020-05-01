@@ -7,52 +7,57 @@ msgstr ""
 "Language: en\n"
 
 # Categories
-msgctxt "#32011"
+msgctxt "#33001"
 msgid "General"
 msgstr ""
 
-msgctxt "#32012"
+msgctxt "#33002"
 msgid "Services"
 msgstr ""
 
-# Services
-msgctxt "#32051"
-msgid "OpenSubtitles"
+msgctxt "#33003"
+msgid "Accounts"
 msgstr ""
 
-msgctxt "#32052"
-msgid "BSPlayer"
-msgstr ""
-
-msgctxt "#32053"
-msgid "Podnadpisi"
-msgstr ""
-
-msgctxt "#32054"
-msgid "SubDB"
-msgstr ""
-
-# Labels
-msgctxt "#32101"
-msgid "Username (Optional)"
-msgstr ""
-
-msgctxt "#32102"
-msgid "Password (Optional)"
-msgstr ""
-
-msgctxt "#32103"
+# General
+msgctxt "#33101"
 msgid "Request Timeout"
 msgstr ""
 
-msgctxt "#32104"
+msgctxt "#33102"
 msgid "Results Limit"
 msgstr ""
 
-msgctxt "#32105"
-msgid "Enabled"
+msgctxt "#33103"
+msgid "Remove ads"
 msgstr ""
 
-msgctxt "#32106"
-msgid "Remove ads"
+# Services
+msgctxt "#33201"
+msgid "OpenSubtitles"
+msgstr ""
+
+msgctxt "#33202"
+msgid "BSPlayer"
+msgstr ""
+
+msgctxt "#33203"
+msgid "Podnadpisi"
+msgstr ""
+
+msgctxt "#33204"
+msgid "SubDB"
+msgstr ""
+
+msgctxt "#33205"
+msgid "Subscene"
+msgstr ""
+
+# Labels
+msgctxt "#33301"
+msgid "Username (Optional)"
+msgstr ""
+
+msgctxt "#33302"
+msgid "Password (Optional)"
 msgstr ""

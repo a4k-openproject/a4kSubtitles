@@ -9,8 +9,11 @@ from . import logger
 def execute(request):
     request.setdefault('timeout', get_int_setting('general.timeout'))
 
-    validate_response = request.get('validate_response', None)
-    request.pop('validate_response', None)
+    validate = request.pop('validate', None)
+    next = request.pop('next', None)
+
+    if next:
+        request.pop('stream', None)
 
     logger.debug('%s ^ - %s' % (request['method'], request['url']))
     try:
@@ -21,9 +24,16 @@ def execute(request):
         response.status_code = 500
     logger.debug('%s $ - %s - %s' % (request['method'], request['url'], response.status_code))
 
-    if validate_response:
-        alternative_request = validate_response(response)
-        if alternative_request:
-            return execute(alternative_request)
+    if validate:
+        alt_request = validate(response)
+        if alt_request:
+            return execute(alt_request)
+
+    if next and response.status_code == 200:
+        next_request = next(response)
+        if next_request:
+            return execute(next_request)
+        else:
+            return None
 
     return response

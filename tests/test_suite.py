@@ -241,3 +241,26 @@ def test_subdb():
     filepath = a4ksubtitles_api.download(params, search.settings)
 
     assert filepath != ''
+
+def test_subscene():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_last_results(a4ksubtitles_api)
+
+    # search
+    settings = {
+        'subscene.enabled': 'true',
+    }
+    search = __search(a4ksubtitles_api, settings)
+
+    # download
+    item = search.results[0]
+
+    params = {
+        'action': 'download',
+        'service_name': 'subscene',
+        'action_args': item['action_args']
+    }
+
+    filepath = a4ksubtitles_api.download(params, search.settings)
+
+    assert filepath != ''

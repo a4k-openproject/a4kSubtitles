@@ -5,6 +5,7 @@ statistics = True
 show-source = True
 
 ignore = 
+    E126,
     E131,
     E302,
     E305,
@@ -14,6 +15,8 @@ ignore =
     E722,
     E731,
     F401,
+    W503,
+    W504,
 
 exclude =
     .git,

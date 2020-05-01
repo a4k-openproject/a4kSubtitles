@@ -1,33 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
     <!-- General -->
-    <category label="32011">
-        <!-- General -->
-        <setting type="lsep" label="32011"/>
-        <setting type="sep"/>
-        <setting id="general.timeout" type="slider" label="32103" option="int" range="10,20" default="15"/>
-        <setting id="general.results_limit" type="slider" label="32104" option="int" range="10,100" default="20"/>
-        <setting id="general.remove_ads" type="bool" label="32106" default="true"/>
+    <category label="33001">
+        <setting id="general.timeout"       label="33101" type="slider" default="15" option="int" range="10,20"/>
+        <setting id="general.results_limit" label="33102" type="slider" default="20" option="int" range="10,100"/>
+        <setting id="general.remove_ads"    label="33103" type="bool"   default="true"/>
     </category>
     <!-- Services -->
-    <category label="32012">
+    <category label="33002">
+        <setting id="opensubtitles.enabled" label="33201" type="bool" default="true"/>
+        <setting id="bsplayer.enabled"      label="33202" type="bool" default="true"/>
+        <setting id="podnadpisi.enabled"    label="33203" type="bool" default="true"/>
+        <setting id="subdb.enabled"         label="33204" type="bool" default="true"/>
+        <setting id="subscene.enabled"      label="33205" type="bool" default="true"/>
+    </category>
+    <!-- Accounts -->
+    <category label="33003">
         <!-- OpenSubtitles -->
-        <setting type="lsep" label="32051"/>
+        <setting type="lsep" label="33201"/>
         <setting type="sep"/>
-        <setting id="opensubtitles.enabled" type="bool" label="32105" default="true"/>
-        <setting id="opensubtitles.username" type="text" label="32101" default="" enable="eq(-1,true)"/>
-        <setting id="opensubtitles.password" type="text" option="hidden" label="32102" default="" enable="eq(-2,true)"/>
-        <!-- BSPlayer -->
-        <setting type="lsep" label="32052"/>
-        <setting type="sep"/>
-        <setting id="bsplayer.enabled" type="bool" label="32105" default="true"/>
-        <!-- Podnadpisi -->
-        <setting type="lsep" label="32053"/>
-        <setting type="sep"/>
-        <setting id="podnadpisi.enabled" type="bool" label="32105" default="true"/>
-        <!-- SubDB -->
-        <setting type="lsep" label="32054"/>
-        <setting type="sep"/>
-        <setting id="subdb.enabled" type="bool" label="32105" default="true"/>
+        <setting id="opensubtitles.username" label="33301" type="text" default=""/>
+        <setting id="opensubtitles.password" label="33302" type="text" default="" option="hidden"/>
     </category>
 </settings>

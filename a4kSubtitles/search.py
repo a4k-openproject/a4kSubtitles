@@ -9,8 +9,8 @@ def __auth_service(core, service_name, request):
 def __query_service(core, service_name, meta, request, results):
     service = core.services[service_name]
     response = core.request.execute(request)
-    if response.status_code == 200 and response.text:
-        service_results = service.parse_search_response(core, service_name, meta, response.text)
+    if response and response.status_code == 200 and response.text:
+        service_results = service.parse_search_response(core, service_name, meta, response)
     else:
         service_results = []
 
