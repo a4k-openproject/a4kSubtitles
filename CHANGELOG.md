@@ -1,3 +1,10 @@
+* [v0.0.20](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.20):
+  * Improve Subscene tvshow matching
+  * Exctract first sub file from zips when none is matched
+  * Fix Podnadpisi not working properly for tvshows
+  * Fix non-ascii video file title issues
+  * Add tvshow tests
+
 * [v0.0.19](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.19):
   * Update settings
   * Fix language code suffix format in the subtitle file name

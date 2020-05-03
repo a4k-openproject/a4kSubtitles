@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="0.0.19"
+       version="0.0.20"
        provider-name="Unknown">
     <requires>
       <import addon="xbmc.python" version="2.25.0"/>
@@ -27,6 +27,13 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDB, Subscene
             <icon>icon.png</icon>
         </assets>
         <news>
+[v0.0.20]:
+  * Improve Subscene tvshow matching
+  * Exctract first sub file from zips when none is matched
+  * Fix Podnadpisi not working properly for tvshows
+  * Fix non-ascii video file title issues
+  * Add tvshow tests
+
 [v0.0.19]:
   * Update settings
   * Fix language code suffix format in the subtitle file name

@@ -6,7 +6,6 @@ def build_search_requests(core, service_name, meta):
     params = {
         'keywords': meta.title if meta.is_movie else meta.tvshow,
         'language': core.utils.get_lang_ids(meta.languages, core.kodi.xbmc.ISO_639_1),
-        'year': meta.year
     }
 
     if meta.is_tvshow:
@@ -15,6 +14,7 @@ def build_search_requests(core, service_name, meta):
         params['movie_type'] = ['tv-series', 'mini-series']
     else:
         params['movie_type'] = 'movie'
+        params['year'] = meta.year
 
     request = {
         'method': 'GET',
