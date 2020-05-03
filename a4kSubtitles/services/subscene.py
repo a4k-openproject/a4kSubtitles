@@ -2,21 +2,21 @@
 
 __url = 'https://subscene.com'
 
-def __find_title_result(core, service_name, meta, title, response):
-    title_with_year = '%s (%s)' % (title, meta.year)
-    core.logger.notice(title_with_year)
-
+def __match_title(core, title, year, response):
+    title_with_year = '%s (%s)' % (title, year)
     href_regex = r'<a href="(.*?)">' + core.re.escape(title_with_year) + r'</a>'
-    result = core.re.search(href_regex, response.text)
+    return core.re.search(href_regex, response.text, core.re.IGNORECASE)
+
+def __find_title_result(core, service_name, meta, title, response):
+    result = __match_title(core, title, meta.year, response)
+    if not result:
+        prev_year = int(meta.year) - 1
+        result = __match_title(core, title, prev_year, response)
+
     if not result:
         return None
 
     title_href = result.group(1)
-    if meta.is_tvshow:
-        ordinal_season = core.num2ordinal.convert(meta.season).strip()
-        title_href = title_href.replace('-first-season', '-%s-season' % ordinal_season)
-        core.logger.notice(title_href)
-
     core.services[service_name].context.title_href = title_href
 
     request = {
@@ -30,7 +30,8 @@ def build_search_requests(core, service_name, meta):
     title = meta.title
 
     if meta.is_tvshow:
-        title = '%s - First Season' % meta.tvshow
+        ordinal_season = core.num2ordinal.convert(meta.season).strip()
+        title = '%s - %s Season' % (meta.tvshow, ordinal_season)
 
     request = {
         'method': 'GET',

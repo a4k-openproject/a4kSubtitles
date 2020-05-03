@@ -19,7 +19,7 @@ __headers = {
     'Connection': 'close',
 }
 
-__subdomains = [1, 2, 3, 4, 5, 6, 7, 8, 101, 102, 103, 104, 105, 106, 107, 108, 109]
+__subdomains = [1, 2, 4, 5, 6, 7, 8, 101, 102, 103, 104, 105, 106, 107, 108, 109]
 
 def __get_url(core, service_name):
     context = core.services[service_name].context

@@ -5,6 +5,7 @@ import sys
 import re
 import json
 import hashlib
+import string
 from . import kodi
 from . import logger
 
@@ -36,6 +37,13 @@ class DictAsObject(dict):
 def get_all_relative_py_files(file):
     files = os.listdir(os.path.dirname(file))
     return [filename[:-3] for filename in files if not filename.startswith('__') and filename.endswith('.py')]
+
+def strip_non_ascii_and_unprintable(text):
+    if isinstance(text, int):
+        return str(text)
+
+    result = ''.join(char for char in text if char in string.printable)
+    return result.encode('ascii', errors='ignore').decode('ascii', errors='ignore')
 
 def get_lang_ids(languages, lang_format=kodi.xbmc.ISO_639_2):
     lang_ids = []

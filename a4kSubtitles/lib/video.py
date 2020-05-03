@@ -99,7 +99,7 @@ def get_meta():
     meta = utils.DictAsObject(meta)
 
     for key in meta.keys():
-        value = meta[key]
+        value = utils.strip_non_ascii_and_unprintable(meta[key])
         meta[key] = str(value).strip()
 
     meta.is_tvshow = meta.tvshow != ''

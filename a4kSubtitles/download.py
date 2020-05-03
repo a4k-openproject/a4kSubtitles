@@ -29,19 +29,28 @@ def __extract_zip(core, archivepath, filename, episodeid):
     ext = core.os.path.splitext(filename)[1].lower()
     (dirs, files) = core.kodi.xbmcvfs.listdir('archive://%s' % path)
 
-    subfile = filename
+    first_subfile = None
+    subfile = None
     for file in files:
         if core.utils.PY2:
             file = file.decode('utf8')
 
         file_lower = file.lower()
-        if file_lower.endswith(ext) and (episodeid == '' or episodeid in file_lower):
-            subfile = file
-            break
+        if file_lower.endswith(ext):
+            if not first_subfile:
+                first_subfile = file
+            if (episodeid == '' or episodeid in file_lower):
+                subfile = file
+                break
+
+    if not subfile:
+        if first_subfile:
+            subfile = first_subfile
+        else:
+            subfile = filename
 
     src = 'archive://' + path + '/' + subfile
-    subfile = filename
-    dest = core.os.path.join(core.utils.temp_dir, subfile)
+    dest = core.os.path.join(core.utils.temp_dir, filename)
     core.kodi.xbmcvfs.copy(src, dest)
     return dest
 
