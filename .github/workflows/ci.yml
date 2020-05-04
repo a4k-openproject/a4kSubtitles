@@ -54,4 +54,11 @@ jobs:
     - name: Test
       if: "startsWith(needs.validate.outputs.commit, 'release: v')"
       run: |
-        pytest -v
+        coverage run -m pytest -v
+
+    - name: Coverage
+      if: "startsWith(needs.validate.outputs.commit, 'release: v') && matrix.python-version == 3.7"
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      run: |
+        coveralls
