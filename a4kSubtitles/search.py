@@ -154,7 +154,7 @@ def search(core, params):
     meta = core.video.get_meta()
     meta.languages = __parse_languages(core, core.utils.unquote(params['languages']).split(','))
     meta.preferredlanguage = __parse_language(core, params['preferredlanguage'])
-    core.logger.debug(lambda: core.json.dumps(meta, indent=2))
+    core.logger.debug(lambda: core.json.dumps(meta, default=lambda o: '', indent=2))
 
     if meta.imdb_id == '':
         core.logger.error('missing imdb id!')
