@@ -4,9 +4,11 @@ import os
 import json
 import struct
 import hashlib
+import re
+import threading
 
-from .kodi import xbmc, xbmcvfs
-from . import logger, utils
+from .kodi import xbmc, xbmcvfs, get_bool_setting
+from . import logger, utils, request
 
 __64k = 65536
 __longlong_format_char = 'q'
@@ -63,6 +65,13 @@ def __set_subdb_hash(meta, filepath):
     finally:
         f.close()
 
+def __scrape_tvshow_year(meta):
+    imdb_response = request.execute({'method': 'GET', 'url': 'https://www.imdb.com/title/' + meta.imdb_id})
+    if imdb_response.status_code == 200:
+        show_year_match = re.search(r' %s \((.*?)\)"' % meta.tvshow, imdb_response.text)
+        if show_year_match:
+            meta.tvshow_year = show_year_match.group(1)
+
 def get_meta():
     meta = {}
     meta['year'] = xbmc.getInfoLabel('VideoPlayer.Year')
@@ -104,5 +113,9 @@ def get_meta():
 
     meta.is_tvshow = meta.tvshow != ''
     meta.is_movie = not meta.is_tvshow
+
+    if meta.is_tvshow and meta.imdb_id != '' and get_bool_setting('podnadpisi', 'enabled'):
+        meta.tvshow_year_thread = threading.Thread(target=__scrape_tvshow_year, args=(meta,))
+        meta.tvshow_year_thread.start()
 
     return meta

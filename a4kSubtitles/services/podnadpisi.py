@@ -12,6 +12,10 @@ def build_search_requests(core, service_name, meta):
         params['seasons'] = meta.season
         params['episodes'] = meta.episode
         params['movie_type'] = ['tv-series', 'mini-series']
+
+        meta.tvshow_year_thread.join()
+        if meta.tvshow_year:
+            params['year'] = meta.tvshow_year
     else:
         params['movie_type'] = 'movie'
         params['year'] = meta.year

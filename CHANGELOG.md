@@ -1,6 +1,9 @@
+* [v0.0.21](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.21):
+  * TVShow year scrape from imdb when necessary
+
 * [v0.0.20](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.20):
   * Improve Subscene tvshow matching
-  * Exctract first sub file from zips when none is matched
+  * Extract first sub file from zips when none is matched
   * Fix Podnadpisi not working properly for tvshows
   * Fix non-ascii video file title issues
   * Add tvshow tests
