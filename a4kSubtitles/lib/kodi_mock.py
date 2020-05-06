@@ -7,7 +7,7 @@ import shutil
 from zipfile import ZipFile
 from xml.etree import ElementTree
 
-try:
+try:  # pragma: no cover
     from urlparse import unquote
 except ImportError:
     from urllib.parse import unquote

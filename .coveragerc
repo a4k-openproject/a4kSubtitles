@@ -1,0 +1,9 @@
+[run]
+omit =
+    a4kSubtitles/lib/num2ordinal.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if PY2
+    if core\.utils\.PY2

@@ -27,7 +27,7 @@ if api_mode:
                 mod = importlib.import_module(target)
             setattr(kodi, target, mod)
 
-else:
+else:  # pragma: no cover
     import xbmc
     import xbmcaddon
     import xbmcplugin
@@ -60,7 +60,7 @@ def json_rpc(method, params, log_error=True):
 def get_kodi_setting(setting, log_error=True):
     return json_rpc('Settings.GetSettingValue', {"setting": setting}, log_error)
 
-def create_listitem(item):
+def create_listitem(item):  # pragma: no cover
     if item['lang'] == 'Brazilian':
         item['lang'] = 'Portuguese (Brazil)'
 
