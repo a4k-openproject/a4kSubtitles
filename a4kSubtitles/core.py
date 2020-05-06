@@ -31,7 +31,7 @@ core = sys.modules[__name__]
 api_mode_enabled = True
 handle = None
 
-def main(handle, paramstring):
+def main(handle, paramstring):  # pragma: no cover
     core.api_mode_enabled = False
     core.handle = handle
 

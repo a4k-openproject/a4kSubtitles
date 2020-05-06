@@ -9,13 +9,14 @@ import string
 from . import kodi
 from . import logger
 
-try:
+try:  # pragma: no cover
     from urlparse import unquote, parse_qsl
     from urllib import quote_plus
     from StringIO import StringIO
 except ImportError:
     from urllib.parse import quote_plus, unquote, parse_qsl
     from io import StringIO
+    unicode = None
 
 __url_regex = r'(([a-z0-9][a-z0-9-]{1,5}[a-z0-9]\.[a-z0-9]{2,20})|(opensubtitles))\.[a-z]{2,5}'
 __credit_part_regex = r'(sync|synced|fix|fixed|corrected|corrections)'
@@ -39,7 +40,10 @@ def get_all_relative_py_files(file):
     return [filename[:-3] for filename in files if not filename.startswith('__') and filename.endswith('.py')]
 
 def strip_non_ascii_and_unprintable(text):
-    if isinstance(text, int):
+    if not isinstance(text, str):
+        return str(text)
+
+    if PY2 and not isinstance(text, unicode):
         return str(text)
 
     result = ''.join(char for char in text if char in string.printable)

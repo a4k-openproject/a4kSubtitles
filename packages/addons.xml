@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="0.0.21"
+       version="0.0.22"
        provider-name="Unknown">
     <requires>
       <import addon="xbmc.python" version="2.25.0"/>
@@ -27,6 +27,9 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDB, Subscene
             <icon>icon.png</icon>
         </assets>
         <news>
+[v0.0.22]:
+  * Fix meta string conversion issue
+
 [v0.0.21]:
   * TVShow year scrape from imdb when necessary
 

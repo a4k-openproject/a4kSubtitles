@@ -19,7 +19,7 @@ __headers = {
     'Connection': 'close',
 }
 
-__subdomains = [1, 2, 4, 5, 6, 7, 8, 101, 102, 103, 104, 105, 106, 107, 108, 109]
+__subdomains = [1, 2, 3, 4, 5, 6, 7, 8, 101, 102, 103, 104, 105, 106, 107, 108, 109]
 
 def __get_url(core, service_name):
     context = core.services[service_name].context
@@ -29,17 +29,13 @@ def __get_url(core, service_name):
 
     return "http://s%s.api.bsplayer-subtitles.com/v1.php" % context.subdomain
 
-def __validate_response(core, service_name, request, response):
-    context = core.services[service_name].context
-    if not context.tries:
-        context.tries = 1
-    else:
-        context.tries += 1
+def __validate_response(core, service_name, request, response, retry=True):
+    if not retry:
+        return None
 
     def get_retry_request():
         core.time.sleep(2)
-        if context.tries <= 2:
-            request['validate'] = lambda response: __validate_response(core, service_name, request, response)
+        request['validate'] = lambda response: __validate_response(core, service_name, request, response, retry=False)
         return request
 
     if response is None:
@@ -57,6 +53,13 @@ def __validate_response(core, service_name, request, response):
         status_code = response.find('result')
 
     if status_code.text != '200' and status_code.text != '402':
+        return get_retry_request()
+
+    results = response.findall('data/item')
+    if not results:
+        return get_retry_request()
+
+    if len(results) == 0:
         return get_retry_request()
 
     return None
