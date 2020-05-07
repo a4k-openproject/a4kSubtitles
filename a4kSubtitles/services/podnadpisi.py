@@ -38,6 +38,7 @@ def parse_search_response(core, service_name, meta, response):
         core.logger.error('%s - %s' % (service_name, exc))
         return []
 
+    service = core.services[service_name]
     lang_ids = core.utils.get_lang_ids(meta.languages, core.kodi.xbmc.ISO_639_1)
 
     def map_result(result):
@@ -56,7 +57,7 @@ def parse_search_response(core, service_name, meta, response):
 
         return {
             'service_name': service_name,
-            'service': 'Podnadpisi',
+            'service': service.display_name,
             'lang': lang,
             'name': name,
             'rating': 0,

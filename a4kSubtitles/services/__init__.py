@@ -3,17 +3,25 @@
 import importlib
 from a4kSubtitles.lib import utils
 
-__all__ = utils.get_all_relative_py_files(__file__)
+__all = utils.get_all_relative_py_files(__file__)
+__display_names = {
+    'bsplayer': 'BSPlayer',
+    'opensubtitles': 'OpenSubtitles',
+    'podnadpisi': 'Podnadpisi',
+    'subdb': 'SubDB',
+    'subscene': 'Subscene',
+}
 
 def __set_fn_if_missing(service, fn_name, fn):
     if not getattr(service, fn_name, None):
         setattr(service, fn_name, fn)
 
 services = {}
-for service_name in __all__:
+for service_name in __all:
     service = services[service_name] = importlib.import_module('a4kSubtitles.services.%s' % service_name)
 
     service.context = utils.DictAsObject({})
+    service.display_name = __display_names[service_name]
 
     __set_fn_if_missing(service, 'build_auth_request', lambda _, __: None)
 

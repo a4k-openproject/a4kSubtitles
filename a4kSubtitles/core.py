@@ -31,9 +31,15 @@ core = sys.modules[__name__]
 api_mode_enabled = True
 handle = None
 
+progress_dialog = None
+progress_text = ''
+
 def main(handle, paramstring):  # pragma: no cover
     core.api_mode_enabled = False
     core.handle = handle
+
+    core.progress_dialog = kodi.get_progress_dialog()
+    core.progress_text = ''
 
     params = dict(utils.parse_qsl(paramstring))
     if params['action'] in ('search', 'manualsearch'):
@@ -41,4 +47,7 @@ def main(handle, paramstring):  # pragma: no cover
     elif params['action'] == 'download':
         params['action_args'] = json.loads(params['action_args'])
         download(core, params)
+
+    core.progress_dialog.close()
+    core.progress_dialog = None
     kodi.xbmcplugin.endOfDirectory(handle)

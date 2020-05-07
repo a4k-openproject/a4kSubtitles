@@ -145,6 +145,7 @@ def build_search_requests(core, service_name, meta):
 def parse_search_response(core, service_name, meta, response):
     __logout(core, service_name)
 
+    service = core.services[service_name]
     response = __parse_response(core, service_name, response.text)
     if response is None:
         return []
@@ -170,7 +171,7 @@ def parse_search_response(core, service_name, meta, response):
 
         return {
             'service_name': service_name,
-            'service': 'BSPlayer',
+            'service': service.display_name,
             'lang': lang,
             'name': name,
             'rating': int(round(float(rating) / 2)) if rating else 0,

@@ -80,10 +80,12 @@ def parse_search_response(core, service_name, meta, response):
         core.logger.error('%s - %s' % (service_name, exc))
         return []
 
+    service = core.services[service_name]
+
     def map_result(result):
         return {
             'service_name': service_name,
-            'service': 'OpenSubtitles',
+            'service': service.display_name,
             'lang': result['LanguageName'],
             'name': result['SubFileName'],
             'rating': int(round(float(result['SubRating']) / 2)),

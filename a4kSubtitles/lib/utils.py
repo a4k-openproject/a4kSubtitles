@@ -13,9 +13,11 @@ try:  # pragma: no cover
     from urlparse import unquote, parse_qsl
     from urllib import quote_plus
     from StringIO import StringIO
+    import Queue as queue
 except ImportError:
     from urllib.parse import quote_plus, unquote, parse_qsl
     from io import StringIO
+    import queue
     unicode = None
 
 __url_regex = r'(([a-z0-9][a-z0-9-]{1,5}[a-z0-9]\.[a-z0-9]{2,20})|(opensubtitles))\.[a-z]{2,5}'
