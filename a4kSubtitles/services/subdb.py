@@ -18,6 +18,8 @@ def build_search_requests(core, service_name, meta):
     return [request]
 
 def parse_search_response(core, service_name, meta, response):
+    service = core.services[service_name]
+
     lang_ids = core.utils.get_lang_ids(meta.languages, core.kodi.xbmc.ISO_639_1)
     name = '%s.srt' % meta.filename_without_ext
     results = []
@@ -30,7 +32,7 @@ def parse_search_response(core, service_name, meta, response):
 
             results.append({
                 'service_name': service_name,
-                'service': 'SubDB',
+                'service': service.display_name,
                 'lang': lang,
                 'name': name,
                 'rating': 0,

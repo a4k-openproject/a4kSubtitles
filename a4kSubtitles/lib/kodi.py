@@ -3,6 +3,7 @@
 import os
 import sys
 import json
+import re
 import importlib
 
 kodi = sys.modules[__name__]
@@ -40,7 +41,7 @@ addon_name = addon.getAddonInfo('name')
 addon_version = addon.getAddonInfo('version')
 addon_profile = xbmc.translatePath(addon.getAddonInfo('profile'))
 
-def json_rpc(method, params, log_error=True):
+def json_rpc(method, params, log_error=True):  # pragma: no cover
     try:
         result = xbmc.executeJSONRPC(
             json.dumps({
@@ -57,8 +58,41 @@ def json_rpc(method, params, log_error=True):
     except KeyError:
         return None
 
-def get_kodi_setting(setting, log_error=True):
+def get_kodi_setting(setting, log_error=True):  # pragma: no cover
     return json_rpc('Settings.GetSettingValue', {"setting": setting}, log_error)
+
+def get_progress_dialog():  # pragma: no cover
+    progress_dialog = xbmcgui.DialogProgress()
+    progress_dialog.create(addon_name, 'Searching...')
+    return progress_dialog
+
+def update_progress(core):  # pragma: no cover
+    if core.progress_dialog is None or core.progress_dialog.iscanceled():
+        return
+
+    text = re.sub(r'\|+', '|', core.progress_text).strip('|')
+    total = core.progress_text.count('|') + 1
+    count = text.count('|') + 1 if text != '' else 0
+    progress = int(float(total - count) / total * 100)
+    core.progress_dialog.update(progress, text.replace('|', ' | '))
+
+def parse_language(language):  # pragma: no cover
+    if language == 'original':
+        audio_streams = xbmc.Player().getAvailableAudioStreams()
+        if len(audio_streams) == 0:
+            return None
+        return xbmc.convertLanguage(
+            audio_streams[0],
+            xbmc.ENGLISH_NAME
+        )
+    elif language == 'default':
+        return xbmc.getLanguage()
+    elif language == 'none':
+        return None
+    elif language == 'forced_only':
+        return parse_language(get_kodi_setting("locale.audiolanguage"))
+    else:
+        return language
 
 def create_listitem(item):  # pragma: no cover
     if item['lang'] == 'Brazilian':

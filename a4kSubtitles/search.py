@@ -16,13 +16,16 @@ def __query_service(core, service_name, meta, request, results):
 
     results.extend(service_results)
 
+    core.progress_text = core.progress_text.replace(service.display_name, '')
+    core.kodi.update_progress(core)
+
     core.logger.debug(lambda: core.json.dumps({
         'url': request['url'],
         'count': len(service_results),
         'status_code': response.status_code
     }, indent=2))
 
-def __add_results(core, results):
+def __add_results(core, results):  # pragma: no cover
     for item in results:
         listitem = core.kodi.create_listitem(item)
 
@@ -94,26 +97,28 @@ def __apply_limit(core, all_results, meta):
 
     return results[:limit]
 
-def __parse_languages(core, languages):
-    return list({language for language in (__parse_language(core, x) for x in languages) if language is not None})
+def __prepare_results(core, meta, results):
+    results = __apply_language_filter(meta, results)
+    results = __sanitize_results(core, meta, results)
 
-def __parse_language(core, language):
-    if language == 'original':
-        audio_streams = core.kodi.xbmc.Player().getAvailableAudioStreams()
-        if len(audio_streams) == 0:
-            return None
-        return core.kodi.xbmc.convertLanguage(
-            audio_streams[0],
-            core.kodi.xbmc.ENGLISH_NAME
-        )
-    elif language == 'default':
-        return core.kodi.xbmc.getLanguage()
-    elif language == 'none':
-        return None
-    elif language == 'forced_only':
-        return __parse_language(core, core.kodi.get_kodi_setting("locale.audiolanguage"))
-    else:
-        return language
+    sorter = lambda x: (
+        not x['lang'] == meta.preferredlanguage,
+        meta.languages.index(x['lang']),
+        not x['sync'] == 'true',
+        -core.difflib.SequenceMatcher(None, x['name'], meta.filename).ratio(),
+        -x['rating'],
+        not x['impaired'] == 'true',
+        x['service'],
+    )
+
+    results = sorted(results, key=sorter)
+    results = __apply_limit(core, results, meta)
+    results = sorted(results, key=sorter)
+
+    return results
+
+def __parse_languages(core, languages):
+    return list({language for language in (core.kodi.parse_language(x) for x in languages) if language is not None})
 
 def __chain_auth_and_search_threads(core, auth_thread, search_thread):
     auth_thread.start()
@@ -153,7 +158,7 @@ def __search(core, service_name, meta, results):
 def search(core, params):
     meta = core.video.get_meta()
     meta.languages = __parse_languages(core, core.utils.unquote(params['languages']).split(','))
-    meta.preferredlanguage = __parse_language(core, params['preferredlanguage'])
+    meta.preferredlanguage = core.kodi.parse_language(params['preferredlanguage'])
     core.logger.debug(lambda: core.json.dumps(meta, default=lambda o: '', indent=2))
 
     if meta.imdb_id == '':
@@ -174,6 +179,7 @@ def search(core, params):
             continue
 
         service = core.services[service_name]
+        core.progress_text += service.display_name + '|'
         auth_thread = None
 
         auth_request = service.build_auth_request(core, service_name)
@@ -187,23 +193,34 @@ def search(core, params):
     if len(threads) == 0:
         return __complete_search(core, last_query_results)
 
-    __wait_threads(core, threads)
-    results = __apply_language_filter(meta, results)
-    results = __sanitize_results(core, meta, results)
+    core.progress_text = core.progress_text[:-1]
+    core.kodi.update_progress(core)
 
-    sorter = lambda x: (
-        not x['lang'] == meta.preferredlanguage,
-        meta.languages.index(x['lang']),
-        not x['sync'] == 'true',
-        -core.difflib.SequenceMatcher(None, x['name'], meta.filename).ratio(),
-        -x['rating'],
-        not x['impaired'] == 'true',
-        x['service'],
-    )
+    ready_queue = core.utils.queue.Queue()
+    cancellation_token = lambda: None
+    cancellation_token.iscanceled = False
 
-    results = sorted(results, key=sorter)
-    results = __apply_limit(core, results, meta)
-    results = sorted(results, key=sorter)
-    __save_results(core, meta, results)
+    def check_cancellation():  # pragma: no cover
+        dialog = core.progress_dialog
+        while (dialog is not None and not cancellation_token.iscanceled):
+            if not dialog.iscanceled():
+                core.time.sleep(1)
+                continue
 
-    return __complete_search(core, results)
+            cancellation_token.iscanceled = True
+            final_results = __prepare_results(core, meta, results)
+            ready_queue.put(__complete_search(core, final_results))
+            break
+
+    def wait_all_results():
+        __wait_threads(core, threads)
+        if cancellation_token.iscanceled:
+            return
+        final_results = __prepare_results(core, meta, results)
+        __save_results(core, meta, final_results)
+        ready_queue.put(__complete_search(core, final_results))
+
+    core.threading.Thread(target=check_cancellation).start()
+    core.threading.Thread(target=wait_all_results).start()
+
+    return ready_queue.get()

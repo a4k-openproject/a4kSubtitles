@@ -42,7 +42,8 @@ def build_search_requests(core, service_name, meta):
     return [request]
 
 def parse_search_response(core, service_name, meta, response):
-    title_href = core.services[service_name].context.title_href
+    service = core.services[service_name]
+    title_href = service.context.title_href
     any_regex = r'.*?'
 
     results_regex = (
@@ -73,7 +74,7 @@ def parse_search_response(core, service_name, meta, response):
 
         return {
             'service_name': service_name,
-            'service': 'Subscene',
+            'service': service.display_name,
             'lang': lang,
             'name': name_with_ext,
             'rating': 0,
