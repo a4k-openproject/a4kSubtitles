@@ -1,3 +1,6 @@
+* [v0.0.25](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.25):
+  * Fix cancellation thread exit
+
 * [v0.0.24](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.24):
   * Show progress dialog only for search
 

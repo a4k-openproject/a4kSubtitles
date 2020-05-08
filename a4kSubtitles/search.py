@@ -202,7 +202,7 @@ def search(core, params):
 
     def check_cancellation():  # pragma: no cover
         dialog = core.progress_dialog
-        while (dialog is not None and not cancellation_token.iscanceled):
+        while (core.progress_dialog is not None and not cancellation_token.iscanceled):
             if not dialog.iscanceled():
                 core.time.sleep(1)
                 continue
