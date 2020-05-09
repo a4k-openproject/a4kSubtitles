@@ -26,6 +26,7 @@ from .lib import (
 from .services import services
 from .search import search
 from .download import download
+from .data import data
 
 core = sys.modules[__name__]
 api_mode_enabled = True
@@ -39,7 +40,9 @@ def main(handle, paramstring):  # pragma: no cover
     core.handle = handle
 
     params = dict(utils.parse_qsl(paramstring))
-    if params['action'] in ('search', 'manualsearch'):
+    if params['action'] == 'manualsearch':
+        kodi.notification('Manual search is not supported')
+    elif params['action'] == 'search':
         core.progress_text = ''
         core.progress_dialog = kodi.get_progress_dialog()
 

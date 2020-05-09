@@ -39,6 +39,7 @@ addon = xbmcaddon.Addon('service.subtitles.a4ksubtitles')
 addon_id = addon.getAddonInfo('id')
 addon_name = addon.getAddonInfo('name')
 addon_version = addon.getAddonInfo('version')
+addon_icon = addon.getAddonInfo('icon')
 addon_profile = xbmc.translatePath(addon.getAddonInfo('profile'))
 
 def json_rpc(method, params, log_error=True):  # pragma: no cover
@@ -61,10 +62,35 @@ def json_rpc(method, params, log_error=True):  # pragma: no cover
 def get_kodi_setting(setting, log_error=True):  # pragma: no cover
     return json_rpc('Settings.GetSettingValue', {"setting": setting}, log_error)
 
+def notification(text, time=3000):  # pragma: no cover
+    xbmc.executebuiltin('Notification(%s, %s, %d, %s)' % (addon_name, text, time, addon_icon))
+
 def get_progress_dialog():  # pragma: no cover
-    progress_dialog = xbmcgui.DialogProgress()
-    progress_dialog.create(addon_name, 'Searching...')
-    return progress_dialog
+    wrapper = lambda: None
+    wrapper.dialog = None
+    wrapper.latest_update = None
+    def open():
+        wrapper.dialog = xbmcgui.DialogProgress()
+        wrapper.dialog.create(addon_name, 'Searching...')
+        if wrapper.latest_update:
+            (progress, text) = wrapper.latest_update
+            wrapper.dialog.update(progress, text)
+    def close():
+        if wrapper.dialog:
+            wrapper.dialog.close()
+            wrapper.dialog = None
+    def iscanceled():
+        return wrapper.dialog.iscanceled() if wrapper.dialog else False
+    def update(progress, text):
+        if wrapper.dialog:
+            wrapper.dialog.update(progress, text)
+        else:
+            wrapper.latest_update = (progress, text)
+    wrapper.open = open
+    wrapper.close = close
+    wrapper.iscanceled = iscanceled
+    wrapper.update = update
+    return wrapper
 
 def update_progress(core):  # pragma: no cover
     if core.progress_dialog is None or core.progress_dialog.iscanceled():

@@ -21,7 +21,10 @@ def __sum_64k_bytes(file, result):
         result.filehash += value
         result.filehash &= 0xFFFFFFFFFFFFFFFF
 
-def __set_size_and_hash(meta, filepath):
+def __set_size_and_hash(core, meta, filepath):
+    if core.progress_dialog and not core.progress_dialog.dialog:
+        core.progress_dialog.open()
+
     f = xbmcvfs.File(filepath)
     try:
         filesize = meta['filesize'] = f.size()
@@ -65,57 +68,96 @@ def __set_subdb_hash(meta, filepath):
     finally:
         f.close()
 
-def __scrape_tvshow_year(meta):
-    imdb_response = request.execute({'method': 'GET', 'url': 'https://www.imdb.com/title/' + meta.imdb_id})
-    if imdb_response.status_code == 200:
-        show_year_match = re.search(r' %s \((.*?)\)"' % meta.tvshow, imdb_response.text)
-        if show_year_match:
-            meta.tvshow_year = show_year_match.group(1)
+def __scrape_tvshow_year(core, meta):
+    imdb_response = request.execute(core, {
+        'method': 'GET',
+        'url': 'https://www.imdb.com/title/' + meta.imdb_id,
+        'timeout': 10,
+    })
 
-def get_meta():
-    meta = {}
-    meta['year'] = xbmc.getInfoLabel('VideoPlayer.Year')
-    meta['season'] = xbmc.getInfoLabel('VideoPlayer.Season')
-    meta['episode'] = xbmc.getInfoLabel('VideoPlayer.Episode')
-    meta['tvshow'] = xbmc.getInfoLabel('VideoPlayer.TVShowTitle')
-    meta['title'] = xbmc.getInfoLabel('VideoPlayer.OriginalTitle')
-    if meta['title'] == '':
-        meta['title'] = xbmc.getInfoLabel('VideoPlayer.Title')
-    meta['imdb_id'] = xbmc.getInfoLabel('VideoPlayer.IMDBNumber')
+    if imdb_response.status_code != 200:
+        return
 
-    meta['filename'] = meta['title']
-    meta['filesize'] = ''
-    meta['filehash'] = ''
+    show_year_match = re.search(r' %s \((.*?)\)"' % meta.tvshow, imdb_response.text)
+    if show_year_match:
+        meta.tvshow_year = show_year_match.group(1).strip()
+
+        cache_key = utils.get_tvshow_cache_key(meta.imdb_id)
+        tvshow_years_cache = utils.get_tvshow_years_cache()
+        tvshow_years_cache[cache_key] = meta.tvshow_year
+        utils.save_tvshow_years_cache(tvshow_years_cache)
+
+def __get_filename(title):
+    filename = title
 
     try:
         filepath = xbmc.Player().getPlayingFile()
-        meta['filename'] = filepath.split('/')[-1]
-        __set_size_and_hash(meta, filepath)
-        __set_subdb_hash(meta, filepath)
+        filename = filepath.split('/')[-1]
+        filename = utils.unquote(filename)
     except:
-        import traceback
-        traceback.print_exc()
+        pass
 
-    try:
-        meta['filename'] = utils.unquote(meta['filename'])
-        meta['filename_without_ext'] = os.path.splitext(meta['filename'])[0]
-    except: pass
+    return filename
 
-    meta_json = json.dumps(meta, indent=2)
-    logger.debug(meta_json)
-    meta = json.loads(meta_json)
+def get_meta(core):
+    imdb_id = xbmc.getInfoLabel('VideoPlayer.IMDBNumber')
+    title = xbmc.getInfoLabel('VideoPlayer.OriginalTitle')
+    if title == '':
+        title = xbmc.getInfoLabel('VideoPlayer.Title')
+    filename = __get_filename(title)
 
-    meta = utils.DictAsObject(meta)
+    meta_cache = utils.get_meta_cache()
+    if imdb_id != '' and meta_cache['imdb_id'] == imdb_id and meta_cache['filename'] == filename:
+        meta = utils.DictAsObject(meta_cache)
+    else:
+        meta = {}
+        meta['year'] = xbmc.getInfoLabel('VideoPlayer.Year')
+        meta['season'] = xbmc.getInfoLabel('VideoPlayer.Season')
+        meta['episode'] = xbmc.getInfoLabel('VideoPlayer.Episode')
+        meta['tvshow'] = xbmc.getInfoLabel('VideoPlayer.TVShowTitle')
+        meta['title'] = title
+        meta['imdb_id'] = imdb_id
 
-    for key in meta.keys():
-        value = utils.strip_non_ascii_and_unprintable(meta[key])
-        meta[key] = str(value).strip()
+        meta['filename'] = filename
+        meta['filename_without_ext'] = filename
+        meta['filesize'] = ''
+        meta['filehash'] = ''
+
+        try:
+            filepath = xbmc.Player().getPlayingFile()
+            __set_size_and_hash(core, meta, filepath)
+            __set_subdb_hash(meta, filepath)
+        except:
+            import traceback
+            traceback.print_exc()
+
+        try:
+            meta['filename_without_ext'] = os.path.splitext(meta['filename'])[0]
+        except: pass
+
+        meta_json = json.dumps(meta, indent=2)
+        logger.debug(meta_json)
+
+        meta = json.loads(meta_json)
+        meta = utils.DictAsObject(meta)
+
+        for key in meta.keys():
+            value = utils.strip_non_ascii_and_unprintable(meta[key])
+            meta[key] = str(value).strip()
+
+        utils.save_meta_cache(meta)
 
     meta.is_tvshow = meta.tvshow != ''
     meta.is_movie = not meta.is_tvshow
 
-    if meta.is_tvshow and meta.imdb_id != '' and get_bool_setting('podnadpisi', 'enabled'):
-        meta.tvshow_year_thread = threading.Thread(target=__scrape_tvshow_year, args=(meta,))
-        meta.tvshow_year_thread.start()
+    if meta.is_tvshow and meta.imdb_id != '' and (get_bool_setting('podnadpisi', 'enabled')
+                                               or get_bool_setting('addic7ed', 'enabled')):
+        tvshow_years_cache = utils.get_tvshow_years_cache()
+        tvshow_year = tvshow_years_cache.get(utils.get_tvshow_cache_key(meta.imdb_id), '')
+        if tvshow_year != '':
+            meta.tvshow_year = tvshow_year
+        else:
+            meta.tvshow_year_thread = threading.Thread(target=__scrape_tvshow_year, args=(core, meta))
+            meta.tvshow_year_thread.start()
 
     return meta

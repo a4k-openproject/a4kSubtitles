@@ -2,28 +2,30 @@
 
 def __auth_service(core, service_name, request):
     service = core.services[service_name]
-    response = core.request.execute(request)
+    response = core.request.execute(core, request)
     if response.status_code == 200 and response.text:
         service.parse_auth_response(core, service_name, response.text)
 
 def __query_service(core, service_name, meta, request, results):
-    service = core.services[service_name]
-    response = core.request.execute(request)
-    if response and response.status_code == 200 and response.text:
-        service_results = service.parse_search_response(core, service_name, meta, response)
-    else:
-        service_results = []
+    try:
+        service = core.services[service_name]
+        response = core.request.execute(core, request)
 
-    results.extend(service_results)
+        if response and response.status_code == 200 and response.text:
+            service_results = service.parse_search_response(core, service_name, meta, response)
+        else:
+            service_results = []
 
-    core.progress_text = core.progress_text.replace(service.display_name, '')
-    core.kodi.update_progress(core)
+        results.extend(service_results)
 
-    core.logger.debug(lambda: core.json.dumps({
-        'url': request['url'],
-        'count': len(service_results),
-        'status_code': response.status_code
-    }, indent=2))
+        core.logger.debug(lambda: core.json.dumps({
+            'url': request['url'],
+            'count': len(service_results),
+            'status_code': response.status_code
+        }, indent=2))
+    finally:
+        core.progress_text = core.progress_text.replace(service.display_name, '')
+        core.kodi.update_progress(core)
 
 def __add_results(core, results):  # pragma: no cover
     for item in results:
@@ -43,7 +45,7 @@ def __save_results(core, meta, results):
     try:
         if len(results) == 0:
             return
-        meta_hash = core.utils.get_hash(meta)
+        meta_hash = core.utils.get_meta_hash(meta)
         json_data = core.json.dumps({'hash': meta_hash, 'results': results}, indent=2)
         with open(core.utils.results_filepath, 'w') as f:
             f.write(json_data)
@@ -56,7 +58,7 @@ def __get_last_results(core, meta):
         with open(core.utils.results_filepath, 'r') as f:
             last_results = core.json.loads(f.read())
 
-        meta_hash = core.utils.get_hash(meta)
+        meta_hash = core.utils.get_meta_hash(meta)
         if last_results['hash'] == meta_hash:
             return last_results['results']
     except: pass
@@ -141,7 +143,8 @@ def __wait_threads(core, request_threads):
 def __complete_search(core, results):
     if core.api_mode_enabled:
         return results
-    __add_results(core, results)
+
+    __add_results(core, results)  # pragma: no cover
 
 def __search(core, service_name, meta, results):
     service = core.services[service_name]
@@ -156,7 +159,7 @@ def __search(core, service_name, meta, results):
     core.utils.wait_threads(threads)
 
 def search(core, params):
-    meta = core.video.get_meta()
+    meta = core.video.get_meta(core)
     meta.languages = __parse_languages(core, core.utils.unquote(params['languages']).split(','))
     meta.preferredlanguage = core.kodi.parse_language(params['preferredlanguage'])
     core.logger.debug(lambda: core.json.dumps(meta, default=lambda o: '', indent=2))
@@ -165,23 +168,21 @@ def search(core, params):
         core.logger.error('missing imdb id!')
         return
 
+    last_query_results = __get_last_results(core, meta)
+    if len(last_query_results) > 0:
+        core.logger.notice('using cached results')
+        return __complete_search(core, last_query_results)
+
     threads = []
     results = []
-    last_query_results = __get_last_results(core, meta)
     for service_name in core.services:
         if not core.kodi.get_bool_setting(service_name, 'enabled'):
             continue
 
-        last_results = list(filter(lambda r: r['service_name'] == service_name, last_query_results))
-        if len(last_results) > 0:
-            core.logger.notice('%s using cached results' % service_name)
-            results.extend(last_results)
-            continue
-
         service = core.services[service_name]
         core.progress_text += service.display_name + '|'
-        auth_thread = None
 
+        auth_thread = None
         auth_request = service.build_auth_request(core, service_name)
         if auth_request:
             auth_thread = core.threading.Thread(target=__auth_service, args=(core, service_name, auth_request))

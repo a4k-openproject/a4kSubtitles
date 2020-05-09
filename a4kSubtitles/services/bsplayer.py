@@ -95,7 +95,7 @@ def __logout(core, service_name):
     request = __get_request(core, service_name, action, params)
 
     def logout():
-        core.request.execute(request)
+        core.request.execute(core, request)
 
     context.token = None
     thread = core.threading.Thread(target=logout)

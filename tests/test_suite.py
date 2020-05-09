@@ -416,3 +416,26 @@ def test_subscene_tvshow():
     filepath = a4ksubtitles_api.download(params, search.settings)
 
     assert filepath != ''
+
+def test_addic7ed_tvshow():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_last_results(a4ksubtitles_api)
+
+    # search
+    settings = {
+        'addic7ed.enabled': 'true',
+    }
+    search = __search_tvshow(a4ksubtitles_api, settings)
+
+    # download
+    item = search.results[0]
+
+    params = {
+        'action': 'download',
+        'service_name': 'addic7ed',
+        'action_args': item['action_args']
+    }
+
+    filepath = a4ksubtitles_api.download(params, search.settings)
+
+    assert filepath != ''
