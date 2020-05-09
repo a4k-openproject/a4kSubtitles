@@ -28,9 +28,6 @@ def __log(message, level=xbmc.LOGDEBUG):
 def notice(message):
     __log(message, xbmc.LOGNOTICE)
 
-def info(message):
-    __log(message, xbmc.LOGINFO)
-
 def error(message):
     __log(message, xbmc.LOGERROR)
 

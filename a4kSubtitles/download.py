@@ -2,7 +2,7 @@
 
 def __download(core, filepath, request):
     request['stream'] = True
-    with core.request.execute(request) as r:
+    with core.request.execute(core, request) as r:
         with open(filepath, 'wb') as f:
             core.shutil.copyfileobj(r.raw, f)
 

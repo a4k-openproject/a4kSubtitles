@@ -6,9 +6,11 @@ show-source = True
 
 ignore = 
     E126,
+    E128,
     E131,
     E302,
     E305,
+    E306,
     E402,
     E701,
     E704,

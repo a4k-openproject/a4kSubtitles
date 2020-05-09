@@ -3,8 +3,9 @@
 import importlib
 from a4kSubtitles.lib import utils
 
-__all = utils.get_all_relative_py_files(__file__)
+__all = utils.get_all_relative_entries(__file__)
 __display_names = {
+    'addic7ed': 'Addic7ed',
     'bsplayer': 'BSPlayer',
     'opensubtitles': 'OpenSubtitles',
     'podnadpisi': 'Podnadpisi',
