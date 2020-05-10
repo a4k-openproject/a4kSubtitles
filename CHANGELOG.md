@@ -1,3 +1,10 @@
+* [v0.0.27](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.27):
+  * Attempt to auto-fix a garbled cyrillic encoded subtitles
+  * Fix more encoding issues
+  * Ensure progress dialog close even if the addon crashes
+  * Apply color to service name in results and bold tags
+  * Show notification if imdb id is missing
+
 * [v0.0.26](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.26):
   * Support for Addic7ed
   * Improve cache of the last results

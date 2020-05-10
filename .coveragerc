@@ -5,5 +5,5 @@ omit =
 [report]
 exclude_lines =
     pragma: no cover
-    if PY2
-    if core\.utils\.PY2
+    if py2
+    if core\.utils\.py2

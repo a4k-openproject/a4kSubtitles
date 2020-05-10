@@ -178,6 +178,7 @@ def parse_search_response(core, service_name, meta, response):
             'lang_code': core.kodi.xbmc.convertLanguage(lang, core.kodi.xbmc.ISO_639_1),
             'sync': 'true' if meta.filehash else 'false',
             'impaired': 'false',
+            'color': 'gold',
             'action_args': {
                 'url': result.find('subDownloadLink').text,
                 'lang': lang,

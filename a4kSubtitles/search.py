@@ -166,6 +166,7 @@ def search(core, params):
 
     if meta.imdb_id == '':
         core.logger.error('missing imdb id!')
+        core.kodi.notification('IMDB ID is not provided')
         return
 
     last_query_results = __get_last_results(core, meta)

@@ -127,10 +127,12 @@ def create_listitem(item):  # pragma: no cover
     (item_name, item_ext) = os.path.splitext(item['name'])
     item_name = item_name.replace('.', ' ')
     item_ext = item_ext.upper()[1:]
+    item_service = item['service']
+    item_color = item.get('color', 'white')
 
     args = {
         'label': item['lang'],
-        'label2': '%s (%s) (%s)' % (item_name, item_ext, item['service']),
+        'label2': '%s ([B]%s[/B]) ([B][COLOR %s]%s[/COLOR][/B])' % (item_name, item_ext, item_color, item_service),
         'iconImage': str(item['rating']),
         'thumbnailImage': item['lang_code'],
     }

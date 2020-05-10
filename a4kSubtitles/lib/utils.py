@@ -18,14 +18,19 @@ except ImportError:
     from urllib.parse import quote_plus, unquote, parse_qsl
     from io import StringIO
     import queue
-    unicode = None
+    unicode = lambda v, e: v
 
 __url_regex = r'(([a-z0-9][a-z0-9-]{1,5}[a-z0-9]\.[a-z0-9]{2,20})|(opensubtitles))\.[a-z]{2,5}'
 __credit_part_regex = r'(sync|synced|fix|fixed|corrected|corrections)'
 __credit_regex = __credit_part_regex + r' ?&? ?' + __credit_part_regex + r'? by'
 
-PY2 = sys.version_info[0] == 2
-PY3 = not PY2
+default_encoding = 'utf-8'
+base_encoding = 'raw_unicode_escape'
+cp1251_garbled = u'аеио'.encode('cp1251').decode('raw_unicode_escape')
+koi8r_garbled = u'аеио'.encode('koi8-r').decode('raw_unicode_escape')
+
+py2 = sys.version_info[0] == 2
+py3 = not py2
 
 temp_dir = os.path.join(kodi.addon_profile, 'temp')
 results_filepath = os.path.join(kodi.addon_profile, 'last_results.json')
@@ -45,8 +50,7 @@ def __save_cache(filepath, cache):
         json_data = json.dumps(cache, indent=2)
         with open(filepath, 'w') as f:
             f.write(json_data)
-    except:
-        pass
+    except: pass
 
 def get_meta_cache():
     meta_cache = __get_cache(__meta_cache_filepath)
@@ -70,7 +74,7 @@ def get_meta_hash(meta):
         'imdb_id': meta.imdb_id,
         'filename': meta.filename,
     }
-    json_data = json.dumps(hash_data).encode('utf-8')
+    json_data = json.dumps(hash_data).encode(default_encoding)
     return hashlib.sha256(json_data).hexdigest()
 
 class DictAsObject(dict):
@@ -85,10 +89,7 @@ def get_all_relative_entries(relative_file, ext='.py', ignore_private=True):
     return [os.path.splitext(name)[0] for name in entries if not ignore_private or not name.startswith('__') and name.endswith(ext)]
 
 def strip_non_ascii_and_unprintable(text):
-    if not isinstance(text, str):
-        return str(text)
-
-    if PY2 and not isinstance(text, unicode):
+    if not isinstance(text, str) and (not py2 or not isinstance(text, unicode)):
         return str(text)
 
     result = ''.join(char for char in text if char in string.printable)
@@ -140,7 +141,7 @@ def cleanup_subtitles(sub_contents):
             continue
 
         if re.search(__url_regex, line, re.IGNORECASE) or re.search(__credit_regex, line, re.IGNORECASE):
-            logger.notice('(detected ad) %s' % line)
+            logger.notice('(detected ad) %s' % line.encode('ascii', errors='ignore'))
             if not re.match(r'^\{\d+\}\{\d+\}', line):
                 garbage = True
                 buffer = []
