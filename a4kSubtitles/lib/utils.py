@@ -4,7 +4,6 @@ import os
 import sys
 import re
 import json
-import hashlib
 import string
 from . import kodi
 from . import logger
@@ -33,49 +32,6 @@ py2 = sys.version_info[0] == 2
 py3 = not py2
 
 temp_dir = os.path.join(kodi.addon_profile, 'temp')
-results_filepath = os.path.join(kodi.addon_profile, 'last_results.json')
-
-__meta_cache_filepath = os.path.join(kodi.addon_profile, 'last_meta.json')
-__tvshow_years_cache = os.path.join(kodi.addon_profile, 'tvshow_years_cache.json')
-
-def __get_cache(filepath):
-    try:
-        with open(filepath, 'r') as f:
-            return json.loads(f.read())
-    except:
-        return {}
-
-def __save_cache(filepath, cache):
-    try:
-        json_data = json.dumps(cache, indent=2)
-        with open(filepath, 'w') as f:
-            f.write(json_data)
-    except: pass
-
-def get_meta_cache():
-    meta_cache = __get_cache(__meta_cache_filepath)
-    meta_cache.setdefault('imdb_id', '')
-    return meta_cache
-
-def save_meta_cache(meta_cache):
-    return __save_cache(__meta_cache_filepath, meta_cache)
-
-def get_tvshow_years_cache():
-    return __get_cache(__tvshow_years_cache)
-
-def save_tvshow_years_cache(tvshow_years_cache):
-    return __save_cache(__tvshow_years_cache, tvshow_years_cache)
-
-def get_tvshow_cache_key(imdb_id):
-    return '%s_tvshow_year' % imdb_id
-
-def get_meta_hash(meta):
-    hash_data = {
-        'imdb_id': meta.imdb_id,
-        'filename': meta.filename,
-    }
-    json_data = json.dumps(hash_data).encode(default_encoding)
-    return hashlib.sha256(json_data).hexdigest()
 
 class DictAsObject(dict):
     def __getattr__(self, name):

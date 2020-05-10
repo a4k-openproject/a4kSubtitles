@@ -24,11 +24,10 @@ def parse_search_response(core, service_name, meta, response):
     name = '%s.srt' % meta.filename_without_ext
     results = []
 
-    lang_iso_639_1_codes = response.text.split(',')
-    for lang_iso_639_1_code in lang_iso_639_1_codes:
-        if lang_iso_639_1_code in lang_ids:
-            lang = meta.languages[lang_ids.index(lang_iso_639_1_code)]
-            lang_code = core.kodi.xbmc.convertLanguage(lang, core.kodi.xbmc.ISO_639_2)
+    lang_codes = response.text.split(',')
+    for lang_code in lang_codes:
+        if lang_code in lang_ids:
+            lang = meta.languages[lang_ids.index(lang_code)]
 
             results.append({
                 'service_name': service_name,

@@ -45,9 +45,9 @@ def __save_results(core, meta, results):
     try:
         if len(results) == 0:
             return
-        meta_hash = core.utils.get_meta_hash(meta)
+        meta_hash = core.cache.get_meta_hash(meta)
         json_data = core.json.dumps({'hash': meta_hash, 'results': results}, indent=2)
-        with open(core.utils.results_filepath, 'w') as f:
+        with open(core.cache.results_filepath, 'w') as f:
             f.write(json_data)
     except:
         import traceback
@@ -55,10 +55,10 @@ def __save_results(core, meta, results):
 
 def __get_last_results(core, meta):
     try:
-        with open(core.utils.results_filepath, 'r') as f:
+        with open(core.cache.results_filepath, 'r') as f:
             last_results = core.json.loads(f.read())
 
-        meta_hash = core.utils.get_meta_hash(meta)
+        meta_hash = core.cache.get_meta_hash(meta)
         if last_results['hash'] == meta_hash:
             return last_results['results']
     except: pass

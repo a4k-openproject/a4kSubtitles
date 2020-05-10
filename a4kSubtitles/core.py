@@ -16,12 +16,13 @@ from base64 import b64encode
 from xml.etree import ElementTree
 
 from .lib import (
-    utils,
-    logger,
+    cache,
     kodi,
-    video,
-    request,
+    logger,
     num2ordinal,
+    request,
+    utils,
+    video,
 )
 from .services import services
 from .search import search
