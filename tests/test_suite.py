@@ -381,7 +381,7 @@ def test_subscene():
     }
 
     if os.getenv('CI', None) is not None:
-        time.sleep(2)
+        time.sleep(4)
 
     filepath = a4ksubtitles_api.download(params, search.settings)
 
@@ -397,7 +397,7 @@ def test_subscene_tvshow():
     }
 
     if os.getenv('CI', None) is not None:
-        time.sleep(2)
+        time.sleep(4)
 
     search = __search_tvshow(a4ksubtitles_api, settings)
 
@@ -411,7 +411,7 @@ def test_subscene_tvshow():
     }
 
     if os.getenv('CI', None) is not None:
-        time.sleep(2)
+        time.sleep(4)
 
     filepath = a4ksubtitles_api.download(params, search.settings)
 

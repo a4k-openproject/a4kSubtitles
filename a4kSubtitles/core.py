@@ -46,10 +46,11 @@ def main(handle, paramstring):  # pragma: no cover
         core.progress_text = ''
         core.progress_dialog = kodi.get_progress_dialog()
 
-        search(core, params)
-
-        core.progress_dialog.close()
-        core.progress_dialog = None
+        try:
+            search(core, params)
+        finally:
+            core.progress_dialog.close()
+            core.progress_dialog = None
 
     elif params['action'] == 'download':
         params['action_args'] = json.loads(params['action_args'])

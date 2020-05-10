@@ -65,6 +65,7 @@ def parse_search_response(core, service_name, meta, response):
             'lang_code': lang_code,
             'sync': 'true' if meta.filename_without_ext in result['custom_releases'] else 'false',
             'impaired': 'true' if 'hearing_impaired' in result['flags'] else 'false',
+            'color': 'orange',
             'action_args': {
                 'url': '%s%s' % (__url, result['download']),
                 'lang': lang,

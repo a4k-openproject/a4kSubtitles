@@ -94,8 +94,7 @@ def __get_filename(title):
         filepath = xbmc.Player().getPlayingFile()
         filename = filepath.split('/')[-1]
         filename = utils.unquote(filename)
-    except:
-        pass
+    except: pass
 
     return filename
 

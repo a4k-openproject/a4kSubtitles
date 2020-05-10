@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import requests
+import urllib3
 import re
 import time
 from .kodi import get_int_setting
 from . import logger
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def execute(core, request):
     request.setdefault('timeout', get_int_setting('general.timeout'))

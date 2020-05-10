@@ -39,6 +39,7 @@ def parse_search_response(core, service_name, meta, response):
                 'lang_code': lang_code,
                 'sync': 'true',
                 'impaired': 'false',
+                'color': 'cyan',
                 'action_args': {
                     'url': '',
                     'hash': meta.subdb_hash,

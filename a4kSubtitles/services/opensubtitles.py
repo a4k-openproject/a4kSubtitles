@@ -11,7 +11,7 @@ def __set_auth_header(core, service_name, request):
         return
 
     token = '%s:%s' % (username, password)
-    if core.utils.PY3:
+    if core.utils.py3:
         token = token.encode('ascii')
 
     request['headers']['Authorization'] = 'Basic %s' % core.b64encode(token).decode('ascii')
@@ -92,6 +92,7 @@ def parse_search_response(core, service_name, meta, response):
             'lang_code': result['ISO639'],
             'sync': 'true' if result['MovieHash'] == meta.filehash else 'false',
             'impaired': 'false' if result['SubHearingImpaired'] == '0' else 'true',
+            'color': 'springgreen',
             'action_args': {
                 'url': result['ZipDownloadLink'].replace('/subad/', '/sub/'),
                 'lang': result['LanguageName'],

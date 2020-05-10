@@ -9,7 +9,7 @@ def __download(core, filepath, request):
 def __extract_gzip(core, archivepath, filename):
     filepath = core.os.path.join(core.utils.temp_dir, filename)
 
-    if core.utils.PY2:
+    if core.utils.py2:
         with open(archivepath, 'rb') as f:
             gzip_file = f.read()
 
@@ -32,7 +32,7 @@ def __extract_zip(core, archivepath, filename, episodeid):
     first_subfile = None
     subfile = None
     for file in files:
-        if core.utils.PY2:
+        if core.utils.py2:
             file = file.decode('utf8')
 
         file_lower = file.lower()
@@ -60,19 +60,33 @@ def __insert_lang_code_in_filename(core, filename, lang):
     filename_chunks.insert(-1, lang_code)
     return '.'.join(filename_chunks)
 
-def __cleanup(core, filepath):
-    with open(filepath, 'r') as f:
-        sub_contents = f.read()
-
+def __postprocess(core, filepath):
     try:
-        cleaned_contents = core.utils.cleanup_subtitles(sub_contents)
-        if len(cleaned_contents) < len(sub_contents) / 2:
-            return
+        with open(filepath, 'rb') as f:
+            text_bytes = f.read()
 
-        with open(filepath, 'w') as f:
-            f.write(cleaned_contents)
-    except:
-        pass
+        text = text_bytes.decode(core.utils.default_encoding)
+
+        try:
+            if all(ch in text for ch in core.utils.cp1251_garbled):
+                text = text.encode(core.utils.base_encoding).decode('cp1251')
+            elif all(ch in text for ch in core.utils.koi8r_garbled):
+                try:
+                    text = text.encode(core.utils.base_encoding).decode('koi8-r')
+                except:
+                    text = text.encode(core.utils.base_encoding).decode('koi8-u')
+        except: pass
+
+        try:
+            if core.kodi.get_bool_setting('general.remove_ads'):
+                text = core.utils.cleanup_subtitles(text)
+                if len(text) < len(text) / 2:
+                    return
+        except: pass
+
+        with open(filepath, 'wb') as f:
+            f.write(text.encode(core.utils.default_encoding))
+    except: pass
 
 def download(core, params):
     core.logger.debug(lambda: core.json.dumps(params, indent=2))
@@ -99,10 +113,10 @@ def download(core, params):
             episodeid = actions_args.get('episodeid', '')
             filepath = __extract_zip(core, archivepath, filename, episodeid)
 
-    if core.kodi.get_bool_setting('general.remove_ads'):
-        __cleanup(core, filepath)
+    __postprocess(core, filepath)
 
     if core.api_mode_enabled:
         return filepath
+
     listitem = core.kodi.xbmcgui.ListItem(label=filepath)
     core.kodi.xbmcplugin.addDirectoryItem(handle=core.handle, url=filepath, listitem=listitem, isFolder=False)

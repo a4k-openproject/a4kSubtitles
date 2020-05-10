@@ -110,6 +110,7 @@ def parse_search_response(core, service_name, meta, response):
             'lang_code': lang_code,
             'sync': 'true' if release_id in meta.title else 'false',
             'impaired': 'true' if hearing_impaired != '' else 'false',
+            'color': 'deepskyblue',
             'action_args': {
                 'url': url,
                 'lang': lang,

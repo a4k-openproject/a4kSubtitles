@@ -81,6 +81,7 @@ def parse_search_response(core, service_name, meta, response):
             'lang_code': lang_code,
             'sync': 'true' if meta.filename_without_ext == name else 'false',
             'impaired': 'true' if impaired else 'false',
+            'color': 'dodgerblue',
             'action_args': {
                 'url': download_href,
                 'lang': lang,
