@@ -52,6 +52,11 @@ def parse_search_response(core, service_name, meta, response):
                 last_similarity = similarity
                 name = release_name
 
+        if name == '':
+            name = '%s %s' % (meta.title, meta.year)
+            if meta.is_tvshow:
+                name = '%s S%sE%s' % (meta.tvshow, meta.season.zfill(2), meta.episode.zfill(2))
+
         name = '%s.srt' % name
         lang_code = result['language']
         lang = meta.languages[lang_ids.index(lang_code)]

@@ -1,3 +1,9 @@
+* [v0.0.28](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.28):
+  * Attempt scrape of imdb id when missing
+  * Improve filename parsing
+  * Fix SubDB lang code
+  * Fix Podnadpisi not returning release name
+
 * [v0.0.27](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.27):
   * Attempt to auto-fix a garbled cyrillic encoded subtitles
   * Fix more encoding issues

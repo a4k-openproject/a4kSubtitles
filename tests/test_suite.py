@@ -45,10 +45,31 @@ __tvshow_video_meta = {
     "subdb_hash": "2aec1b70afe702e67ab39a0af776ba5a",
 }
 
+def __remove_meta_cache(a4ksubtitles_api):
+    try:
+        os.remove(a4ksubtitles_api.core.cache.__meta_cache_filepath)
+    except: pass
+
+def __remove_imdb_id_cache(a4ksubtitles_api):
+    try:
+        os.remove(a4ksubtitles_api.core.cache.__imdb_id_cache_filepath)
+    except: pass
+
+def __remove_tvshow_years_cache(a4ksubtitles_api):
+    try:
+        os.remove(a4ksubtitles_api.core.cache.__tvshow_years_cache_filepath)
+    except: pass
+
 def __remove_last_results(a4ksubtitles_api):
     try:
-        os.remove(a4ksubtitles_api.core.utils.results_filepath)
+        os.remove(a4ksubtitles_api.core.cache.results_filepath)
     except: pass
+
+def __remove_all_cache(a4ksubtitles_api):
+    __remove_imdb_id_cache(a4ksubtitles_api)
+    __remove_meta_cache(a4ksubtitles_api)
+    __remove_tvshow_years_cache(a4ksubtitles_api)
+    __remove_last_results(a4ksubtitles_api)
 
 def __search(a4ksubtitles_api, settings={}, video_meta={}):
     search = lambda: None
@@ -116,6 +137,8 @@ def test_api():
 
 def test_search_missing_imdb_id():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_all_cache(a4ksubtitles_api)
+
     log_error_spy = utils.spy_fn(a4ksubtitles_api.core.logger, 'error')
 
     params = {
@@ -128,7 +151,7 @@ def test_search_missing_imdb_id():
 
 def test_opensubtitles():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
-    __remove_last_results(a4ksubtitles_api)
+    __remove_all_cache(a4ksubtitles_api)
 
     # search
     settings = {
@@ -144,7 +167,7 @@ def test_opensubtitles():
     expected_result_name2 = 'Fantastic.Beasts.and.Where.to.Find.Them.2016.1080p.BluRay.x264.DTS-FGT.srt'
     assert search.results[0]['name'] == expected_result_name or search.results[0]['name'] == expected_result_name2
 
-    __remove_last_results(a4ksubtitles_api)
+    __remove_all_cache(a4ksubtitles_api)
 
     # search (imdb only)
     video_meta = {
@@ -187,7 +210,7 @@ def test_opensubtitles():
 
 def test_opensubtitles_tvshow():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
-    __remove_last_results(a4ksubtitles_api)
+    __remove_all_cache(a4ksubtitles_api)
 
     # search
     settings = {
@@ -208,9 +231,39 @@ def test_opensubtitles_tvshow():
 
     assert filepath != ''
 
+def test_opensubtitles_missing_imdb_id():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_all_cache(a4ksubtitles_api)
+
+    # search
+    settings = {
+        'opensubtitles.enabled': 'true',
+    }
+    video_meta = {
+        'imdb_id': '',
+    }
+    search = __search_movie(a4ksubtitles_api, settings, video_meta)
+
+    assert len(search.results) > 0
+
+def test_opensubtitles_tvshow_missing_imdb_id():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_all_cache(a4ksubtitles_api)
+
+    # search
+    settings = {
+        'opensubtitles.enabled': 'true',
+    }
+    video_meta = {
+        'imdb_id': '',
+    }
+    search = __search_tvshow(a4ksubtitles_api, settings, video_meta)
+
+    assert len(search.results) > 0
+
 def test_bsplayer():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
-    __remove_last_results(a4ksubtitles_api)
+    __remove_all_cache(a4ksubtitles_api)
 
     # search
     settings = {
@@ -247,7 +300,7 @@ def test_bsplayer():
 
 def test_bsplayer_tvshow():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
-    __remove_last_results(a4ksubtitles_api)
+    __remove_all_cache(a4ksubtitles_api)
 
     # search
     settings = {
@@ -270,7 +323,7 @@ def test_bsplayer_tvshow():
 
 def test_podnadpisi():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
-    __remove_last_results(a4ksubtitles_api)
+    __remove_all_cache(a4ksubtitles_api)
 
     # search
     settings = {
@@ -293,7 +346,7 @@ def test_podnadpisi():
 
 def test_podnadpisi_tvshow():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
-    __remove_last_results(a4ksubtitles_api)
+    __remove_all_cache(a4ksubtitles_api)
 
     # search
     settings = {
@@ -316,7 +369,7 @@ def test_podnadpisi_tvshow():
 
 def test_subdb():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
-    __remove_last_results(a4ksubtitles_api)
+    __remove_all_cache(a4ksubtitles_api)
 
     # search
     settings = {
@@ -339,7 +392,7 @@ def test_subdb():
 
 def test_subdb_tvshow():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
-    __remove_last_results(a4ksubtitles_api)
+    __remove_all_cache(a4ksubtitles_api)
 
     # search
     settings = {
@@ -363,7 +416,7 @@ def test_subdb_tvshow():
 
 def test_subscene():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
-    __remove_last_results(a4ksubtitles_api)
+    __remove_all_cache(a4ksubtitles_api)
 
     # search
     settings = {
@@ -389,7 +442,7 @@ def test_subscene():
 
 def test_subscene_tvshow():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
-    __remove_last_results(a4ksubtitles_api)
+    __remove_all_cache(a4ksubtitles_api)
 
     # search
     settings = {
@@ -419,7 +472,7 @@ def test_subscene_tvshow():
 
 def test_addic7ed_tvshow():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
-    __remove_last_results(a4ksubtitles_api)
+    __remove_all_cache(a4ksubtitles_api)
 
     # search
     settings = {
