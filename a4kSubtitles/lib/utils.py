@@ -114,3 +114,22 @@ def get_relative_json(relative_file, filename):
     json_path = os.path.join(os.path.dirname(relative_file), filename + '.json')
     with open(json_path) as json_result:
         return json.load(json_result)
+
+def find_file_in_archive(core, archivepath, exts, part_of_filename=''):
+    (dirs, files) = core.kodi.xbmcvfs.listdir('archive://%s' % archivepath)
+
+    first_ext_match = None
+    exact_file = None
+    for file in files:
+        if core.utils.py2:
+            file = file.decode('utf8')
+
+        file_lower = file.lower()
+        if any(file_lower.endswith(ext) for ext in exts):
+            if not first_ext_match:
+                first_ext_match = file
+            if (part_of_filename == '' or part_of_filename in file_lower):
+                exact_file = file
+                break
+
+    return exact_file if exact_file is not None else first_ext_match
