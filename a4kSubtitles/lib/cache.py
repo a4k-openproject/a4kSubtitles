@@ -34,6 +34,8 @@ def get_meta_hash(meta):
     return hash_data({
         'imdb_id': meta.imdb_id,
         'filename': meta.filename,
+        'languages': meta.languages,
+        'preferredlanguage': meta.preferredlanguage
     })
 
 def get_meta_cache():

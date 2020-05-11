@@ -25,31 +25,17 @@ def __extract_gzip(core, archivepath, filename):
     return filepath
 
 def __extract_zip(core, archivepath, filename, episodeid):
-    path = core.utils.quote_plus(archivepath)
-    ext = core.os.path.splitext(filename)[1].lower()
-    (dirs, files) = core.kodi.xbmcvfs.listdir('archive://%s' % path)
+    sub_exts = ['.srt', '.sub']
+    sub_exts_secondary = ['.smi', '.ssa', '.aqt', '.jss', '.ass', '.rt', '.txt']
 
-    first_subfile = None
-    subfile = None
-    for file in files:
-        if core.utils.py2:
-            file = file.decode('utf8')
-
-        file_lower = file.lower()
-        if file_lower.endswith(ext):
-            if not first_subfile:
-                first_subfile = file
-            if (episodeid == '' or episodeid in file_lower):
-                subfile = file
-                break
-
+    archivepath = core.utils.quote_plus(archivepath)
+    subfile = core.utils.find_file_in_archive(core, archivepath, sub_exts, episodeid)
     if not subfile:
-        if first_subfile:
-            subfile = first_subfile
-        else:
-            subfile = filename
+        subfile = core.utils.find_file_in_archive(core, archivepath, sub_exts_secondary, episodeid)
+    if not subfile:
+        subfile = filename
 
-    src = 'archive://' + path + '/' + subfile
+    src = 'archive://' + archivepath + '/' + subfile
     dest = core.os.path.join(core.utils.temp_dir, filename)
     core.kodi.xbmcvfs.copy(src, dest)
     return dest
