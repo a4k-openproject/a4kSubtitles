@@ -79,7 +79,7 @@ def __search(a4ksubtitles_api, settings={}, video_meta={}):
     }
 
     search.settings = {
-        'general.timeout': '15',
+        'general.timeout': '20',
         'general.results_limit': '20',
         'general.remove_ads': 'true',
         'opensubtitles.enabled': 'false',
