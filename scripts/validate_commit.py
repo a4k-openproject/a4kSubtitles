@@ -30,13 +30,12 @@ if is_pull_request and github['event']['pull_request']['commits'] > 1:
     print('Error: Ammend your commits!')
     sys.exit(1)
 
-is_chore = commit_message.startswith('chore: ')
-if is_chore:
+if commit_message.startswith('chore: ') or commit_message.startswith('test: '):
     sys.exit(os.EX_OK)
 
 is_release = commit_message.startswith('release: v')
 if not is_release:
-    print('Error: Only release and chore commits allowed!')
+    print('Error: Only release, test and chore commits allowed!')
     sys.exit(1)
 
 semver_regex = r'^([0-9]+)\.([0-9]+)\.([0-9]+)$'
