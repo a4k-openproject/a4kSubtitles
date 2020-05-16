@@ -64,10 +64,9 @@ def __postprocess(core, filepath):
         except: pass
 
         try:
-            if core.kodi.get_bool_setting('general.remove_ads'):
-                text = core.utils.cleanup_subtitles(text)
-                if len(text) < len(text) / 2:
-                    return
+            clean_text = core.utils.cleanup_subtitles(core, text)
+            if len(clean_text) > len(text) / 2:
+                text = clean_text
         except: pass
 
         with open(filepath, 'wb') as f:

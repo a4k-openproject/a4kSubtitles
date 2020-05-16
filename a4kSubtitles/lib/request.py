@@ -10,7 +10,9 @@ from . import logger
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def execute(core, request):
-    request.setdefault('timeout', get_int_setting('general.timeout'))
+    try: default_timeout = get_int_setting('general.timeout')
+    except: default_timeout = 10
+    request.setdefault('timeout', default_timeout)
 
     if core.progress_dialog and not core.progress_dialog.dialog:
         core.progress_dialog.open()

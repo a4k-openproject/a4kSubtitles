@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import importlib
-from a4kSubtitles.lib import utils
+from a4kSubtitles.lib import utils, kodi
 
+kodi.xbmcvfs.mkdirs(utils.data_dir)
 __all = utils.get_all_relative_entries(__file__, ext='')
 
 data = {}

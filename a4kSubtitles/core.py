@@ -24,17 +24,20 @@ from .lib import (
     utils,
     video,
 )
-from .services import services
-from .search import search
-from .download import download
-from .data import data
 
 core = sys.modules[__name__]
+utils.core = core
+
 api_mode_enabled = True
 handle = None
 
 progress_dialog = None
 progress_text = ''
+
+from .services import services
+from .search import search
+from .download import download
+from .data import data
 
 def main(handle, paramstring):  # pragma: no cover
     core.api_mode_enabled = False
