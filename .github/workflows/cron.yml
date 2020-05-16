@@ -1,0 +1,33 @@
+name: cron
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/cron.yml'
+  schedule:
+    - cron:  '0 10 * * *'
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.TOKEN_ }}
+
+    - name: install
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install requests --user
+
+    - name: update
+      run: |
+        python3 ./scripts/update_addic7ed.py
+
+    - name: push
+      run: |
+        git config --global user.email "47229722+newt-sc@users.noreply.github.com"
+        git config --global user.name "newt-sc"
+        git commit -am "chore: update data"
+        git push

@@ -1,4 +1,4 @@
-name: CI
+name: ci
 
 on:
   push:
@@ -15,12 +15,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Validate
+    - name: validate
       id: validate
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: |
-        python ./scripts/validate_commit.py
+        python3 ./scripts/validate_commit.py
 
   build:
     runs-on: ubuntu-latest
@@ -34,29 +34,29 @@ jobs:
     - uses: actions/checkout@v2
       if: "!startsWith(needs.validate.outputs.commit, 'chore:')"
 
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: setup-python-v${{ matrix.python-version }}
       if: "!startsWith(needs.validate.outputs.commit, 'chore:')"
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install dependencies
+    - name: install
       if: "!startsWith(needs.validate.outputs.commit, 'chore:')"
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        python -m pip install -r requirements.txt --user
 
-    - name: Lint
+    - name: lint
       if: "!startsWith(needs.validate.outputs.commit, 'chore:')"
       run: |
         flake8
 
-    - name: Test
+    - name: test
       if: "!startsWith(needs.validate.outputs.commit, 'chore:')"
       run: |
         coverage run -m pytest -v
 
-    - name: Coverage
+    - name: coverage
       if: "!startsWith(needs.validate.outputs.commit, 'chore:') && matrix.python-version == 3.7"
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}

@@ -1,4 +1,4 @@
-name: Create Release
+name: release
 on:
   push:
     branches: [ master ]
@@ -11,6 +11,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Release
+    - name: release
       run: |
         sh ./scripts/release.sh ${{ secrets.GITHUB_TOKEN }} "${{ github.event.head_commit.message }}"
