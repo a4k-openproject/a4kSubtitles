@@ -28,10 +28,6 @@ msgctxt "#33102"
 msgid "Results Limit"
 msgstr ""
 
-msgctxt "#33103"
-msgid "Remove ads"
-msgstr ""
-
 # Services
 msgctxt "#33201"
 msgid "OpenSubtitles"

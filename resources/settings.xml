@@ -2,9 +2,8 @@
 <settings>
     <!-- General -->
     <category label="33001">
-        <setting id="general.timeout"       label="33101" type="slider" default="15" option="int" range="10,20"/>
+        <setting id="general.timeout"       label="33101" type="slider" default="15" option="int" range="5,20"/>
         <setting id="general.results_limit" label="33102" type="slider" default="20" option="int" range="10,100"/>
-        <setting id="general.remove_ads"    label="33103" type="bool"   default="true"/>
     </category>
     <!-- Services -->
     <category label="33002">

@@ -5,6 +5,7 @@ import sys
 import re
 import json
 import string
+import shutil
 from . import kodi
 from . import logger
 
@@ -19,7 +20,7 @@ except ImportError:
     import queue
     unicode = lambda v, e: v
 
-__url_regex = r'(([a-z0-9][a-z0-9-]{1,5}[a-z0-9]\.[a-z0-9]{2,20})|(opensubtitles))\.[a-z]{2,5}'
+__url_regex = r'[a-z0-9][a-z0-9-]{0,5}[a-z0-9]\.[a-z0-9]{2,20}\.[a-z]{2,5}'
 __credit_part_regex = r'(sync|synced|fix|fixed|corrected|corrections)'
 __credit_regex = __credit_part_regex + r' ?&? ?' + __credit_part_regex + r'? by'
 
@@ -32,6 +33,7 @@ py2 = sys.version_info[0] == 2
 py3 = not py2
 
 temp_dir = os.path.join(kodi.addon_profile, 'temp')
+data_dir = os.path.join(kodi.addon_profile, 'data')
 
 class DictAsObject(dict):
     def __getattr__(self, name):
@@ -69,7 +71,14 @@ def wait_threads(threads):
     for thread in threads:
         thread.join()
 
-def cleanup_subtitles(sub_contents):
+def get_any_of_regex(array):
+    regex = r'('
+    for target in array:
+        regex += re.escape(target) + r'|'
+    return regex[:-1] + r')'
+
+def cleanup_subtitles(core, sub_contents):
+    service_names_regex = get_any_of_regex(core.services.keys())
     all_lines = sub_contents.split('\n')
     cleaned_lines = []
     buffer = []
@@ -96,7 +105,13 @@ def cleanup_subtitles(sub_contents):
                 buffer = []
             continue
 
-        if re.search(__url_regex, line, re.IGNORECASE) or re.search(__credit_regex, line, re.IGNORECASE):
+        line_contains_ad = (
+            re.search(service_names_regex, line, re.IGNORECASE) or
+            re.search(__url_regex, line, re.IGNORECASE) or
+            re.search(__credit_regex, line, re.IGNORECASE)
+        )
+
+        if line_contains_ad:
             logger.notice('(detected ad) %s' % line.encode('ascii', errors='ignore'))
             if not re.match(r'^\{\d+\}\{\d+\}', line):
                 garbage = True
@@ -110,8 +125,12 @@ def cleanup_subtitles(sub_contents):
 
     return '\n'.join(cleaned_lines)
 
-def get_relative_json(relative_file, filename):
-    json_path = os.path.join(os.path.dirname(relative_file), filename + '.json')
+def get_json(path, filename):
+    path = path if os.path.isdir(path) else os.path.dirname(path)
+    if not filename.endswith('.json'):
+        filename += '.json'
+
+    json_path = os.path.join(path, filename)
     with open(json_path) as json_result:
         return json.load(json_result)
 

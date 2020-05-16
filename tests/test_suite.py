@@ -81,13 +81,14 @@ def __search(a4ksubtitles_api, settings={}, video_meta={}):
     search.settings = {
         'general.timeout': '20',
         'general.results_limit': '20',
-        'general.remove_ads': 'true',
         'opensubtitles.enabled': 'false',
         'opensubtitles.username': '',
         'opensubtitles.password': '',
         'bsplayer.enabled': 'false',
         'podnadpisi.enabled': 'false',
         'subdb.enabled': 'false',
+        'subscene.enabled': 'false',
+        'addic7ed.enabled': 'false',
     }
     search.settings.update(settings)
 
@@ -187,22 +188,11 @@ def test_opensubtitles():
         'action_args': item['action_args']
     }
 
-    search.settings['general.remove_ads'] = 'false'
     filepath = a4ksubtitles_api.download(params, search.settings)
 
     assert filepath != ''
 
     # remove_ads
-    with open(filepath, 'r') as f:
-        sub_contents = f.read()
-
-    assert re.match(r'.*OpenSubtitles.*', sub_contents, re.DOTALL) is not None
-
-    search.settings['general.remove_ads'] = 'true'
-    filepath = a4ksubtitles_api.download(params, search.settings)
-
-    assert filepath != ''
-
     with open(filepath, 'r') as f:
         sub_contents = f.read()
 

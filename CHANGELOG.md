@@ -1,3 +1,8 @@
+* [v0.0.30](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.30):
+  * Add service names in ad detection
+  * Removed the option to disable cleaning of ads
+  * Add remote fetching of addic7ed data
+
 * [v0.0.29](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-0.0.29):
   * Fix Podnadpisi download of results missing filename meta
   * Fix last results cache not invalidated on language preferences change
