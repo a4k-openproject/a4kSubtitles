@@ -28,15 +28,20 @@ def __extract_zip(core, archivepath, filename, episodeid):
     sub_exts = ['.srt', '.sub']
     sub_exts_secondary = ['.smi', '.ssa', '.aqt', '.jss', '.ass', '.rt', '.txt']
 
-    archivepath = core.utils.quote_plus(archivepath)
-    subfile = core.utils.find_file_in_archive(core, archivepath, sub_exts, episodeid)
+    archivepath_ = core.utils.quote_plus(archivepath)
+    subfile = core.utils.find_file_in_archive(core, archivepath_, sub_exts, episodeid)
     if not subfile:
-        subfile = core.utils.find_file_in_archive(core, archivepath, sub_exts_secondary, episodeid)
-    if not subfile:
-        subfile = filename
+        subfile = core.utils.find_file_in_archive(core, archivepath_, sub_exts_secondary, episodeid)
 
-    src = 'archive://' + archivepath + '/' + subfile
     dest = core.os.path.join(core.utils.temp_dir, filename)
+    if not subfile:
+        try:
+            return __extract_gzip(core, archivepath, filename)
+        except:
+            core.os.rename(archivepath, dest)
+            return dest
+
+    src = 'archive://' + archivepath_ + '/' + subfile
     core.kodi.xbmcvfs.copy(src, dest)
     return dest
 

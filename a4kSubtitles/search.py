@@ -41,12 +41,19 @@ def __add_results(core, results):  # pragma: no cover
                 % (core.kodi.addon_id, item['service_name'], action_args)
         )
 
+def __has_results(service_name, results):
+    return any(map(lambda r: r['service_name'] == service_name, results))
+
 def __save_results(core, meta, results):
     try:
         if len(results) == 0:
             return
         meta_hash = core.cache.get_meta_hash(meta)
-        json_data = core.json.dumps({'hash': meta_hash, 'results': results}, indent=2)
+        json_data = core.json.dumps({
+            'hash': meta_hash,
+            'timestamp': core.time.time(),
+            'results': results
+        }, indent=2)
         with open(core.cache.results_filepath, 'w') as f:
             f.write(json_data)
     except:
@@ -54,16 +61,26 @@ def __save_results(core, meta, results):
         traceback.print_exc()
 
 def __get_last_results(core, meta):
+    force_search = []
+
     try:
         with open(core.cache.results_filepath, 'r') as f:
             last_results = core.json.loads(f.read())
 
         meta_hash = core.cache.get_meta_hash(meta)
-        if last_results['hash'] == meta_hash:
-            return last_results['results']
+        if last_results['hash'] != meta_hash:
+            return ([], [])
+
+        has_bsplayer_results = __has_results('bsplayer', last_results['results'])
+        has_bsplayer_results_expired = core.time.time() - last_results['timestamp'] > 3 * 60
+        if has_bsplayer_results and has_bsplayer_results_expired:
+            last_results['results'] = list(filter(lambda r: r['service_name'] != 'bsplayer', last_results['results']))
+            force_search.append('bsplayer')
+
+        return (last_results['results'], force_search)
     except: pass
 
-    return []
+    return ([], [])
 
 def __sanitize_results(core, meta, results):
     temp_dict = {}
@@ -169,14 +186,12 @@ def search(core, params):
         core.kodi.notification('IMDB ID is not provided')
         return
 
-    last_query_results = __get_last_results(core, meta)
-    if len(last_query_results) > 0:
-        core.logger.notice('using cached results')
-        return __complete_search(core, last_query_results)
-
     threads = []
-    results = []
+    (results, force_search) = __get_last_results(core, meta)
     for service_name in core.services:
+        if len(results) > 0 and (__has_results(service_name, results) or service_name not in force_search):
+            continue
+
         if not core.kodi.get_bool_setting(service_name, 'enabled'):
             continue
 
@@ -193,7 +208,7 @@ def search(core, params):
         threads.append((auth_thread, search_thread))
 
     if len(threads) == 0:
-        return __complete_search(core, last_query_results)
+        return __complete_search(core, results)
 
     core.progress_text = core.progress_text[:-1]
     core.kodi.update_progress(core)
