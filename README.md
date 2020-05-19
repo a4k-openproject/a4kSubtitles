@@ -3,8 +3,11 @@
 # a4kSubtitles
 ![CI](https://github.com/a4k-openproject/a4kSubtitles/workflows/CI/badge.svg) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=a4k-openproject_a4kSubtitles&metric=alert_status)](https://sonarcloud.io/dashboard?id=a4k-openproject_a4kSubtitles) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=a4k-openproject_a4kSubtitles&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=a4k-openproject_a4kSubtitles) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=a4k-openproject_a4kSubtitles&metric=security_rating)](https://sonarcloud.io/dashboard?id=a4k-openproject_a4kSubtitles) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=a4k-openproject_a4kSubtitles&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=a4k-openproject_a4kSubtitles) [![Coverage Status](https://coveralls.io/repos/github/a4k-openproject/a4kSubtitles/badge.svg?branch=master)](https://coveralls.io/github/a4k-openproject/a4kSubtitles?branch=master)
 
+## Description
 
-# Install
+Subtitle addon for KODI with support for multiple subtitle services: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDB, Subscene and Addic7ed.
+
+## Installation
 
 Steps to install a4kSubtitles:
 1. Go to the KODI **File manager**.
@@ -17,16 +20,16 @@ Steps to install a4kSubtitles:
 8. Go back to **Addons** and select **Install from repository**
 9. Select the **a4kSubtitles** menu item
 
-# Contributing
+## Contribution
 
 Configure hooks for auto update of `addons.xml`:
 ```sh
 git config core.hooksPath .githooks
 ```
-# License
+## License
 
 MIT
 
-# Icon
+## Icon
 
 Logo `quill` by Ramy Wafaa ([RoundIcons](https://roundicons.com))
