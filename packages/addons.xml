@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="0.0.30"
+       version="1.0.0"
        provider-name="Unknown">
     <requires>
       <import addon="xbmc.python" version="2.25.0"/>
@@ -27,6 +27,10 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDB, Subscene, Addic7ed
             <icon>icon.png</icon>
         </assets>
         <news>
+[v1.0.0]:
+  * Invalidate BSPlayer results cache when download links expire
+  * Extraction fallback: zip -> gzip -> raw
+
 [v0.0.30]:
   * Add service names in ad detection
   * Removed the option to disable cleaning of ads

@@ -9,12 +9,12 @@ from . import logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-def execute(core, request):
+def execute(core, request, progress=True):
     try: default_timeout = get_int_setting('general.timeout')
     except: default_timeout = 10
     request.setdefault('timeout', default_timeout)
 
-    if core.progress_dialog and not core.progress_dialog.dialog:
+    if progress and core.progress_dialog and not core.progress_dialog.dialog:
         core.progress_dialog.open()
 
     validate = request.pop('validate', None)

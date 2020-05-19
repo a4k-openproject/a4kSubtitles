@@ -34,7 +34,7 @@ def __download_data(url, etag, destpath):
         'headers': {
             'If-None-Match': etag
         }
-    })
+    }, progress=False)
     if response.status_code != 200:
         return
 
