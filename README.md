@@ -20,6 +20,11 @@ Steps to install a4kSubtitles:
 8. Go back to **Addons** and select **Install from repository**
 9. Select the **a4kSubtitles** menu item
 
+## Screenshots
+![ScreenShot](https://raw.github.com/a4k-openproject/a4kSubtitles/master/screenshot-01.png)
+![ScreenShot](https://raw.github.com/a4k-openproject/a4kSubtitles/master/screenshot-02.png)
+![ScreenShot](https://raw.github.com/a4k-openproject/a4kSubtitles/master/screenshot-03.png)
+
 ## Contribution
 
 Configure hooks for auto update of `addons.xml`:

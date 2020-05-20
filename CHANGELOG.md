@@ -1,3 +1,6 @@
+* [v1.0.1](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-1.0.1):
+  * Add screenshots
+
 * [v1.0.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-1.0.0):
   * Invalidate BSPlayer results cache when download links expire
   * Extraction fallback: zip -> gzip -> raw
