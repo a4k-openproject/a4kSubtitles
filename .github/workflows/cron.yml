@@ -29,5 +29,5 @@ jobs:
       run: |
         git config --global user.email "47229722+newt-sc@users.noreply.github.com"
         git config --global user.name "newt-sc"
-        git commit -am "chore: update data"
+        git commit -am "chore: update data" || true
         git push || true
