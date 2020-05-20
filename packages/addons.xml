@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="1.0.0"
+       version="1.0.1"
        provider-name="Unknown">
     <requires>
       <import addon="xbmc.python" version="2.25.0"/>
@@ -25,8 +25,14 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDB, Subscene, Addic7ed
         <source>https://github.com/newt-sc/a4kSubtitles</source>
         <assets>
             <icon>icon.png</icon>
+            <screenshot>screenshot-01.png</screenshot>
+            <screenshot>screenshot-02.png</screenshot>
+            <screenshot>screenshot-03.png</screenshot>
         </assets>
         <news>
+[v1.0.1]:
+  * Add screenshots
+
 [v1.0.0]:
   * Invalidate BSPlayer results cache when download links expire
   * Extraction fallback: zip -> gzip -> raw
