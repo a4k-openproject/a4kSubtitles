@@ -1,7 +1,7 @@
 <img align="left" width="115px" height="115px" src="icon.png">
 
 # a4kSubtitles
-![CI](https://github.com/a4k-openproject/a4kSubtitles/workflows/CI/badge.svg) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=a4k-openproject_a4kSubtitles&metric=alert_status)](https://sonarcloud.io/dashboard?id=a4k-openproject_a4kSubtitles) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=a4k-openproject_a4kSubtitles&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=a4k-openproject_a4kSubtitles) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=a4k-openproject_a4kSubtitles&metric=security_rating)](https://sonarcloud.io/dashboard?id=a4k-openproject_a4kSubtitles) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=a4k-openproject_a4kSubtitles&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=a4k-openproject_a4kSubtitles) [![Coverage Status](https://coveralls.io/repos/github/a4k-openproject/a4kSubtitles/badge.svg?branch=master)](https://coveralls.io/github/a4k-openproject/a4kSubtitles?branch=master)
+![CI](https://github.com/a4k-openproject/a4kSubtitles/workflows/CI/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/a4k-openproject/a4kSubtitles/badge.svg?branch=master)](https://coveralls.io/github/a4k-openproject/a4kSubtitles?branch=master) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=a4k-openproject_a4kSubtitles&metric=alert_status)](https://sonarcloud.io/dashboard?id=a4k-openproject_a4kSubtitles)
 
 ## Description
 
@@ -22,8 +22,8 @@ Steps to install a4kSubtitles:
 
 ## Screenshots
 ![ScreenShot](https://raw.github.com/a4k-openproject/a4kSubtitles/master/screenshot-01.png)
-![ScreenShot](https://raw.github.com/a4k-openproject/a4kSubtitles/master/screenshot-02.png)
 ![ScreenShot](https://raw.github.com/a4k-openproject/a4kSubtitles/master/screenshot-03.png)
+![ScreenShot](https://raw.github.com/a4k-openproject/a4kSubtitles/master/screenshot-02.png)
 
 ## Contribution
 
