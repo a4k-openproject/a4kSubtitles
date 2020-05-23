@@ -130,7 +130,9 @@ def __scrape_imdb_id(core, meta):
 
     def filter_movie_results(result):
         year_start = result.get('y', None)
+        result_type = result.get('q', None)
         return (
+            result_type is not None and result_type in ['feature', 'TV movie'] and
             result['l'].lower() == title and
             (year_start is not None and year_start == year)
         )
@@ -149,7 +151,9 @@ def __scrape_imdb_id(core, meta):
     def filter_tvshow_results(result):
         year_start = result.get('y', None)
         year_end = result.get('yr', '-').split('-')[1]
+        result_type = result.get('q', None)
         return (
+            result_type is not None and result_type in ['TV series', 'TV mini-series'] and
             result['l'].lower() == show_title and
             (year_start is not None and year_start <= episode_year) and
             (year_end == '' or int(year_end) >= episode_year)
