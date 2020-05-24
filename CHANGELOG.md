@@ -1,3 +1,6 @@
+* [v1.2.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-1.2.0):
+  * Use internal ZipFile for extraction with a fallback to vfs.libarchive
+
 * [v1.1.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-1.1.0):
   * Improve imdb id scraping
 

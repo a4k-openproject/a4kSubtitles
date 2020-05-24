@@ -45,6 +45,19 @@ __tvshow_video_meta = {
     "subdb_hash": "2aec1b70afe702e67ab39a0af776ba5a",
 }
 
+__tvshow_unicode_video_meta = {
+    "year": "2019",
+    "title": "In the Dark Night of the Soul It's Always 3:30 in the Morning",
+    "tvshow": "The Morning Show",
+    "imdb_id": "tt7203552",
+    "season": "1",
+    "episode": "1",
+    "filename": "The Morning Show (2019) S01E01 In the Dark Night of the Soul it's Always 330 in the Morning.mkv",
+    "filesize": 2135679767,
+    "filehash": "631fb55f3db5709c",
+    "subdb_hash": "b35c5f8e4afffd8ee09442e98f943410",
+}
+
 def __remove_meta_cache(a4ksubtitles_api):
     try:
         os.remove(a4ksubtitles_api.core.cache.__meta_cache_filepath)
@@ -79,7 +92,7 @@ def __search(a4ksubtitles_api, settings={}, video_meta={}):
     }
 
     search.settings = {
-        'general.timeout': '20',
+        'general.timeout': '30',
         'general.results_limit': '20',
         'opensubtitles.enabled': 'false',
         'opensubtitles.username': '',
@@ -106,6 +119,11 @@ def __search_movie(a4ksubtitles_api, settings={}, video_meta={}):
 
 def __search_tvshow(a4ksubtitles_api, settings={}, video_meta={}):
     tvshow_video_meta = __tvshow_video_meta.copy()
+    tvshow_video_meta.update(video_meta)
+    return __search(a4ksubtitles_api, settings, tvshow_video_meta)
+
+def __search_unicode_tvshow(a4ksubtitles_api, settings={}, video_meta={}):
+    tvshow_video_meta = __tvshow_unicode_video_meta.copy()
     tvshow_video_meta.update(video_meta)
     return __search(a4ksubtitles_api, settings, tvshow_video_meta)
 
@@ -207,6 +225,29 @@ def test_opensubtitles_tvshow():
         'opensubtitles.enabled': 'true',
     }
     search = __search_tvshow(a4ksubtitles_api, settings)
+
+    # download
+    item = search.results[0]
+
+    params = {
+        'action': 'download',
+        'service_name': 'opensubtitles',
+        'action_args': item['action_args']
+    }
+
+    filepath = a4ksubtitles_api.download(params, search.settings)
+
+    assert filepath != ''
+
+def test_opensubtitles_unicode_tvshow():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_all_cache(a4ksubtitles_api)
+
+    # search
+    settings = {
+        'opensubtitles.enabled': 'true',
+    }
+    search = __search_unicode_tvshow(a4ksubtitles_api, settings)
 
     # download
     item = search.results[0]
