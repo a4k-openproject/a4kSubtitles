@@ -11,9 +11,11 @@ import difflib
 import time
 import hashlib
 import re
+import zipfile
 from datetime import datetime
 from base64 import b64encode
 from xml.etree import ElementTree
+from io import BytesIO
 
 from .lib import (
     cache,

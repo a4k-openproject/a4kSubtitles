@@ -18,7 +18,7 @@ except ImportError:
     from urllib.parse import quote_plus, unquote, parse_qsl
     from io import StringIO
     import queue
-    unicode = lambda v, e: v
+    unicode = lambda v: v
 
 __url_regex = r'[a-z0-9][a-z0-9-]{0,5}[a-z0-9]\.[a-z0-9]{2,20}\.[a-z]{2,5}'
 __credit_part_regex = r'(sync|synced|fix|fixed|corrected|corrections)'
@@ -28,6 +28,9 @@ default_encoding = 'utf-8'
 base_encoding = 'raw_unicode_escape'
 cp1251_garbled = u'аеио'.encode('cp1251').decode('raw_unicode_escape')
 koi8r_garbled = u'аеио'.encode('koi8-r').decode('raw_unicode_escape')
+
+zip_utf8_flag = 0x800
+py3_zip_missing_utf8_flag_fallback_encoding = 'cp437'
 
 py2 = sys.version_info[0] == 2
 py3 = not py2
@@ -134,15 +137,10 @@ def get_json(path, filename):
     with open(json_path) as json_result:
         return json.load(json_result)
 
-def find_file_in_archive(core, archivepath, exts, part_of_filename=''):
-    (dirs, files) = core.kodi.xbmcvfs.listdir('archive://%s' % archivepath)
-
+def find_file_in_archive(core, namelist, exts, part_of_filename=''):
     first_ext_match = None
     exact_file = None
-    for file in files:
-        if core.utils.py2:
-            file = file.decode('utf8')
-
+    for file in namelist:
         file_lower = file.lower()
         if any(file_lower.endswith(ext) for ext in exts):
             if not first_ext_match:
@@ -152,3 +150,29 @@ def find_file_in_archive(core, archivepath, exts, part_of_filename=''):
                 break
 
     return exact_file if exact_file is not None else first_ext_match
+
+def get_zipfile_namelist(zipfile):
+    infolist = zipfile.infolist()
+    namelist = []
+
+    if py2:
+        for info in infolist:
+            namelist.append(info.filename.decode(default_encoding))
+    else:
+        for info in infolist:
+            filename = info.filename
+            if not info.flag_bits & zip_utf8_flag:
+                filename = info.filename.encode(py3_zip_missing_utf8_flag_fallback_encoding).decode(default_encoding)
+            namelist.append(filename)
+
+    return namelist
+
+def extract_zipfile_member(zipfile, filename, dest):
+    if py2:
+        return zipfile.extract(filename.encode(default_encoding), dest)
+    else:
+        try:
+            return zipfile.extract(filename, dest)
+        except:
+            filename = filename.encode(default_encoding).decode(py3_zip_missing_utf8_flag_fallback_encoding)
+            return zipfile.extract(filename, dest)

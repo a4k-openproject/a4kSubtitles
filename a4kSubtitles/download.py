@@ -28,10 +28,20 @@ def __extract_zip(core, archivepath, filename, episodeid):
     sub_exts = ['.srt', '.sub']
     sub_exts_secondary = ['.smi', '.ssa', '.aqt', '.jss', '.ass', '.rt', '.txt']
 
-    archivepath_ = core.utils.quote_plus(archivepath)
-    subfile = core.utils.find_file_in_archive(core, archivepath_, sub_exts, episodeid)
+    try:
+        using_libvfs = False
+        with open(archivepath, 'rb') as f:
+            zipfile = core.zipfile.ZipFile(core.BytesIO(f.read()))
+        namelist = core.utils.get_zipfile_namelist(zipfile)
+    except:
+        using_libvfs = True
+        archivepath_ = core.utils.quote_plus(archivepath)
+        (dirs, files) = core.kodi.xbmcvfs.listdir('archive://%s' % archivepath_)
+        namelist = [file.decode(core.utils.default_encoding) if core.utils.py2 else file for file in files]
+
+    subfile = core.utils.find_file_in_archive(core, namelist, sub_exts, episodeid)
     if not subfile:
-        subfile = core.utils.find_file_in_archive(core, archivepath_, sub_exts_secondary, episodeid)
+        subfile = core.utils.find_file_in_archive(core, namelist, sub_exts_secondary, episodeid)
 
     dest = core.os.path.join(core.utils.temp_dir, filename)
     if not subfile:
@@ -41,12 +51,17 @@ def __extract_zip(core, archivepath, filename, episodeid):
             core.os.rename(archivepath, dest)
             return dest
 
-    src = 'archive://' + archivepath_ + '/' + subfile
-    core.kodi.xbmcvfs.copy(src, dest)
+    if not using_libvfs:
+        src = core.utils.extract_zipfile_member(zipfile, subfile, core.utils.temp_dir)
+        core.os.rename(src, dest)
+    else:
+        src = 'archive://' + archivepath_ + '/' + subfile
+        core.kodi.xbmcvfs.copy(src, dest)
+
     return dest
 
 def __insert_lang_code_in_filename(core, filename, lang):
-    filename_chunks = filename.split('.')
+    filename_chunks = core.utils.strip_non_ascii_and_unprintable(filename).split('.')
     lang_code = core.kodi.xbmc.convertLanguage(lang, core.kodi.xbmc.ISO_639_2)
     filename_chunks.insert(-1, lang_code)
     return '.'.join(filename_chunks)
