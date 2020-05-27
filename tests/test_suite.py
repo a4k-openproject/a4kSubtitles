@@ -44,6 +44,7 @@ __tvshow_video_meta = {
     "filehash": "d603a5b0e73d4b6b",
     "subdb_hash": "2aec1b70afe702e67ab39a0af776ba5a",
 }
+__tvshow_expected_year = '2016'
 
 __tvshow_unicode_video_meta = {
     "year": "2019",
@@ -57,6 +58,28 @@ __tvshow_unicode_video_meta = {
     "filehash": "631fb55f3db5709c",
     "subdb_hash": "b35c5f8e4afffd8ee09442e98f943410",
 }
+
+__tvshow_with_show_imdb_id_video_meta = __tvshow_video_meta.copy()
+__tvshow_with_show_imdb_id_video_meta['imdb_id'] = 'tt0475784'
+__tvshow_with_show_imdb_id_expected_year = '2016'
+
+__tvshow_alt_title_video_meta = {
+    "year": "2016",
+    "title": "Episode 1",
+    "tvshow": "Midnight Diner: Tokyo Stories",
+    "imdb_id": "tt6190484",
+    "season": "1",
+    "episode": "1",
+    "filename": "Midnight.Diner.Tokyo.Stories.S01E01.1080p.NF.WEB-DL.DDP2.0.x264-Monkee.mkv",
+    "filesize": "808387637",
+    "filehash": "b3b923134834beee",
+    "subdb_hash": "8e2970e553d0b7b662b29b24ecbf1a10",
+}
+__tvshow_alt_title_expected_year = '2016'
+
+__tvshow_with_show_imdb_id_alt_title_video_meta = __tvshow_alt_title_video_meta.copy()
+__tvshow_with_show_imdb_id_alt_title_video_meta['imdb_id'] = 'tt6150576'
+__tvshow_with_show_imdb_id_alt_title_expected_year = '2016'
 
 def __remove_meta_cache(a4ksubtitles_api):
     try:
@@ -122,8 +145,23 @@ def __search_tvshow(a4ksubtitles_api, settings={}, video_meta={}):
     tvshow_video_meta.update(video_meta)
     return __search(a4ksubtitles_api, settings, tvshow_video_meta)
 
+def __search_tvshow_alt_title(a4ksubtitles_api, settings={}, video_meta={}):
+    tvshow_video_meta = __tvshow_alt_title_video_meta.copy()
+    tvshow_video_meta.update(video_meta)
+    return __search(a4ksubtitles_api, settings, tvshow_video_meta)
+
 def __search_unicode_tvshow(a4ksubtitles_api, settings={}, video_meta={}):
     tvshow_video_meta = __tvshow_unicode_video_meta.copy()
+    tvshow_video_meta.update(video_meta)
+    return __search(a4ksubtitles_api, settings, tvshow_video_meta)
+
+def __search_tvshow_with_show_imdb_id(a4ksubtitles_api, settings={}, video_meta={}):
+    tvshow_video_meta = __tvshow_with_show_imdb_id_video_meta.copy()
+    tvshow_video_meta.update(video_meta)
+    return __search(a4ksubtitles_api, settings, tvshow_video_meta)
+
+def __search_tvshow_with_show_imdb_id_alt_title(a4ksubtitles_api, settings={}, video_meta={}):
+    tvshow_video_meta = __tvshow_with_show_imdb_id_alt_title_video_meta.copy()
     tvshow_video_meta.update(video_meta)
     return __search(a4ksubtitles_api, settings, tvshow_video_meta)
 
@@ -166,7 +204,60 @@ def test_search_missing_imdb_id():
     }
     a4ksubtitles_api.search(params)
 
+    log_error_spy.restore()
     log_error_spy.called_with('missing imdb id!')
+
+def test_tvshow_year_scraping_with_episode_imdb_id():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_all_cache(a4ksubtitles_api)
+
+    get_meta_spy = utils.spy_fn(a4ksubtitles_api.core.video, 'get_meta', return_result=False)
+
+    try: __search_tvshow(a4ksubtitles_api, {'podnadpisi.enabled': 'true'})
+    except: pass
+
+    get_meta_spy.restore()
+    get_meta_spy.result[0].tvshow_year_thread.join()
+    assert get_meta_spy.result[0].tvshow_year == __tvshow_expected_year
+
+def test_tvshow_year_scraping_with_episode_imdb_id_alt_title():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_all_cache(a4ksubtitles_api)
+
+    get_meta_spy = utils.spy_fn(a4ksubtitles_api.core.video, 'get_meta', return_result=False)
+
+    try: __search_tvshow_alt_title(a4ksubtitles_api, {'podnadpisi.enabled': 'true'})
+    except: pass
+
+    get_meta_spy.restore()
+    get_meta_spy.result[0].tvshow_year_thread.join()
+    assert get_meta_spy.result[0].tvshow_year == __tvshow_alt_title_expected_year
+
+def test_tvshow_year_scraping_with_show_imdb_id():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_all_cache(a4ksubtitles_api)
+
+    get_meta_spy = utils.spy_fn(a4ksubtitles_api.core.video, 'get_meta', return_result=False)
+
+    try: __search_tvshow_with_show_imdb_id(a4ksubtitles_api, {'podnadpisi.enabled': 'true'})
+    except: pass
+
+    get_meta_spy.restore()
+    get_meta_spy.result[0].tvshow_year_thread.join()
+    assert get_meta_spy.result[0].tvshow_year == __tvshow_with_show_imdb_id_expected_year
+
+def test_tvshow_year_scraping_with_show_imdb_id_alt_title():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_all_cache(a4ksubtitles_api)
+
+    get_meta_spy = utils.spy_fn(a4ksubtitles_api.core.video, 'get_meta', return_result=False)
+
+    try: __search_tvshow_with_show_imdb_id_alt_title(a4ksubtitles_api, {'podnadpisi.enabled': 'true'})
+    except: pass
+
+    get_meta_spy.restore()
+    get_meta_spy.result[0].tvshow_year_thread.join()
+    assert get_meta_spy.result[0].tvshow_year == __tvshow_with_show_imdb_id_alt_title_expected_year
 
 def test_opensubtitles():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})

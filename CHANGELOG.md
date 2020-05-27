@@ -1,3 +1,6 @@
+* [v1.3.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-1.3.0):
+  * Improve tvshow year scraping
+
 * [v1.2.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-1.2.0):
   * Use internal ZipFile for extraction with a fallback to vfs.libarchive
 
