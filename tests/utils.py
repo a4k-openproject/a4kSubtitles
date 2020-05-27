@@ -11,15 +11,19 @@ class Spy(object):
         assert self.args[0] == args
         assert self.kwargs[0] == kwargs
 
-def spy_fn(target, fn_name):
+def spy_fn(target, fn_name, return_result=True):
     spy = Spy()
     fn = getattr(target, fn_name)
 
     def fn_wrap(*args, **kwargs):
         spy.args.append(args)
         spy.kwargs.append(kwargs)
-        spy.result.append(fn(*args, **kwargs))
+        result = fn(*args, **kwargs)
+        spy.result.append(result)
         spy.call_count += 1
+
+        if return_result:
+            return result
 
     setattr(target, fn_name, fn_wrap)
     spy.restore = lambda: setattr(target, fn_name, fn)

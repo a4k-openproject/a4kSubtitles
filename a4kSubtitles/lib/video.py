@@ -96,6 +96,11 @@ def __scrape_tvshow_year(core, meta):
         return
 
     show_year_match = re.search(r' %s \((.*?)\)"' % meta.tvshow, imdb_response.text)
+    if not show_year_match:
+        show_year_match = re.search(r'<title>.*?\(TV (?:Mini-)?Series (\d\d\d\d).*?</title>', imdb_response.text)
+    if not show_year_match:
+        show_year_match = re.search(r'<span class="parentDate">\((\d\d\d\d).*?\)</span>', imdb_response.text)
+
     if show_year_match:
         meta.tvshow_year = show_year_match.group(1).strip()
 
