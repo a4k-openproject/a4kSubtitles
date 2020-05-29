@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="1.3.0"
+       version="1.4.0"
        provider-name="Unknown">
     <requires>
       <import addon="xbmc.python" version="2.25.0"/>
@@ -12,6 +12,7 @@
       <import addon="script.module.requests"/>
     </requires>
     <extension point="xbmc.subtitle.module" library="main.py"/>
+    <extension point="xbmc.service" library="main_service.py" />
     <extension point="xbmc.addon.metadata">
         <summary lang="en">a4kSubtitles - Multi-Source Subtitles Addon</summary>
         <description>
@@ -30,6 +31,9 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDB, Subscene, Addic7ed
             <screenshot>screenshot-03.png</screenshot>
         </assets>
         <news>
+[v1.4.0]:
+  * Add option to auto open the search dialog when the video does not have subtitles
+
 [v1.3.0]:
   * Improve tvshow year scraping
 

@@ -63,7 +63,7 @@ class A4kSubtitlesApi(object):
             self.core.kodi.xbmcvfs.File.subdb_hash = default____
         return restore
 
-    def __mock_settings(self, settings):
+    def mock_settings(self, settings):
         default = self.core.kodi.addon.getSetting
 
         def get_setting(id):
@@ -84,7 +84,7 @@ class A4kSubtitlesApi(object):
 
         try:
             if settings:
-                restore_settings = self.__mock_settings(settings)
+                restore_settings = self.mock_settings(settings)
 
             if video_meta:
                 restore_video_meta = self.__mock_video_meta(video_meta)
@@ -101,7 +101,7 @@ class A4kSubtitlesApi(object):
 
         try:
             if settings:
-                restore_settings = self.__mock_settings(settings)
+                restore_settings = self.mock_settings(settings)
 
             return self.core.download(self.core, params)
         finally:
