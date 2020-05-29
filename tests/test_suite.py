@@ -1,26 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import sys
-import os
-import json
-import re
-import pytest
-import time
-
-dir_name = os.path.dirname(__file__)
-main = os.path.join(dir_name, '..')
-a4kSubtitles = os.path.join(main, '..', 'a4kSubtitles')
-lib = os.path.join(a4kSubtitles, 'lib')
-services = os.path.join(a4kSubtitles, 'services')
-
-sys.path.append(dir_name)
-sys.path.append(main)
-sys.path.append(a4kSubtitles)
-sys.path.append(lib)
-sys.path.append(services)
-
-from a4kSubtitles import api
-from tests import utils
+from .common import (
+    sys,
+    os,
+    json,
+    re,
+    time,
+    api,
+    utils
+)
 
 __movie_video_meta = {
     'year': '2016',
@@ -164,33 +152,6 @@ def __search_tvshow_with_show_imdb_id_alt_title(a4ksubtitles_api, settings={}, v
     tvshow_video_meta = __tvshow_with_show_imdb_id_alt_title_video_meta.copy()
     tvshow_video_meta.update(video_meta)
     return __search(a4ksubtitles_api, settings, tvshow_video_meta)
-
-def test_api():
-    def get_error_msg(e):
-        return str(e.value).replace('\'', '')
-
-    with pytest.raises(ImportError) as e:
-        api.A4kSubtitlesApi()
-    assert get_error_msg(e) == "No module named xbmc"
-
-    with pytest.raises(ImportError) as e:
-        api.A4kSubtitlesApi({'xbmc': True})
-    assert get_error_msg(e) == "No module named xbmcaddon"
-
-    with pytest.raises(ImportError) as e:
-        api.A4kSubtitlesApi({'xbmc': True, 'xbmcaddon': True})
-    assert get_error_msg(e) == "No module named xbmcplugin"
-
-    with pytest.raises(ImportError) as e:
-        api.A4kSubtitlesApi({'xbmc': True, 'xbmcaddon': True, 'xbmcplugin': True})
-    assert get_error_msg(e) == "No module named xbmcgui"
-
-    with pytest.raises(ImportError) as e:
-        api.A4kSubtitlesApi({'xbmc': True, 'xbmcaddon': True, 'xbmcplugin': True, 'xbmcgui': True})
-    assert get_error_msg(e) == "No module named xbmcvfs"
-
-    api.A4kSubtitlesApi({'xbmc': True, 'xbmcaddon': True, 'xbmcplugin': True, 'xbmcgui': True, 'xbmcvfs': True})
-    api.A4kSubtitlesApi({'kodi': True})
 
 def test_search_missing_imdb_id():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})

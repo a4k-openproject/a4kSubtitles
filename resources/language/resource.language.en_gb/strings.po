@@ -28,6 +28,10 @@ msgctxt "#33102"
 msgid "Results Limit"
 msgstr ""
 
+msgctxt "#33103"
+msgid "Auto Search (Will not trigger if subs are available)"
+msgstr ""
+
 # Services
 msgctxt "#33201"
 msgid "OpenSubtitles"

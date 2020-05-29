@@ -19,6 +19,7 @@ xbmc.getInfoLabel = lambda t: ''
 xbmc.executeJSONRPC = lambda _: '{ "result": { "value": true } }'
 xbmc.executebuiltin = lambda _: None
 xbmc.getCleanMovieTitle = lambda t: t
+xbmc.getCondVisibility = lambda _: False
 
 xbmc.convertLanguage = lambda l, f: l[:f].lower()
 xbmc.ISO_639_1 = 2
@@ -27,6 +28,11 @@ xbmc.ISO_639_2 = 3
 __player = lambda: None
 __player.getPlayingFile = lambda: ''
 xbmc.Player = lambda: __player
+
+__monitor = lambda: None
+__monitor.abortRequested = lambda: False
+__monitor.waitForAbort = lambda _: False
+xbmc.Monitor = lambda: __monitor
 
 def __log(msg, label):
     print(msg)

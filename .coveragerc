@@ -1,5 +1,7 @@
 [run]
 omit =
+    main.py
+    main_service.py
     a4kSubtitles/lib/num2ordinal.py
 
 [report]
