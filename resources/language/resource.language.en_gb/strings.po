@@ -21,15 +21,19 @@ msgstr ""
 
 # General
 msgctxt "#33101"
-msgid "Request Timeout"
+msgid "Request timeout"
 msgstr ""
 
 msgctxt "#33102"
-msgid "Results Limit"
+msgid "Results limit"
 msgstr ""
 
 msgctxt "#33103"
-msgid "Auto Search (Will not trigger if subs are available)"
+msgid "Auto search"
+msgstr ""
+
+msgctxt "#33104"
+msgid "Auto download first subtitle silently"
 msgstr ""
 
 # Services

@@ -16,7 +16,7 @@ except ImportError:
 xbmc = lambda: None
 xbmc.translatePath = lambda p: p
 xbmc.getInfoLabel = lambda t: ''
-xbmc.executeJSONRPC = lambda _: '{ "result": { "value": true } }'
+xbmc.executeJSONRPC = lambda _: '{ "result": { "value": [] } }'
 xbmc.executebuiltin = lambda _: None
 xbmc.getCleanMovieTitle = lambda t: t
 xbmc.getCondVisibility = lambda _: False
@@ -27,6 +27,7 @@ xbmc.ISO_639_2 = 3
 
 __player = lambda: None
 __player.getPlayingFile = lambda: ''
+__player.setSubtitles = lambda s: None
 xbmc.Player = lambda: __player
 
 __monitor = lambda: None
