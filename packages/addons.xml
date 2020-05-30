@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="1.4.0"
+       version="1.5.0"
        provider-name="Unknown">
     <requires>
       <import addon="xbmc.python" version="2.25.0"/>
@@ -31,6 +31,9 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDB, Subscene, Addic7ed
             <screenshot>screenshot-03.png</screenshot>
         </assets>
         <news>
+[v1.5.0]:
+  * Auto open search dialog only on movie and tvshow videos
+
 [v1.4.0]:
   * Add option to auto open the search dialog when the video does not have subtitles
 
