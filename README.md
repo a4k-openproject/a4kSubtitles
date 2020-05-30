@@ -14,7 +14,7 @@ Subtitle addon for KODI with support for multiple subtitle services:
 * Subscene
 
 ## Configuration
-![configuration](https://media.giphy.com/media/S6l3wB0ajzJTNnIVnD/source.gif)
+![configuration](https://media.giphy.com/media/kewuE4BgfOnFin0vEC/source.gif)
 
 ## Installation
 
