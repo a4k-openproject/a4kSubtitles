@@ -26,6 +26,20 @@ def __mock_get_cond_visibility(api, mock_data):
         api.core.kodi.xbmc.getCondVisibility = default
     return restore
 
+def __mock_api_search(api):
+    default = api.search
+    api.search = lambda p: [{}]
+    def restore():
+        api.search = default
+    return restore
+
+def __mock_api_download(api, result=None):
+    default = api.download
+    api.download = lambda p: result
+    def restore():
+        api.download = default
+    return restore
+
 def __mock(api, settings):
     restore_monitor = __mock_monitor(api)
     restore_settings = api.mock_settings(settings)
@@ -43,7 +57,7 @@ def test_service_start_when_disabled():
     })
     get_cond_visibility_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'getCondVisibility')
 
-    service.start(a4ksubtitles_api.core)
+    service.start(a4ksubtitles_api)
 
     restore()
     get_cond_visibility_spy.restore()
@@ -58,7 +72,7 @@ def test_service_start_when_enabled():
     })
     get_cond_visibility_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'getCondVisibility')
 
-    service.start(a4ksubtitles_api.core)
+    service.start(a4ksubtitles_api)
 
     restore()
     get_cond_visibility_spy.restore()
@@ -80,7 +94,7 @@ def test_service_when_video_has_subtitles():
 
     executebuiltin_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'executebuiltin')
 
-    service.start(a4ksubtitles_api.core)
+    service.start(a4ksubtitles_api)
 
     restore()
     restore_get_cond_visibility()
@@ -103,7 +117,7 @@ def test_service_when_video_does_not_have_subtitles():
 
     executebuiltin_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'executebuiltin')
 
-    service.start(a4ksubtitles_api.core)
+    service.start(a4ksubtitles_api)
 
     restore()
     restore_get_cond_visibility()
@@ -126,7 +140,7 @@ def test_service_when_video_has_disabled_subtitles():
 
     executebuiltin_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'executebuiltin')
 
-    service.start(a4ksubtitles_api.core)
+    service.start(a4ksubtitles_api)
 
     restore()
     restore_get_cond_visibility()
@@ -149,7 +163,7 @@ def test_service_when_subs_check_done():
 
     executebuiltin_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'executebuiltin')
 
-    service.start(a4ksubtitles_api.core)
+    service.start(a4ksubtitles_api)
 
     restore()
     restore_get_cond_visibility()
@@ -172,10 +186,42 @@ def test_service_when_does_not_have_video_duration():
 
     executebuiltin_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'executebuiltin')
 
-    service.start(a4ksubtitles_api.core)
+    service.start(a4ksubtitles_api)
 
     restore()
     restore_get_cond_visibility()
     executebuiltin_spy.restore()
 
     assert executebuiltin_spy.call_count == 0
+
+def test_service_auto_download():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+
+    restore = __mock(a4ksubtitles_api, {
+        'general.auto_search': 'true',
+        'general.auto_download': 'true',
+    })
+    restore_get_cond_visibility = __mock_get_cond_visibility(a4ksubtitles_api, {
+        'VideoPlayer.Content(movies)': True,
+        'Player.HasDuration': True,
+        'VideoPlayer.HasSubtitles': False,
+        'VideoPlayer.SubtitlesEnabled': False,
+    })
+    restore_api_search = __mock_api_search(a4ksubtitles_api)
+    expected_download_result = 'test_download_result'
+    restore_api_download = __mock_api_download(a4ksubtitles_api, expected_download_result)
+
+    executebuiltin_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'executebuiltin')
+    setsubtitles_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc.Player(), 'setSubtitles')
+
+    service.start(a4ksubtitles_api)
+
+    restore()
+    restore_get_cond_visibility()
+    restore_api_search()
+    restore_api_download()
+    executebuiltin_spy.restore()
+
+    assert executebuiltin_spy.call_count == 0
+    assert setsubtitles_spy.call_count == 1
+    setsubtitles_spy.called_with(expected_download_result)

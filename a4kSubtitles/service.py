@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-def start(core):
+def start(api):
+    core = api.core
     monitor = core.kodi.xbmc.Monitor()
     has_done_subs_check = False
 
@@ -26,6 +27,25 @@ def start(core):
         has_subtitles_enabled = core.kodi.xbmc.getCondVisibility('VideoPlayer.SubtitlesEnabled')
         has_subtitles = core.kodi.xbmc.getCondVisibility('VideoPlayer.HasSubtitles') and has_subtitles_enabled
 
-        if not has_subtitles:
+        if has_subtitles:
+            continue
+
+        if not core.kodi.get_bool_setting('general', 'auto_download'):
             core.kodi.xbmc.executebuiltin('ActivateWindow(SubtitleSearch)')
             continue
+
+        languages = core.kodi.get_kodi_setting('subtitles.languages')
+        preferredlang = core.kodi.get_kodi_setting('locale.subtitlelanguage')
+        params = {
+            'action': 'search',
+            'languages': ','.join(languages),
+            'preferredlanguage': preferredlang
+        }
+
+        results = api.search(params)
+        for result in results:
+            try:
+                subfile = api.download(result)
+                core.kodi.xbmc.Player().setSubtitles(subfile)
+                break
+            except: pass
