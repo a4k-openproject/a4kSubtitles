@@ -5,7 +5,16 @@
 
 ## Description
 
-Subtitle addon for KODI with support for multiple subtitle services: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDB, Subscene and Addic7ed.
+Subtitle addon for KODI with support for multiple subtitle services:
+* Addic7ed
+* BSPlayer
+* OpenSubtitles
+* Podnadpisi.NET
+* SubDB
+* Subscene
+
+## Configuration
+![configuration](https://media.giphy.com/media/S6l3wB0ajzJTNnIVnD/source.gif)
 
 ## Installation
 
@@ -20,10 +29,8 @@ Steps to install a4kSubtitles:
 8. Go back to **Addons** and select **Install from repository**
 9. Select the **a4kSubtitles** menu item
 
-## Screenshots
-![ScreenShot](https://raw.github.com/a4k-openproject/a4kSubtitles/master/screenshot-01.png)
-![ScreenShot](https://raw.github.com/a4k-openproject/a4kSubtitles/master/screenshot-03.png)
-![ScreenShot](https://raw.github.com/a4k-openproject/a4kSubtitles/master/screenshot-02.png)
+## Preview
+![usage](https://media.giphy.com/media/QTmhgEJTpTPTPxByfj/source.gif)
 
 ## Contribution
 
