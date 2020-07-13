@@ -13,8 +13,15 @@ try:
 except:
     sys.exit(0)
 
-response = response.text.split('[Select a TV Show]')[1]
-tvshow_options = re.findall(r'<option\s*?value="(.*?)"\s*?>(.*?)</option>', response)
+tvshow_options = []
+
+try:
+    response = response.text.split('[Select a TV Show]')[1]
+    tvshow_options = re.findall(r'<option\s*?value="(.*?)"\s*?>(.*?)</option>', response)
+except: pass
+
+if len(tvshow_options) == 0:
+    sys.exit(0)
 
 tvshows = {}
 for option in tvshow_options:
