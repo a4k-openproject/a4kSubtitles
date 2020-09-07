@@ -4,10 +4,9 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="1.7.0"
+       version="1.7.1"
        provider-name="Unknown">
     <requires>
-      <import addon="xbmc.python" version="3.0.0"/>
       <import addon="vfs.libarchive"/>
       <import addon="script.module.requests"/>
     </requires>
@@ -31,6 +30,9 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDB, Subscene, Addic7ed
             <screenshot>screenshot-03.png</screenshot>
         </assets>
         <news>
+[v1.7.1]:
+  * Drop python meta as it prevents installations on pre Kodi 19 versions
+
 [v1.7.0]:
   * Update python meta to enable Kodi 19 installations
 
