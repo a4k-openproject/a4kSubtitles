@@ -1,3 +1,6 @@
+* [v1.7.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-1.7.0):
+  * Update python meta to enable Kodi 19 installations
+
 * [v1.6.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-1.6.0):
   * Add option to auto download first subtitle result silently
 
