@@ -1,3 +1,6 @@
+* [v1.7.2](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-1.7.2):
+  * Improve results sort based on title match
+
 * [v1.7.1](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-1.7.1):
   * Drop python meta as it prevents installations on pre Kodi 19 versions
 

@@ -124,7 +124,7 @@ def __prepare_results(core, meta, results):
         not x['lang'] == meta.preferredlanguage,
         meta.languages.index(x['lang']),
         not x['sync'] == 'true',
-        -core.difflib.SequenceMatcher(None, x['name'], meta.filename).ratio(),
+        -core.difflib.SequenceMatcher(None, x['name'].lower(), meta.filename).ratio(),
         -x['rating'],
         not x['impaired'] == 'true',
         x['service'],
