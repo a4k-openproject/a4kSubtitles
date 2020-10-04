@@ -21,16 +21,16 @@ __movie_video_meta = {
 }
 
 __tvshow_video_meta = {
-    "year": "2018",
-    "title": "The Passenger",
+    "year": "2020",
+    "title": "Parce Domine",
     "tvshow": "Westworld",
-    "imdb_id": "tt6243312",
-    "season": "2",
-    "episode": "10",
-    "filename": "Westworld.S02E10.1080p.WEB.H264-DEFLATE.mkv",
-    "filesize": "7945997565",
-    "filehash": "d603a5b0e73d4b6b",
-    "subdb_hash": "2aec1b70afe702e67ab39a0af776ba5a",
+    "imdb_id": "tt8358332",
+    "season": "3",
+    "episode": "1",
+    "filename": "westworld.s03e01.1080p.web.h264-xlf.mkv",
+    "filesize": "3280755286",
+    "filehash": "ec26d882048dde98",
+    "subdb_hash": "88fdabf463b7cdb463bde0fdcfc22506",
 }
 __tvshow_expected_year = '2016'
 
@@ -572,9 +572,6 @@ def test_addic7ed_tvshow():
         'action_args': item['action_args']
     }
 
-    try:
-        filepath = a4ksubtitles_api.download(params, search.settings)
-    except IOError:
-        filepath = 'ignore'
+    filepath = a4ksubtitles_api.download(params, search.settings)
 
     assert filepath != ''
