@@ -1,7 +1,12 @@
 <img align="left" width="115px" height="115px" src="icon.png">
 
 # a4kSubtitles
-![ci](https://github.com/a4k-openproject/a4kSubtitles/workflows/ci/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/a4k-openproject/a4kSubtitles/badge.svg?branch=master)](https://coveralls.io/github/a4k-openproject/a4kSubtitles?branch=master) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=a4k-openproject_a4kSubtitles&metric=alert_status)](https://sonarcloud.io/dashboard?id=a4k-openproject_a4kSubtitles) ![cron](https://github.com/a4k-openproject/a4kSubtitles/workflows/cron/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/a4k-openproject/a4kSubtitles/badge.svg?branch=master)](https://coveralls.io/github/a4k-openproject/a4kSubtitles?branch=master) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=a4k-openproject_a4kSubtitles&metric=alert_status)](https://sonarcloud.io/dashboard?id=a4k-openproject_a4kSubtitles)
+
+### General Status
+![general-service](https://github.com/a4k-openproject/a4kSubtitles/workflows/Service/badge.svg) ![general-api](https://github.com/a4k-openproject/a4kSubtitles/workflows/API/badge.svg) ![general-search](https://github.com/a4k-openproject/a4kSubtitles/workflows/Search/badge.svg) ![general-tvshow](https://github.com/a4k-openproject/a4kSubtitles/workflows/TVShow/badge.svg)
+### Providers Status
+![addic7ed](https://github.com/a4k-openproject/a4kSubtitles/workflows/Addic7ed/badge.svg) ![bsplayer](https://github.com/a4k-openproject/a4kSubtitles/workflows/BSPlayer/badge.svg) ![opensubtitles](https://github.com/a4k-openproject/a4kSubtitles/workflows/OpenSubtitles/badge.svg) ![podnadpisi](https://github.com/a4k-openproject/a4kSubtitles/workflows/Podnadpisi.NET/badge.svg) ![subdb](https://github.com/a4k-openproject/a4kSubtitles/workflows/Subdb/badge.svg) ![subscene](https://github.com/a4k-openproject/a4kSubtitles/workflows/Subscene/badge.svg)
 
 ## Description
 
