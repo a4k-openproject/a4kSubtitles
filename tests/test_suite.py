@@ -450,28 +450,28 @@ def test_podnadpisi_tvshow():
 
     assert filepath != ''
 
-def test_subdb():
-    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
-    __remove_all_cache(a4ksubtitles_api)
+# def test_subdb():
+#     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+#     __remove_all_cache(a4ksubtitles_api)
 
-    # search
-    settings = {
-        'subdb.enabled': 'true',
-    }
-    search = __search_movie(a4ksubtitles_api, settings)
+#     # search
+#     settings = {
+#         'subdb.enabled': 'true',
+#     }
+#     search = __search_movie(a4ksubtitles_api, settings)
 
-    # download
-    item = search.results[0]
+#     # download
+#     item = search.results[0]
 
-    params = {
-        'action': 'download',
-        'service_name': 'subdb',
-        'action_args': item['action_args']
-    }
+#     params = {
+#         'action': 'download',
+#         'service_name': 'subdb',
+#         'action_args': item['action_args']
+#     }
 
-    filepath = a4ksubtitles_api.download(params, search.settings)
+#     filepath = a4ksubtitles_api.download(params, search.settings)
 
-    assert filepath != ''
+#     assert filepath != ''
 
 def test_subdb_tvshow():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})

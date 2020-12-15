@@ -1,12 +1,13 @@
-name: cron
+name: Data Update
 on:
   push:
     branches:
       - master
     paths:
-      - '.github/workflows/cron.yml'
+      - '.github/workflows/cron-update-data.yml'
   schedule:
     - cron:  '0 7 * * *'
+  workflow_dispatch: ~
 
 jobs:
   update-data:
@@ -31,23 +32,3 @@ jobs:
         git config --global user.name "newt-sc"
         git commit -am "chore: update data" || true
         git push || true
-
-  tests:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: setup-python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
-
-    - name: install
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt
-
-    - name: test
-      run: |
-        pytest -v
