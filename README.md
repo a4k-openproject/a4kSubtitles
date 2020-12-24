@@ -6,7 +6,7 @@
 ### General Status
 ![general-service](https://github.com/a4k-openproject/a4kSubtitles/workflows/Service/badge.svg) ![general-api](https://github.com/a4k-openproject/a4kSubtitles/workflows/API/badge.svg) ![general-search](https://github.com/a4k-openproject/a4kSubtitles/workflows/Search/badge.svg) ![general-tvshow](https://github.com/a4k-openproject/a4kSubtitles/workflows/TVShow/badge.svg)
 ### Providers Status
-![addic7ed](https://github.com/a4k-openproject/a4kSubtitles/workflows/Addic7ed/badge.svg) ![bsplayer](https://github.com/a4k-openproject/a4kSubtitles/workflows/BSPlayer/badge.svg) ![opensubtitles](https://github.com/a4k-openproject/a4kSubtitles/workflows/OpenSubtitles/badge.svg) ![podnadpisi](https://github.com/a4k-openproject/a4kSubtitles/workflows/Podnadpisi.NET/badge.svg) ![subdb](https://github.com/a4k-openproject/a4kSubtitles/workflows/Subdb/badge.svg) ![subscene](https://github.com/a4k-openproject/a4kSubtitles/workflows/Subscene/badge.svg)
+![addic7ed](https://github.com/a4k-openproject/a4kSubtitles/workflows/Addic7ed/badge.svg) ![bsplayer](https://github.com/a4k-openproject/a4kSubtitles/workflows/BSPlayer/badge.svg) ![opensubtitles](https://github.com/a4k-openproject/a4kSubtitles/workflows/OpenSubtitles/badge.svg) ![podnadpisi](https://github.com/a4k-openproject/a4kSubtitles/workflows/Podnadpisi.NET/badge.svg) ![subscene](https://github.com/a4k-openproject/a4kSubtitles/workflows/Subscene/badge.svg)
 
 ## Description
 
@@ -15,7 +15,6 @@ Subtitle addon for KODI with support for multiple subtitle services:
 * BSPlayer
 * OpenSubtitles
 * Podnadpisi.NET
-* SubDB
 * Subscene
 
 ## Configuration

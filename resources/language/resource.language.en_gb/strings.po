@@ -49,10 +49,6 @@ msgctxt "#33203"
 msgid "Podnadpisi"
 msgstr ""
 
-msgctxt "#33204"
-msgid "SubDB"
-msgstr ""
-
 msgctxt "#33205"
 msgid "Subscene"
 msgstr ""

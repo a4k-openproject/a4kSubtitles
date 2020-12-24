@@ -4,11 +4,11 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="1.7.2"
+       version="1.8.0"
        provider-name="Unknown">
     <requires>
-      <import addon="vfs.libarchive"/>
       <import addon="script.module.requests"/>
+      <import addon="vfs.libarchive" optional="true"/>
     </requires>
     <extension point="xbmc.subtitle.module" library="main.py"/>
     <extension point="xbmc.service" library="main_service.py" />
@@ -30,6 +30,10 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDB, Subscene, Addic7ed
             <screenshot>screenshot-03.png</screenshot>
         </assets>
         <news>
+[v1.8.0]:
+  * Remove SubDb (Site is down)
+  * Make lib vfs optional since there are fallbacks and it is used as last case scenario. Thus making the addon installable on platforms which are not supported by lib vfs.
+
 [v1.7.2]:
   * Improve results sort based on title match
 

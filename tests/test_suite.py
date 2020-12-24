@@ -110,7 +110,6 @@ def __search(a4ksubtitles_api, settings={}, video_meta={}):
         'opensubtitles.password': '',
         'bsplayer.enabled': 'false',
         'podnadpisi.enabled': 'false',
-        'subdb.enabled': 'false',
         'subscene.enabled': 'false',
         'addic7ed.enabled': 'false',
     }
@@ -443,53 +442,6 @@ def test_podnadpisi_tvshow():
     params = {
         'action': 'download',
         'service_name': 'podnadpisi',
-        'action_args': item['action_args']
-    }
-
-    filepath = a4ksubtitles_api.download(params, search.settings)
-
-    assert filepath != ''
-
-# def test_subdb():
-#     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
-#     __remove_all_cache(a4ksubtitles_api)
-
-#     # search
-#     settings = {
-#         'subdb.enabled': 'true',
-#     }
-#     search = __search_movie(a4ksubtitles_api, settings)
-
-#     # download
-#     item = search.results[0]
-
-#     params = {
-#         'action': 'download',
-#         'service_name': 'subdb',
-#         'action_args': item['action_args']
-#     }
-
-#     filepath = a4ksubtitles_api.download(params, search.settings)
-
-#     assert filepath != ''
-
-def test_subdb_tvshow():
-    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
-    __remove_all_cache(a4ksubtitles_api)
-
-    # search
-    settings = {
-        'subdb.enabled': 'true',
-    }
-
-    search = __search_tvshow(a4ksubtitles_api, settings)
-
-    # download
-    item = search.results[0]
-
-    params = {
-        'action': 'download',
-        'service_name': 'subdb',
         'action_args': item['action_args']
     }
 
