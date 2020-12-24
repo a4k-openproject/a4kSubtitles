@@ -9,7 +9,6 @@ __display_names = {
     'bsplayer': 'BSPlayer',
     'opensubtitles': 'OpenSubtitles',
     'podnadpisi': 'Podnadpisi',
-    'subdb': 'SubDB',
     'subscene': 'Subscene',
 }
 
