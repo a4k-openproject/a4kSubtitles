@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="2.0.0"
+       version="2.1.0"
        provider-name="Unknown">
     <requires>
       <import addon="script.module.requests"/>
@@ -27,6 +27,9 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, Subscene, Addic7ed
             <screenshot>screenshot-03.png</screenshot>
         </assets>
         <news>
+[v2.1.0]:
+  * Fix Persian search in Subscene
+
 [v2.0.0]:
   * Use IMDb as main source for all meta.
   * Retry on 503 (Service Unavailable). OpenSubtitles and Subscene seems to return it occasionally.

@@ -1,3 +1,6 @@
+* [v2.1.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-2.1.0):
+  * Fix Persian search in Subscene
+
 * [v2.0.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-2.0.0):
   * Use IMDb as main source for all meta.
   * Retry on 503 (Service Unavailable). OpenSubtitles and Subscene seems to return it occasionally.
