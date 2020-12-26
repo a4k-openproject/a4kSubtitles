@@ -100,6 +100,5 @@ def __File(_):
     return __File
 __File.size = lambda: 0
 __File.hash = lambda: 0
-__File.subdb_hash = lambda: 0
 __File.close = lambda: None
 xbmcvfs.File = __File

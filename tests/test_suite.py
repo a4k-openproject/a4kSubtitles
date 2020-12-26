@@ -17,7 +17,6 @@ __movie_video_meta = {
     'filename': 'Fantastic.Beasts.and.Where.to.Find.Them.2016.1080p.BluRay.x264.DTS-JYK.mkv',
     'filesize': '3592482379',
     'filehash': '4985126cbf92fe60',
-    'subdb_hash': 'fb7e5d6ac9c3f94813467988de753d0e',
 }
 
 __tvshow_video_meta = {
@@ -30,7 +29,6 @@ __tvshow_video_meta = {
     "filename": "westworld.s03e01.1080p.web.h264-xlf.mkv",
     "filesize": "3280755286",
     "filehash": "ec26d882048dde98",
-    "subdb_hash": "88fdabf463b7cdb463bde0fdcfc22506",
 }
 __tvshow_expected_year = '2016'
 
@@ -44,12 +42,18 @@ __tvshow_unicode_video_meta = {
     "filename": "The Morning Show (2019) S01E01 In the Dark Night of the Soul it's Always 330 in the Morning.mkv",
     "filesize": 2135679767,
     "filehash": "631fb55f3db5709c",
-    "subdb_hash": "b35c5f8e4afffd8ee09442e98f943410",
 }
 
 __tvshow_with_show_imdb_id_video_meta = __tvshow_video_meta.copy()
 __tvshow_with_show_imdb_id_video_meta['imdb_id'] = 'tt0475784'
 __tvshow_with_show_imdb_id_expected_year = '2016'
+
+__tvshow_with_show_imdb_id_missing_year_meta = __tvshow_video_meta.copy()
+__tvshow_with_show_imdb_id_missing_year_meta['imdb_id'] = 'tt0475784'
+__tvshow_with_show_imdb_id_missing_year_meta['year'] = ''
+__tvshow_with_show_imdb_id_missing_year_meta_expected_imdb_id = 'tt8358332'
+__tvshow_with_show_imdb_id_missing_year_meta_expected_year = '2016'
+__tvshow_with_show_imdb_id_missing_year_meta_expected_ep_year = '2020'
 
 __tvshow_alt_title_video_meta = {
     "year": "2016",
@@ -61,7 +65,6 @@ __tvshow_alt_title_video_meta = {
     "filename": "Midnight.Diner.Tokyo.Stories.S01E01.1080p.NF.WEB-DL.DDP2.0.x264-Monkee.mkv",
     "filesize": "808387637",
     "filehash": "b3b923134834beee",
-    "subdb_hash": "8e2970e553d0b7b662b29b24ecbf1a10",
 }
 __tvshow_alt_title_expected_year = '2016'
 
@@ -152,6 +155,11 @@ def __search_tvshow_with_show_imdb_id_alt_title(a4ksubtitles_api, settings={}, v
     tvshow_video_meta.update(video_meta)
     return __search(a4ksubtitles_api, settings, tvshow_video_meta)
 
+def __search_tvshow_with_show_imdb_id_missing_year(a4ksubtitles_api, settings={}, video_meta={}):
+    tvshow_video_meta = __tvshow_with_show_imdb_id_missing_year_meta.copy()
+    tvshow_video_meta.update(video_meta)
+    return __search(a4ksubtitles_api, settings, tvshow_video_meta)
+
 def test_search_missing_imdb_id():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
     __remove_all_cache(a4ksubtitles_api)
@@ -177,7 +185,6 @@ def test_tvshow_year_scraping_with_episode_imdb_id():
     except: pass
 
     get_meta_spy.restore()
-    get_meta_spy.result[0].tvshow_year_thread.join()
     assert get_meta_spy.result[0].tvshow_year == __tvshow_expected_year
 
 def test_tvshow_year_scraping_with_episode_imdb_id_alt_title():
@@ -190,7 +197,6 @@ def test_tvshow_year_scraping_with_episode_imdb_id_alt_title():
     except: pass
 
     get_meta_spy.restore()
-    get_meta_spy.result[0].tvshow_year_thread.join()
     assert get_meta_spy.result[0].tvshow_year == __tvshow_alt_title_expected_year
 
 def test_tvshow_year_scraping_with_show_imdb_id():
@@ -203,7 +209,6 @@ def test_tvshow_year_scraping_with_show_imdb_id():
     except: pass
 
     get_meta_spy.restore()
-    get_meta_spy.result[0].tvshow_year_thread.join()
     assert get_meta_spy.result[0].tvshow_year == __tvshow_with_show_imdb_id_expected_year
 
 def test_tvshow_year_scraping_with_show_imdb_id_alt_title():
@@ -216,8 +221,21 @@ def test_tvshow_year_scraping_with_show_imdb_id_alt_title():
     except: pass
 
     get_meta_spy.restore()
-    get_meta_spy.result[0].tvshow_year_thread.join()
     assert get_meta_spy.result[0].tvshow_year == __tvshow_with_show_imdb_id_alt_title_expected_year
+
+def test_tvshow_year_scraping_with_show_imdb_id_missing_year():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_all_cache(a4ksubtitles_api)
+
+    get_meta_spy = utils.spy_fn(a4ksubtitles_api.core.video, 'get_meta', return_result=False)
+
+    try: __search_tvshow_with_show_imdb_id_missing_year(a4ksubtitles_api, {'podnadpisi.enabled': 'true'})
+    except: pass
+
+    get_meta_spy.restore()
+    assert get_meta_spy.result[0].tvshow_year == __tvshow_with_show_imdb_id_missing_year_meta_expected_year
+    assert get_meta_spy.result[0].year == __tvshow_with_show_imdb_id_missing_year_meta_expected_ep_year
+    assert get_meta_spy.result[0].imdb_id == __tvshow_with_show_imdb_id_missing_year_meta_expected_imdb_id
 
 def test_opensubtitles():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
@@ -346,12 +364,16 @@ def test_opensubtitles_tvshow_missing_imdb_id():
 def test_bsplayer():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
     __remove_all_cache(a4ksubtitles_api)
+    request_execute_spy = utils.spy_fn(a4ksubtitles_api.core.request, 'execute')
 
     # search
     settings = {
         'bsplayer.enabled': 'true',
     }
     search = __search_movie(a4ksubtitles_api, settings)
+
+    assert request_execute_spy.call_count > 1
+    request_execute_spy.restore()
 
     assert len(search.results) == 16
 
@@ -363,7 +385,7 @@ def test_bsplayer():
     request_execute_spy = utils.spy_fn(a4ksubtitles_api.core.request, 'execute')
     __search_movie(a4ksubtitles_api, settings)
 
-    assert request_execute_spy.call_count == 0
+    assert request_execute_spy.call_count == 1
 
     request_execute_spy.restore()
 
