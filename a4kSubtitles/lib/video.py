@@ -51,23 +51,6 @@ def __set_size_and_hash(core, meta, filepath):
     finally:
         f.close()
 
-def __set_subdb_hash(meta, filepath):
-    f = xbmcvfs.File(filepath)
-    try:
-        # used for mocking
-        try:
-            meta.subdb_hash = f.subdb_hash()
-            return
-        except: pass
-
-        data = f.read(__64k)
-        f.seek(-__64k, os.SEEK_END)
-        data += f.read(__64k)
-
-        meta.subdb_hash = hashlib.md5(data).hexdigest()
-    finally:
-        f.close()
-
 def __get_filename(title):
     filename = title
     video_exts = ['mkv', 'mp4', 'avi', 'mov', 'mpeg', 'flv', 'wmv']
@@ -189,6 +172,112 @@ def __scrape_imdb_id(core, meta):
             meta.imdb_id = result['id']
             return
 
+def __update_info_from_imdb(core, meta):
+    request = {
+        'method': 'POST',
+        'url': 'https://graphql.imdb.com',
+        'data': core.json.dumps({
+            'query': '''
+                query TitlesList($idArray: [ID!]!) {
+                    titles(ids: $idArray) {
+                        id
+                        titleText {
+                            text
+                        }
+                        releaseDate {
+                            year
+                        }
+                        series {
+                            series {
+                                id,
+                                titleText {
+                                    text
+                                }
+                                releaseDate {
+                                    year
+                                }
+                            }
+                            episodeNumber {
+                                episodeNumber
+                                seasonNumber
+                            }
+                        }
+                        episodes {
+                            ...TMD_Episodes_EpisodesCardContainer
+                        }
+                    }
+                }
+
+                fragment TMD_Episodes_EpisodesCardContainer on Episodes {
+                    result: episodes(first: 99999) {
+                        edges {
+                            node {
+                                ...TMD_Episodes_EpisodeCard
+                            }
+                        }
+                    }
+                }
+
+                fragment TMD_Episodes_EpisodeCard on Title {
+                    id
+                    titleText {
+                        text
+                    }
+                    releaseDate {
+                        year
+                    }
+                    series {
+                        episodeNumber {
+                            episodeNumber
+                            seasonNumber
+                        }
+                    }
+                }
+            ''',
+            'operationName': 'TitlesList',
+            'variables': {
+                'idArray': [meta.imdb_id]
+            },
+        }),
+        'headers': {
+            'content-type': 'application/json',
+        },
+        'timeout': 10
+    }
+
+    response = core.request.execute(core, request)
+    if response.status_code != 200:
+        return
+
+    try:
+        result = json.loads(response.text)
+        result = result['data']['titles'][0]
+
+        if result['episodes'] is None:
+            meta.title = result['titleText']['text']
+            meta.year = str(result['releaseDate']['year'])
+            if result['series'] is not None:
+                meta.tvshow = result['series']['series']['titleText']['text']
+                meta.tvshow_year = str(result['series']['series']['releaseDate']['year'])
+                meta.season = str(result['series']['episodeNumber']['seasonNumber'])
+                meta.episode = str(result['series']['episodeNumber']['episodeNumber'])
+        else:
+            meta.tvshow = result['titleText']['text']
+            meta.tvshow_year = str(result['releaseDate']['year'])
+
+            episodes = result['episodes']['result']['edges']
+            s_number = int(meta.season)
+            ep_number = int(meta.episode)
+            for episode in episodes:
+                ep = episode['node']
+                series = ep['series']['episodeNumber']
+                if series['episodeNumber'] == ep_number and series['seasonNumber'] == s_number:
+                    meta.title = ep['titleText']['text']
+                    meta.year = str(ep['releaseDate']['year'])
+                    meta.imdb_id = ep['id']
+    except:
+        return
+
 def __get_basic_info():
     meta = utils.DictAsObject({})
 
@@ -228,6 +317,9 @@ def get_meta(core):
                 tvshow_years_cache[meta.imdb_id] = meta.tvshow_year
                 cache.save_tvshow_years_cache(tvshow_years_cache)
 
+    if meta.imdb_id != '':
+        __update_info_from_imdb(core, meta)
+
     meta_cache = cache.get_meta_cache()
     if meta.imdb_id != '' and meta_cache.imdb_id == meta.imdb_id and meta_cache.filename == meta.filename:
         meta = meta_cache
@@ -238,7 +330,6 @@ def get_meta(core):
         try:
             filepath = xbmc.Player().getPlayingFile()
             __set_size_and_hash(core, meta, filepath)
-            __set_subdb_hash(meta, filepath)
         except:
             import traceback
             traceback.print_exc()

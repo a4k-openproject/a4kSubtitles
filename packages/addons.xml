@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="1.8.0"
+       version="2.0.0"
        provider-name="Unknown">
     <requires>
       <import addon="script.module.requests"/>
@@ -16,7 +16,7 @@
         <summary lang="en">a4kSubtitles - Multi-Source Subtitles Addon</summary>
         <description>
 Multi-source subtitles addon optimized for Seren.
-Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDB, Subscene, Addic7ed
+Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, Subscene, Addic7ed
         </description>
         <platform>all</platform>
         <reuselanguageinvoker>true</reuselanguageinvoker>
@@ -30,6 +30,10 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDB, Subscene, Addic7ed
             <screenshot>screenshot-03.png</screenshot>
         </assets>
         <news>
+[v2.0.0]:
+  * Use IMDb as main source for all meta.
+  * Retry on 503 (Service Unavailable). OpenSubtitles and Subscene seems to return it occasionally.
+
 [v1.8.0]:
   * Remove SubDb (Site is down)
   * Make lib vfs optional since there are fallbacks and it is used as last case scenario. Thus making the addon installable on platforms which are not supported by lib vfs.

@@ -9,6 +9,15 @@ from . import logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+def __retry_on_503(core, request, response, retry=True):
+    if not retry:
+        return None
+
+    if response.status_code == 503:
+        core.time.sleep(2)
+        request['validate'] = lambda response: __retry_on_503(core, request, response, retry=False)
+        return request
+
 def execute(core, request, progress=True):
     try: default_timeout = get_int_setting('general.timeout')
     except: default_timeout = 10
@@ -19,6 +28,9 @@ def execute(core, request, progress=True):
 
     validate = request.pop('validate', None)
     next = request.pop('next', None)
+
+    if not validate:
+        validate = lambda response: __retry_on_503(core, request, response)
 
     if next:
         request.pop('stream', None)
@@ -33,10 +45,9 @@ def execute(core, request, progress=True):
         response.status_code = 500
     logger.debug('%s $ - %s - %s' % (request['method'], request['url'], response.status_code))
 
-    if validate:
-        alt_request = validate(response)
-        if alt_request:
-            return execute(core, alt_request)
+    alt_request = validate(response)
+    if alt_request:
+        return execute(core, alt_request)
 
     if next and response.status_code == 200:
         next_request = next(response)
