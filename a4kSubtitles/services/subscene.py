@@ -66,7 +66,8 @@ def parse_search_response(core, service_name, meta, response):
 
     def map_result(result):
         download_href = '%s%s%s' % (__url, title_href, result[0])
-        lang = result[0].split('/')[1].capitalize()
+        lang_default = result[0].split('/')[1]
+        lang = lang_default.split('_')[-1].capitalize()
         lang_code = core.kodi.xbmc.convertLanguage(lang, core.kodi.xbmc.ISO_639_1)
         name = result[1].strip()
         name_with_ext = '%s.srt' % name
@@ -84,7 +85,7 @@ def parse_search_response(core, service_name, meta, response):
             'color': 'dodgerblue',
             'action_args': {
                 'url': download_href,
-                'lang': lang,
+                'lang': lang_default,
                 'filename': name_with_ext,
                 'episodeid': '' if meta.is_movie else episodeid
             }
