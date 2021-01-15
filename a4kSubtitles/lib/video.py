@@ -15,8 +15,13 @@ __longlong_format_char = 'q'
 __byte_size = struct.calcsize(__longlong_format_char)
 
 def __sum_64k_bytes(file, result):
-    for _ in range(__64k / __byte_size):
-        chunk = file.read(__byte_size)
+    range_value = __64k / __byte_size
+    if utils.py3:
+        range_value = round(range_value)
+
+    for _ in range(range_value):
+        try: chunk = file.readBytes(__byte_size)
+        except: chunk = file.read(__byte_size)
         (value,) = struct.unpack(__longlong_format_char, chunk)
         result.filehash += value
         result.filehash &= 0xFFFFFFFFFFFFFFFF
@@ -48,6 +53,7 @@ def __set_size_and_hash(core, meta, filepath):
         __sum_64k_bytes(f, result)
 
         meta.filehash = "%016x" % result.filehash
+        logger.notice(meta.filehash)
     finally:
         f.close()
 
