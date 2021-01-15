@@ -40,7 +40,10 @@ addon_id = addon.getAddonInfo('id')
 addon_name = addon.getAddonInfo('name')
 addon_version = addon.getAddonInfo('version')
 addon_icon = addon.getAddonInfo('icon')
-addon_profile = xbmc.translatePath(addon.getAddonInfo('profile'))
+try:
+    addon_profile = xbmcvfs.translatePath(addon.getAddonInfo('profile'))
+except:
+    addon_profile = xbmc.translatePath(addon.getAddonInfo('profile'))
 
 def json_rpc(method, params, log_error=True):  # pragma: no cover
     try:
@@ -133,11 +136,14 @@ def create_listitem(item):  # pragma: no cover
     args = {
         'label': item['lang'],
         'label2': '%s ([B]%s[/B]) ([B][COLOR %s]%s[/COLOR][/B])' % (item_name, item_ext, item_color, item_service),
-        'iconImage': str(item['rating']),
-        'thumbnailImage': item['lang_code'],
+        'offscreen': True,
     }
 
     listitem = xbmcgui.ListItem(**args)
+    listitem.setArt({
+        'icon': str(item['rating']),
+        'thumb': item['lang_code'],
+    })
     listitem.setProperty('sync', item['sync'])
     listitem.setProperty('hearing_imp', item['impaired'])
 

@@ -1,3 +1,6 @@
+* [v2.2.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-2.2.0):
+  * Fix KODI 19 Matrix support
+
 * [v2.1.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-2.1.0):
   * Fix Persian search in Subscene
 

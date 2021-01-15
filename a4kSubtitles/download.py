@@ -123,5 +123,5 @@ def download(core, params):
     if core.api_mode_enabled:
         return filepath
 
-    listitem = core.kodi.xbmcgui.ListItem(label=filepath)
+    listitem = core.kodi.xbmcgui.ListItem(label=filepath, offscreen=True)
     core.kodi.xbmcplugin.addDirectoryItem(handle=core.handle, url=filepath, listitem=listitem, isFolder=False)

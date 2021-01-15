@@ -13,7 +13,7 @@ results_filepath = os.path.join(kodi.addon_profile, 'last_results.json')
 
 def __get_cache(filepath):
     try:
-        with open(filepath, 'r') as f:
+        with utils.open_file_wrapper(filepath)() as f:
             data = json.loads(f.read())
             return utils.DictAsObject(data)
     except:
@@ -22,7 +22,7 @@ def __get_cache(filepath):
 def __save_cache(filepath, cache):
     try:
         json_data = json.dumps(cache, indent=2)
-        with open(filepath, 'w') as f:
+        with utils.open_file_wrapper(filepath, mode='w')() as f:
             f.write(json_data)
     except: pass
 
