@@ -472,7 +472,6 @@ def test_podnadpisi_tvshow():
 
     assert filepath != ''
 
-@pytest.mark.skip(reason="cf bypass needed")
 def test_subscene():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
     __remove_all_cache(a4ksubtitles_api)
@@ -499,7 +498,6 @@ def test_subscene():
 
     assert filepath != ''
 
-@pytest.mark.skip(reason="cf bypass needed")
 def test_subscene_tvshow():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
     __remove_all_cache(a4ksubtitles_api)
@@ -530,7 +528,6 @@ def test_subscene_tvshow():
 
     assert filepath != ''
 
-@pytest.mark.skip(reason="cf bypass needed")
 def test_subscene_tvshow_persian():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
     __remove_all_cache(a4ksubtitles_api)
