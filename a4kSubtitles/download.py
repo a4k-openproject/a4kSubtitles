@@ -48,12 +48,18 @@ def __extract_zip(core, archivepath, filename, episodeid):
         try:
             return __extract_gzip(core, archivepath, filename)
         except:
-            core.os.rename(archivepath, dest)
+            try: core.os.remove(dest)
+            except: pass
+            try: core.os.rename(archivepath, dest)
+            except: pass
             return dest
 
     if not using_libvfs:
         src = core.utils.extract_zipfile_member(zipfile, subfile, core.utils.temp_dir)
-        core.os.rename(src, dest)
+        try: core.os.remove(dest)
+        except: pass
+        try: core.os.rename(src, dest)
+        except: pass
     else:
         src = 'archive://' + archivepath_ + '/' + subfile
         core.kodi.xbmcvfs.copy(src, dest)

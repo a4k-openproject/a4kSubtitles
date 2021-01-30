@@ -103,3 +103,15 @@ class A4kSubtitlesApi(object):
         finally:
             if restore_settings:
                 restore_settings()
+
+    def auto_load_enabled(self, settings=None):
+        restore_settings = None
+
+        try:
+            if settings:
+                restore_settings = self.mock_settings(settings)
+
+            return self.core.kodi.get_bool_setting('general.auto_search') and self.core.kodi.get_bool_setting('general.auto_download')
+        finally:
+            if restore_settings:
+                restore_settings()
