@@ -1,3 +1,6 @@
+* [v2.3.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-2.3.0):
+  * Add concurrency error handling
+
 * [v2.2.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-2.2.0):
   * Fix KODI 19 Matrix support
 
