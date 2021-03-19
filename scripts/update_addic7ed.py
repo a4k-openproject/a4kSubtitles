@@ -5,12 +5,16 @@ import os
 import re
 import json
 import requests
+import traceback
 
 try:
     response = requests.get('https://www.addic7ed.com', timeout=20)
     if response.status_code != 200:
+        print(response.status_code)
+        print(response.text)
         sys.exit(0)
 except:
+    traceback.print_exc()
     sys.exit(0)
 
 tvshow_options = []
@@ -18,7 +22,8 @@ tvshow_options = []
 try:
     response = response.text.split('[Select a TV Show]')[1]
     tvshow_options = re.findall(r'<option\s*?value="(.*?)"\s*?>(.*?)</option>', response)
-except: pass
+except:
+    traceback.print_exc()
 
 if len(tvshow_options) == 0:
     sys.exit(0)
