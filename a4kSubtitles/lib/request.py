@@ -4,8 +4,21 @@ import requests
 import urllib3
 import re
 import time
+import ssl
+import traceback
 from .kodi import get_int_setting
 from . import logger
+from requests import adapters
+
+class TLSAdapter(adapters.HTTPAdapter):
+    def init_poolmanager(self, connections, maxsize, block=False):
+        ctx = ssl.create_default_context()
+        ctx.set_ciphers('DEFAULT@SECLEVEL=1')
+        self.poolmanager = urllib3.poolmanager.PoolManager(num_pools=connections,
+                                                           maxsize=maxsize,
+                                                           block=block,
+                                                           ssl_version=ssl.PROTOCOL_TLSv1_2,
+                                                           ssl_context=ctx)
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -35,15 +48,19 @@ def execute(core, request, progress=True):
     if next:
         request.pop('stream', None)
 
-    logger.debug('%s ^ - %s' % (request['method'], request['url']))
+    logger.debug('%s ^ - %s, %s' % (request['method'], request['url'], core.json.dumps(request.get('params', {}))))
     try:
-        response = requests.request(verify=False, **request)
+        session = requests.session()
+        session.mount('https://', TLSAdapter())
+        response = session.request(**request)
+        exc = ''
     except:  # pragma: no cover
+        exc = traceback.format_exc()
         response = lambda: None
         response.text = ''
         response.content = ''
         response.status_code = 500
-    logger.debug('%s $ - %s - %s' % (request['method'], request['url'], response.status_code))
+    logger.debug('%s $ - %s - %s, %s' % (request['method'], request['url'], response.status_code, exc))
 
     alt_request = validate(response)
     if alt_request:
