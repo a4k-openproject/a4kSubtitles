@@ -1,3 +1,6 @@
+* [v2.5.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-2.5.0):
+  * Add TLS adapter fallback
+
 * [v2.4.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-2.4.0):
   * Fix some ssl issues
 

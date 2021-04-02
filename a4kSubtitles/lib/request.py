@@ -55,11 +55,15 @@ def execute(core, request, progress=True):
         response = session.request(**request)
         exc = ''
     except:  # pragma: no cover
-        exc = traceback.format_exc()
-        response = lambda: None
-        response.text = ''
-        response.content = ''
-        response.status_code = 500
+        try:
+            response = requests.request(verify=False, **request)
+            exc = ''
+        except:  # pragma: no cover
+            exc = traceback.format_exc()
+            response = lambda: None
+            response.text = ''
+            response.content = ''
+            response.status_code = 500
     logger.debug('%s $ - %s - %s, %s' % (request['method'], request['url'], response.status_code, exc))
 
     alt_request = validate(response)
