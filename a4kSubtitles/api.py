@@ -40,6 +40,8 @@ class A4kSubtitlesApi(object):
                 return meta.get('_title', '')
             if label == 'VideoPlayer.IMDBNumber':
                 return meta.get('imdb_id', '')
+            if label == 'Player.FilenameAndPath':
+                return meta.get('url', '')
         default = self.core.kodi.xbmc.getInfoLabel
         self.core.kodi.xbmc.getInfoLabel = get_info_label
 

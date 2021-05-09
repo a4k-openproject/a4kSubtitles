@@ -1,3 +1,6 @@
+* [v2.6.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-2.6.0):
+  * Support imdb id passed from video file url.
+
 * [v2.5.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-2.5.0):
   * Add TLS adapter fallback
 

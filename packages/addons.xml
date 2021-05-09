@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="2.5.0"
+       version="2.6.0"
        provider-name="Unknown">
     <requires>
       <import addon="script.module.requests"/>
@@ -30,6 +30,9 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, Subscene, Addic7ed
             <screenshot>screenshot-03.png</screenshot>
         </assets>
         <news>
+[v2.6.0]:
+  * Support imdb id passed from video file url.
+
 [v2.5.0]:
   * Add TLS adapter fallback
 

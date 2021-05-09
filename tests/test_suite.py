@@ -347,6 +347,22 @@ def test_opensubtitles_missing_imdb_id():
 
     assert len(search.results) > 0
 
+def test_opensubtitles_missing_imdb_id_but_in_url():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_all_cache(a4ksubtitles_api)
+
+    # search
+    settings = {
+        'opensubtitles.enabled': 'true',
+    }
+    video_meta = {
+        'imdb_id': '',
+        'url': 'https://example.com/example.mkv?imdb_id=tt3183660'
+    }
+    search = __search_movie(a4ksubtitles_api, settings, video_meta)
+
+    assert len(search.results) > 0
+
 def test_opensubtitles_tvshow_missing_imdb_id():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
     __remove_all_cache(a4ksubtitles_api)
