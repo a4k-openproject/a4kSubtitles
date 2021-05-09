@@ -301,6 +301,11 @@ def __get_basic_info():
     meta.filename_without_ext = meta.filename
     meta.imdb_id = xbmc.getInfoLabel('VideoPlayer.IMDBNumber')
 
+    if meta.imdb_id == '':
+        regex_result = re.search(r'.*(tt\d{7,}).*', xbmc.getInfoLabel('Player.FilenameAndPath'), re.IGNORECASE)
+        if regex_result:
+            meta.imdb_id = regex_result.group(1)
+
     return meta
 
 def get_meta(core):
