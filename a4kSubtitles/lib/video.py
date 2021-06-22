@@ -301,10 +301,21 @@ def __get_basic_info():
     meta.filename_without_ext = meta.filename
     meta.imdb_id = xbmc.getInfoLabel('VideoPlayer.IMDBNumber')
 
+    filename_and_path = xbmc.getInfoLabel('Player.FilenameAndPath')
     if meta.imdb_id == '':
-        regex_result = re.search(r'.*(tt\d{7,}).*', xbmc.getInfoLabel('Player.FilenameAndPath'), re.IGNORECASE)
+        regex_result = re.search(r'.*(tt\d{7,}).*', filename_and_path, re.IGNORECASE)
         if regex_result:
             meta.imdb_id = regex_result.group(1)
+
+    if meta.season == '':
+        regex_result = re.search(r'.*season=(\d{1,}).*', filename_and_path, re.IGNORECASE)
+        if regex_result:
+            meta.season = regex_result.group(1)
+
+    if meta.episode == '':
+        regex_result = re.search(r'.*episode=(\d{1,}).*', filename_and_path, re.IGNORECASE)
+        if regex_result:
+            meta.episode = regex_result.group(1)
 
     return meta
 
