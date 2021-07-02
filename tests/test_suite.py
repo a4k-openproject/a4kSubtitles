@@ -392,7 +392,7 @@ def test_opensubtitles_tvshow_missing_imdb_id_but_in_url():
         'episode': '',
         'url': 'https://example.com/example.mkv?imdb_id=tt11610548'
     }
-    search = __search_movie(a4ksubtitles_api, settings, video_meta)
+    search = __search_tvshow(a4ksubtitles_api, settings, video_meta)
 
     assert len(search.results) > 0
 
@@ -410,7 +410,7 @@ def test_opensubtitles_tvshow_missing_imdb_id_but_in_url_with_show_id_and_meta_f
         'episode': '',
         'url': 'https://example.com/example.mkv?imdb_id=tt10155688&season=1&episode=2'
     }
-    search = __search_movie(a4ksubtitles_api, settings, video_meta)
+    search = __search_tvshow(a4ksubtitles_api, settings, video_meta)
 
     assert len(search.results) > 0
 
@@ -523,6 +523,24 @@ def test_podnadpisi_tvshow():
     filepath = a4ksubtitles_api.download(params, search.settings)
 
     assert filepath != ''
+
+def test_podnadpisi_tvshow_missing_imdb_id_but_in_url_with_show_id_and_meta_for_ep_and_season_with_paging():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_all_cache(a4ksubtitles_api)
+
+    # search
+    settings = {
+        'podnadpisi.enabled': 'true',
+    }
+    video_meta = {
+        'imdb_id': '',
+        'season': '',
+        'episode': '',
+        'url': 'https://example.com/example.mkv?imdb_id=tt0239195&season=20&episode=2'
+    }
+    search = __search_tvshow(a4ksubtitles_api, settings, video_meta)
+
+    assert len(search.results) > 0
 
 def test_subscene():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})

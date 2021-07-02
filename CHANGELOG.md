@@ -1,3 +1,6 @@
+* [v2.8.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-2.8.0):
+  * Support tvshows with more than 250 episodes for episode id lookup when tvshow imdb id is provided.
+
 * [v2.7.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-2.7.0):
   * Support tvshow imdb id, along with season and episode passed from video file url.
 
