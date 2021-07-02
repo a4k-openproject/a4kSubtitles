@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="2.7.0"
+       version="2.8.0"
        provider-name="Unknown">
     <requires>
       <import addon="script.module.requests"/>
@@ -15,7 +15,7 @@
     <extension point="xbmc.addon.metadata">
         <summary lang="en">a4kSubtitles - Multi-Source Subtitles Addon</summary>
         <description>
-Multi-source subtitles addon optimized for Seren.
+Multi-source subtitles addon optimized for Seren and a4kScrapers.
 Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, Subscene, Addic7ed
         </description>
         <platform>all</platform>
@@ -30,6 +30,9 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, Subscene, Addic7ed
             <screenshot>screenshot-03.png</screenshot>
         </assets>
         <news>
+[v2.8.0]:
+  * Support tvshows with more than 250 episodes for episode id lookup when tvshow imdb id is provided.
+
 [v2.7.0]:
   * Support tvshow imdb id, along with season and episode passed from video file url.
 

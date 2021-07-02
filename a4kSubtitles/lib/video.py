@@ -178,13 +178,13 @@ def __scrape_imdb_id(core, meta):
             meta.imdb_id = result['id']
             return
 
-def __update_info_from_imdb(core, meta):
+def __update_info_from_imdb(core, meta, pagination_token=''):
     request = {
         'method': 'POST',
         'url': 'https://graphql.imdb.com',
         'data': core.json.dumps({
             'query': '''
-                query TitlesList($idArray: [ID!]!) {
+                query TitlesList($idArray: [ID!]!, $paginationToken: ID) {
                     titles(ids: $idArray) {
                         id
                         titleText {
@@ -215,11 +215,15 @@ def __update_info_from_imdb(core, meta):
                 }
 
                 fragment TMD_Episodes_EpisodesCardContainer on Episodes {
-                    result: episodes(first: 99999) {
+                    result: episodes(first: 250, after: $paginationToken) {
                         edges {
                             node {
                                 ...TMD_Episodes_EpisodeCard
                             }
+                        }
+                        pageInfo {
+                            hasNextPage
+                            endCursor
                         }
                     }
                 }
@@ -242,7 +246,8 @@ def __update_info_from_imdb(core, meta):
             ''',
             'operationName': 'TitlesList',
             'variables': {
-                'idArray': [meta.imdb_id]
+                'idArray': [meta.imdb_id],
+                'paginationToken': pagination_token
             },
         }),
         'headers': {
@@ -274,6 +279,7 @@ def __update_info_from_imdb(core, meta):
             episodes = result['episodes']['result']['edges']
             s_number = int(meta.season)
             ep_number = int(meta.episode)
+            found = False
             for episode in episodes:
                 ep = episode['node']
                 series = ep['series']['episodeNumber']
@@ -281,6 +287,9 @@ def __update_info_from_imdb(core, meta):
                     meta.title = ep['titleText']['text']
                     meta.year = str(ep['releaseDate']['year'])
                     meta.imdb_id = ep['id']
+                    found = True
+            if not found and result['episodes']['result']['pageInfo']['hasNextPage']:
+                return __update_info_from_imdb(core, meta, result['episodes']['result']['pageInfo']['endCursor'])
     except:
         return
 
