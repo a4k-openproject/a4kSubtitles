@@ -52,7 +52,7 @@ def execute(core, request, progress=True):
     try:
         session = requests.session()
         session.mount('https://', TLSAdapter())
-        response = session.request(**request)
+        response = session.request(verify=False, **request)
         exc = ''
     except:  # pragma: no cover
         try:

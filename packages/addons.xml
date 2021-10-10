@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="2.8.0"
+       version="2.9.0"
        provider-name="Unknown">
     <requires>
       <import addon="script.module.requests"/>
@@ -30,6 +30,9 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, Subscene, Addic7ed
             <screenshot>screenshot-03.png</screenshot>
         </assets>
         <news>
+[v2.9.0]:
+  * Skip ssl verification.
+
 [v2.8.0]:
   * Support tvshows with more than 250 episodes for episode id lookup when tvshow imdb id is provided.
 
