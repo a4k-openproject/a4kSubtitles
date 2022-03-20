@@ -1,7 +1,7 @@
 <img align="left" width="115px" height="115px" src="icon.png">
 
 # a4kSubtitles
-[![Kodi version](https://img.shields.io/badge/kodi%20versions-18--19-blue)](https://kodi.tv/) [![Coverage Status](https://coveralls.io/repos/github/a4k-openproject/a4kSubtitles/badge.svg?branch=master)](https://coveralls.io/github/a4k-openproject/a4kSubtitles?branch=master) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=a4k-openproject_a4kSubtitles&metric=alert_status)](https://sonarcloud.io/dashboard?id=a4k-openproject_a4kSubtitles)
+[![Kodi version](https://img.shields.io/badge/kodi%20versions-18--19-blue)](https://kodi.tv/) [![Coverage Status](https://coveralls.io/repos/github/a4k-openproject/a4kSubtitles/badge.svg?branch=master)](https://coveralls.io/github/a4k-openproject/a4kSubtitles?branch=master)
 
 ### General Status
 ![general-service](https://github.com/a4k-openproject/a4kSubtitles/workflows/Service/badge.svg) ![general-api](https://github.com/a4k-openproject/a4kSubtitles/workflows/API/badge.svg) ![general-search](https://github.com/a4k-openproject/a4kSubtitles/workflows/Search/badge.svg) ![general-tvshow](https://github.com/a4k-openproject/a4kSubtitles/workflows/TVShow/badge.svg)

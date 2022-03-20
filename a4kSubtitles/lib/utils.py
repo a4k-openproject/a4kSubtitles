@@ -9,6 +9,10 @@ import shutil
 from . import kodi
 from . import logger
 
+try:
+    from .third_party import chardet
+except: pass
+
 try:  # pragma: no cover
     from urlparse import unquote, parse_qsl
     from urllib import quote_plus

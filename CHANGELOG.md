@@ -1,3 +1,7 @@
+* [v3.0.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.0.0):
+  * Use cf bypass for Subscene
+  * Auto-detect subs encoding and convert to utf-8
+
 * [v2.8.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-2.8.0):
   * Support tvshows with more than 250 episodes for episode id lookup when tvshow imdb id is provided.
 

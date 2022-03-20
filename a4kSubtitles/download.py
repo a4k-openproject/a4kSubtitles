@@ -77,7 +77,11 @@ def __postprocess(core, filepath):
         with open(filepath, 'rb') as f:
             text_bytes = f.read()
 
-        text = text_bytes.decode(core.utils.default_encoding)
+        if core.utils.py3:
+            encoding = core.utils.chardet.detect(text_bytes)['encoding']
+        else:
+            encoding = core.utils.default_encoding
+        text = text_bytes.decode(encoding)
 
         try:
             if all(ch in text for ch in core.utils.cp1251_garbled):

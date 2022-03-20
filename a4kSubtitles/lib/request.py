@@ -9,6 +9,9 @@ import traceback
 from .kodi import get_int_setting
 from . import logger
 from requests import adapters
+from .third_party.cloudscraper import cloudscraper
+
+scraper = cloudscraper.create_scraper(interpreter='native')
 
 class TLSAdapter(adapters.HTTPAdapter):
     def init_poolmanager(self, connections, maxsize, block=False):
@@ -48,15 +51,25 @@ def execute(core, request, progress=True):
     if next:
         request.pop('stream', None)
 
+    use_cfscrape = 'cfscrape' in request
+    request.pop('cfscrape', None)
+
     logger.debug('%s ^ - %s, %s' % (request['method'], request['url'], core.json.dumps(request.get('params', {}))))
     try:
-        session = requests.session()
-        session.mount('https://', TLSAdapter())
-        response = session.request(**request)
+        if use_cfscrape:
+            request.pop('cfscrape', None)
+            response = scraper.request(**request)
+        else:
+            session = requests.session()
+            session.mount('https://', TLSAdapter())
+            response = session.request(**request)
         exc = ''
     except:  # pragma: no cover
         try:
-            response = requests.request(verify=False, **request)
+            if use_cfscrape:
+                response = scraper.request(verify=False, **request)
+            else:
+                response = requests.request(verify=False, **request)
             exc = ''
         except:  # pragma: no cover
             exc = traceback.format_exc()
