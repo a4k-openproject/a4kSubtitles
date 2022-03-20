@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="2.8.0"
+       version="3.0.0"
        provider-name="Unknown">
     <requires>
       <import addon="script.module.requests"/>
@@ -27,6 +27,10 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, Subscene, Addic7ed
             <screenshot>screenshot-03.png</screenshot>
         </assets>
         <news>
+[v3.0.0]:
+  * Use cf bypass for Subscene
+  * Auto-detect subs encoding and convert to utf-8
+
 [v2.8.0]:
   * Support tvshows with more than 250 episodes for episode id lookup when tvshow imdb id is provided.
 

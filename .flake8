@@ -31,3 +31,4 @@ exclude =
     resources,
     scripts,
     tmp,
+    a4kSubtitles/lib/third_party,

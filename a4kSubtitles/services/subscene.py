@@ -20,6 +20,7 @@ def __find_title_result(core, service_name, meta, title, response):
     core.services[service_name].context.title_href = title_href
 
     request = {
+        'cfscrape': True,
         'method': 'GET',
         'url': __url + title_href
     }
@@ -34,9 +35,10 @@ def build_search_requests(core, service_name, meta):
         title = '%s - %s Season' % (meta.tvshow, ordinal_season)
 
     request = {
+        'cfscrape': True,
         'method': 'GET',
         'url': __url + ('/subtitles/searchbytitle?query=' + core.utils.quote_plus(title)),
-        'next': lambda r: __find_title_result(core, service_name, meta, title, r)
+        'next': lambda r: __find_title_result(core, service_name, meta, title, r),
     }
 
     return [request]
@@ -103,12 +105,14 @@ def build_download_request(core, service_name, args):
             return None
 
         return {
+            'cfscrape': True,
             'method': 'GET',
             'url': '%s%s' % (__url, result.group(1)),
             'stream': True
         }
 
     request = {
+        'cfscrape': True,
         'method': 'GET',
         'url': args['url'],
         'next': lambda r: find_download_href(r)
