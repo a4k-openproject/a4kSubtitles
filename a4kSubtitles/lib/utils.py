@@ -32,6 +32,7 @@ default_encoding = 'utf-8'
 base_encoding = 'raw_unicode_escape'
 cp1251_garbled = u'аеио'.encode('cp1251').decode('raw_unicode_escape')
 koi8r_garbled = u'аеио'.encode('koi8-r').decode('raw_unicode_escape')
+code_pages = {'ara': 'cp1256', 'ar': 'cp1256', 'ell': 'cp1253', 'el': 'cp1253', 'heb': 'cp1255', 'he': 'cp1255', 'tur': 'cp1254', 'tr': 'cp1254', 'rus': 'cp1251', 'ru': 'cp1251', 'bg': 'cp1251'}
 
 zip_utf8_flag = 0x800
 py3_zip_missing_utf8_flag_fallback_encoding = 'cp437'

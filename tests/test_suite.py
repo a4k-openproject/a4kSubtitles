@@ -126,10 +126,10 @@ def __search(a4ksubtitles_api, settings={}, video_meta={}, languages='English'):
 
     return search
 
-def __search_movie(a4ksubtitles_api, settings={}, video_meta={}):
+def __search_movie(a4ksubtitles_api, settings={}, video_meta={}, languages='English'):
     movie_video_meta = __movie_video_meta.copy()
     movie_video_meta.update(video_meta)
-    return __search(a4ksubtitles_api, settings, movie_video_meta)
+    return __search(a4ksubtitles_api, settings, movie_video_meta, languages)
 
 def __search_tvshow(a4ksubtitles_api, settings={}, video_meta={}, languages='English'):
     tvshow_video_meta = __tvshow_video_meta.copy()
@@ -611,6 +611,36 @@ def test_subscene_tvshow_persian():
         time.sleep(4)
 
     search = __search_tvshow(a4ksubtitles_api, settings, {}, 'Persian')
+
+    # download
+    item = search.results[0]
+
+    params = {
+        'action': 'download',
+        'service_name': 'subscene',
+        'action_args': item['action_args']
+    }
+
+    if os.getenv('CI', None) is not None:
+        time.sleep(4)
+
+    filepath = a4ksubtitles_api.download(params, search.settings)
+
+    assert filepath != ''
+
+def test_subscene_arabic():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_all_cache(a4ksubtitles_api)
+
+    # search
+    settings = {
+        'subscene.enabled': 'true',
+    }
+
+    if os.getenv('CI', None) is not None:
+        time.sleep(4)
+
+    search = __search_movie(a4ksubtitles_api, settings, {}, 'Arabic')
 
     # download
     item = search.results[0]
