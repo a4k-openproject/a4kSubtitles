@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="3.0.0"
+       version="3.1.0"
        provider-name="Unknown">
     <requires>
       <import addon="script.module.requests"/>
@@ -30,6 +30,10 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, Subscene, Addic7ed
             <screenshot>screenshot-03.png</screenshot>
         </assets>
         <news>
+[v3.1.0]:
+  * Force proper embedded subs selection based on preferred language overriding KODI
+  * Subs encoding fallback to predefined list in case auto detection fails
+
 [v3.0.0]:
   * Use cf bypass for Subscene
   * Auto-detect subs encoding and convert to utf-8

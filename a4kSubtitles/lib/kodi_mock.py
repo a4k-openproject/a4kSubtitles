@@ -27,7 +27,9 @@ xbmc.ISO_639_2 = 3
 
 __player = lambda: None
 __player.getPlayingFile = lambda: ''
+__player.getAvailableSubtitleStreams = lambda: []
 __player.setSubtitles = lambda s: None
+__player.setSubtitleStream = lambda i: None
 xbmc.Player = lambda: __player
 
 __monitor = lambda: None

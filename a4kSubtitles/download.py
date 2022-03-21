@@ -66,21 +66,26 @@ def __extract_zip(core, archivepath, filename, episodeid):
 
     return dest
 
-def __insert_lang_code_in_filename(core, filename, lang):
+def __insert_lang_code_in_filename(core, filename, lang_code):
     filename_chunks = core.utils.strip_non_ascii_and_unprintable(filename).split('.')
-    lang_code = core.kodi.xbmc.convertLanguage(lang, core.kodi.xbmc.ISO_639_2)
     filename_chunks.insert(-1, lang_code)
     return '.'.join(filename_chunks)
 
-def __postprocess(core, filepath):
+def __postprocess(core, filepath, lang_code):
     try:
         with open(filepath, 'rb') as f:
             text_bytes = f.read()
 
+        encoding = ''
         if core.utils.py3:
-            encoding = core.utils.chardet.detect(text_bytes)['encoding']
-        else:
-            encoding = core.utils.default_encoding
+            detection = core.utils.chardet.detect(text_bytes)
+            detected_lang_code = core.kodi.xbmc.convertLanguage(detection['language'], core.kodi.xbmc.ISO_639_2)
+            if detection['confidence'] == 1.0 or detected_lang_code == lang_code:
+                encoding = detection['encoding']
+
+        if not encoding:
+            encoding = core.utils.code_pages.get(lang_code, core.utils.default_encoding)
+
         text = text_bytes.decode(encoding)
 
         try:
@@ -110,7 +115,8 @@ def download(core, params):
     core.kodi.xbmcvfs.mkdirs(core.utils.temp_dir)
 
     actions_args = params['action_args']
-    filename = __insert_lang_code_in_filename(core, actions_args['filename'], actions_args['lang'])
+    lang_code = core.kodi.xbmc.convertLanguage(actions_args['lang'], core.kodi.xbmc.ISO_639_2)
+    filename = __insert_lang_code_in_filename(core, actions_args['filename'], lang_code)
     archivepath = core.os.path.join(core.utils.temp_dir, 'sub.zip')
 
     service_name = params['service_name']
@@ -128,7 +134,7 @@ def download(core, params):
             episodeid = actions_args.get('episodeid', '')
             filepath = __extract_zip(core, archivepath, filename, episodeid)
 
-    __postprocess(core, filepath)
+    __postprocess(core, filepath, lang_code)
 
     if core.api_mode_enabled:
         return filepath
