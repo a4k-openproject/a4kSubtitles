@@ -53,7 +53,6 @@ def __set_size_and_hash(core, meta, filepath):
         __sum_64k_bytes(f, result)
 
         meta.filehash = "%016x" % result.filehash
-        logger.notice(meta.filehash)
     finally:
         f.close()
 

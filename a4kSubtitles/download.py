@@ -76,17 +76,20 @@ def __postprocess(core, filepath, lang_code):
         with open(filepath, 'rb') as f:
             text_bytes = f.read()
 
-        encoding = ''
-        if core.utils.py3:
-            detection = core.utils.chardet.detect(text_bytes)
-            detected_lang_code = core.kodi.xbmc.convertLanguage(detection['language'], core.kodi.xbmc.ISO_639_2)
-            if detection['confidence'] == 1.0 or detected_lang_code == lang_code:
-                encoding = detection['encoding']
+        if core.kodi.get_bool_setting('general.use_chardet'):
+            encoding = ''
+            if core.utils.py3:
+                detection = core.utils.chardet.detect(text_bytes)
+                detected_lang_code = core.kodi.xbmc.convertLanguage(detection['language'], core.kodi.xbmc.ISO_639_2)
+                if detection['confidence'] == 1.0 or detected_lang_code == lang_code:
+                    encoding = detection['encoding']
 
-        if not encoding:
-            encoding = core.utils.code_pages.get(lang_code, core.utils.default_encoding)
+            if not encoding:
+                encoding = core.utils.code_pages.get(lang_code, core.utils.default_encoding)
 
-        text = text_bytes.decode(encoding)
+            text = text_bytes.decode(encoding)
+        else:
+            text = text_bytes.decode(core.utils.default_encoding)
 
         try:
             if all(ch in text for ch in core.utils.cp1251_garbled):

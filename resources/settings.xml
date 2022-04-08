@@ -6,6 +6,7 @@
         <setting id="general.results_limit" label="33102" type="slider" default="20" option="int" range="10,100"/>
         <setting id="general.auto_search"   label="33103" type="bool"   default="false"/>
         <setting id="general.auto_download" label="33104" type="bool"   default="false" enable="eq(-1,true)"/>
+        <setting id="general.use_chardet"   label="33105" type="bool"   default="true" />
     </category>
     <!-- Services -->
     <category label="33002">

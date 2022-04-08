@@ -36,6 +36,10 @@ msgctxt "#33104"
 msgid "Auto download first subtitle silently"
 msgstr ""
 
+msgctxt "#33105"
+msgid "Auto detect subs encoding"
+msgstr ""
+
 # Services
 msgctxt "#33201"
 msgid "OpenSubtitles"
