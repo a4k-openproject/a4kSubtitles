@@ -21,7 +21,7 @@ def __query_service(core, service_name, meta, request, results):
         core.logger.debug(lambda: core.json.dumps({
             'url': request['url'],
             'count': len(service_results),
-            'status_code': response.status_code
+            'status_code': response.status_code if response else 'N/A'
         }, indent=2))
     finally:
         core.progress_text = core.progress_text.replace(service.display_name, '')

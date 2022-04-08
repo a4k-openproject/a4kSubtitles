@@ -1,3 +1,6 @@
+* [v3.2.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.2.0):
+  * Option to disable subs encoding detection
+
 * [v3.1.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.1.0):
   * Force proper embedded subs selection based on preferred language overriding KODI
   * Subs encoding fallback to predefined list in case auto detection fails
