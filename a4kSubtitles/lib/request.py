@@ -11,8 +11,6 @@ from . import logger
 from requests import adapters
 from .third_party.cloudscraper import cloudscraper
 
-scraper = cloudscraper.create_scraper(interpreter='native')
-
 class TLSAdapter(adapters.HTTPAdapter):
     def init_poolmanager(self, connections, maxsize, block=False):
         ctx = ssl.create_default_context()
@@ -25,16 +23,24 @@ class TLSAdapter(adapters.HTTPAdapter):
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-def __retry_on_503(core, request, response, retry=True):
-    if not retry:
+def __retry(core, request, response, next, cfscrape, retry=0):
+    if retry > 5:
         return None
 
-    if response.status_code == 503:
-        core.time.sleep(2)
-        request['validate'] = lambda response: __retry_on_503(core, request, response, retry=False)
+    if response.status_code in [503, 429, 403]:
+        if response.status_code == 503:
+            core.time.sleep(2)
+            retry = 5
+        if response.status_code == 429:
+            core.time.sleep(3)
+
+        retry += 1
+        request['validate'] = lambda response: __retry(core, request, response, next, cfscrape, retry)
+        request['next'] = next
+        request['cfscrape'] = cfscrape
         return request
 
-def execute(core, request, progress=True):
+def execute(core, request, progress=True, session=None):
     try: default_timeout = get_int_setting('general.timeout')
     except: default_timeout = 10
     request.setdefault('timeout', default_timeout)
@@ -42,23 +48,25 @@ def execute(core, request, progress=True):
     if progress and core.progress_dialog and not core.progress_dialog.dialog:
         core.progress_dialog.open()
 
-    validate = request.pop('validate', None)
     next = request.pop('next', None)
 
+    cfscrape = 'cfscrape' in request
+    request.pop('cfscrape', None)
+
+    validate = request.pop('validate', None)
     if not validate:
-        validate = lambda response: __retry_on_503(core, request, response)
+        validate = lambda response: __retry(core, request, response, next, cfscrape)
 
     if next:
         request.pop('stream', None)
 
-    use_cfscrape = 'cfscrape' in request
-    request.pop('cfscrape', None)
-
     logger.debug('%s ^ - %s, %s' % (request['method'], request['url'], core.json.dumps(request.get('params', {}))))
     try:
-        if use_cfscrape:
+        if cfscrape:
             request.pop('cfscrape', None)
-            response = scraper.request(**request)
+            if not session:
+                session = cloudscraper.create_scraper(interpreter='native')
+            response = session.request(**request)
         else:
             session = requests.session()
             session.mount('https://', TLSAdapter())
@@ -66,8 +74,10 @@ def execute(core, request, progress=True):
         exc = ''
     except:  # pragma: no cover
         try:
-            if use_cfscrape:
-                response = scraper.request(verify=False, **request)
+            if cfscrape:
+                if not session:
+                    session = cloudscraper.create_scraper(interpreter='native')
+                response = session.request(verify=False, **request)
             else:
                 response = requests.request(verify=False, **request)
             exc = ''
@@ -81,12 +91,12 @@ def execute(core, request, progress=True):
 
     alt_request = validate(response)
     if alt_request:
-        return execute(core, alt_request)
+        return execute(core, alt_request, progress)
 
     if next and response.status_code == 200:
         next_request = next(response)
         if next_request:
-            return execute(core, next_request)
+            return execute(core, next_request, progress, session)
         else:
             return None
 

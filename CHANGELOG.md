@@ -1,3 +1,6 @@
+* [v3.3.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.3.0):
+  * Improve Subscene support
+
 * [v3.2.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.2.0):
   * Option to disable subs encoding detection
 
