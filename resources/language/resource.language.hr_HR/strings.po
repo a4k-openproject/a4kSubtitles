@@ -1,0 +1,77 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: gogo <trebelnik2@gmail.com>\n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0.1\n"
+
+# Categories
+msgctxt "#33001"
+msgid "General"
+msgstr "Općenito"
+
+msgctxt "#33002"
+msgid "Services"
+msgstr "Usluge"
+
+msgctxt "#33003"
+msgid "Accounts"
+msgstr "Računi"
+
+# General
+msgctxt "#33101"
+msgid "Request timeout"
+msgstr "Vrijeme isteka"
+
+msgctxt "#33102"
+msgid "Results limit"
+msgstr "Ograničenje rezultata"
+
+msgctxt "#33103"
+msgid "Auto search"
+msgstr "Automatska pretraga"
+
+msgctxt "#33104"
+msgid "Auto download first subtitle silently"
+msgstr "Automatski neprimjetno preuzmi prvi podnaslov"
+
+msgctxt "#33105"
+msgid "Auto detect subs encoding"
+msgstr "Automatski otkrij kôdiranje podnaslova"
+
+# Services
+msgctxt "#33201"
+msgid "OpenSubtitles"
+msgstr "OpenSubtitles"
+
+msgctxt "#33202"
+msgid "BSPlayer"
+msgstr "BSPlayer"
+
+msgctxt "#33203"
+msgid "Podnadpisi"
+msgstr "Podnadpisi"
+
+msgctxt "#33205"
+msgid "Subscene"
+msgstr "Subscene"
+
+msgctxt "#33206"
+msgid "Addic7ed"
+msgstr "Addic7ed"
+
+# Labels
+msgctxt "#33301"
+msgid "Username (Optional)"
+msgstr "Korisničko ime (Neobavezno)"
+
+msgctxt "#33302"
+msgid "Password (Optional)"
+msgstr "Lozinka (Neobavezna)"
