@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="3.3.0"
+       version="3.4.0"
        provider-name="Unknown">
     <requires>
       <import addon="script.module.requests"/>
@@ -30,6 +30,9 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, Subscene, Addic7ed
             <screenshot>screenshot-03.png</screenshot>
         </assets>
         <news>
+[v3.4.0]:
+  * Update repo
+
 [v3.3.0]:
   * Improve Subscene support
 
