@@ -130,9 +130,9 @@ def __prepare_results(core, meta, results):
     codec = ['x264', 'x265', '264', '265', 'h265', 'h264', 'hevc', 'avc', 'av1', 'vp9', 'vp8', 'divx', 'xvid']
     audio = ['dts', 'dtshd', 'atmos', 'truehd', 'aac', 'ac', 'dd', 'ddp', 'ddp5', 'dd5', 'dd2', 'dd1', 'dd7', 'ddp7']
     color = ['8bit', '10bit', '12bit']
-    extra = ['extended', 'cut', 'dc', 'remastered', 'hd']
+    extra = ['extended', 'cut', 'dc', 'remastered']
 
-    filename = meta.filename.lower()
+    filename = core.utils.unquote(meta.filename.lower())
     nameparts = core.re.split(r'[.:;()\[\]{}\\\/\s\&€\#\=\$\?\!%\+\-_\\*]', filename)
 
     release_list = [i for i in nameparts if i in release]
@@ -143,22 +143,25 @@ def __prepare_results(core, meta, results):
     color_list = [i for i in nameparts if i in color]
     extra_list = [i for i in nameparts if i in extra]
 
-    sorter = lambda x: (
-        not x['lang'] == meta.preferredlanguage,
-        meta.languages.index(x['lang']),
-        not x['sync'] == 'true',
-        -sum(word in x['name'].lower() for word in release_list) * 10,
-        -sum(word in x['name'].lower() for word in service_list) * 10,
-        -sum(word in x['name'].lower() for word in quality_list) * 10,
-        -sum(word in x['name'].lower() for word in codec_list) * 10,
-        -sum(word in x['name'].lower() for word in audio_list) * 2,
-        -sum(word in x['name'].lower() for word in color_list) * 2,
-        -sum(word in x['name'].lower() for word in extra_list) * 2,
-        -core.difflib.SequenceMatcher(None, x['name'].lower(), filename).ratio(),
-        -x['rating'],
-        not x['impaired'] == 'true',
-        x['service'],
-    )
+    def sorter(x):
+        name = core.utils.unquote(x['name'].lower())
+
+        return (
+            not x['lang'] == meta.preferredlanguage,
+            meta.languages.index(x['lang']),
+            not x['sync'] == 'true',
+            -sum(word in name for word in release_list) * 10,
+            -sum(word in name for word in service_list) * 10,
+            -sum(word in name for word in quality_list) * 10,
+            -sum(word in name for word in codec_list) * 10,
+            -sum(word in name for word in audio_list) * 2,
+            -sum(word in name for word in color_list) * 2,
+            -sum(word in name for word in extra_list) * 2,
+            -core.difflib.SequenceMatcher(None, name, filename).ratio(),
+            -x['rating'],
+            not x['impaired'] == 'true',
+            x['service'],
+        )
 
     results = sorted(results, key=sorter)
     results = __apply_limit(core, results, meta)
