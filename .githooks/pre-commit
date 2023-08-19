@@ -11,7 +11,7 @@ addon=$(tail -n +2 addon.xml)
 
 printf "$prefix\n$addon\n$suffix\n" > packages/addons.xml
 cat packages/addons.xml | shasum | awk '{print $1}' > packages/addons.xml.crc
-truncate --size -1 packages/addons.xml.crc
+truncate -s -1 packages/addons.xml.crc
 
 python ./scripts/update_changelog.py
 

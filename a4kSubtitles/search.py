@@ -120,11 +120,41 @@ def __prepare_results(core, meta, results):
     results = __apply_language_filter(meta, results)
     results = __sanitize_results(core, meta, results)
 
+    release = ['webdl', 'webdlrip', 'web', 'webrip', 'webr', 'webcap',
+               'bluray', 'bdrip', 'brip', 'brrip', 'bdmv', 'bd', 'remux', 'bdremux', 'uhdremux', 'uhdbdremux', 'uhdbluray',
+               'dvd', 'dvd5', 'dvd9', 'dvdr', 'dvdrip', 'dvdscr', 'scr', 'screener', 'r5', 'r6', 'bdscr', 'bdscr',
+               'avi', 'mp4', 'mkv', 'ts', 'm2ts', 'mts', 'mpeg', 'mpg', 'mov', 'wmv', 'flv', 'vob']
+    quality = ['4k', '2160p', '1080p', '720p', '480p', '360p', '240p', '144p']
+    service = ['amzn', 'hmax', 'max', 'nf', 'crav', 'dsnp', 'atvp', 'pcok', 'cr', 'sho', 'stan', 'tbs', 'tnt', 'usa', 'hbo', 'bbc', 'sky', 'skyq',
+               'netflix', 'amazon', 'primevideo', 'hulu', 'crunchyroll', 'disney', 'disneyplus', 'hbonow', 'hbogo', 'hbomax', 'cbs']
+    codec = ['x264', 'x265', '264', '265', 'h265', 'h264', 'hevc', 'avc', 'av1', 'vp9', 'vp8', 'divx', 'xvid']
+    audio = ['dts', 'dtshd', 'atmos', 'truehd', 'aac', 'ac', 'dd', 'ddp', 'ddp5', 'dd5', 'dd2', 'dd1', 'dd7', 'ddp7']
+    color = ['8bit', '10bit', '12bit']
+    extra = ['extended', 'cut', 'dc', 'remastered', 'hd']
+
+    filename = meta.filename.lower()
+    nameparts = core.re.split(r'[.:;()\[\]{}\\\/\s\&€\#\=\$\?\!%\+\-_\\*]', filename)
+
+    release_list = [i for i in nameparts if i in release]
+    service_list = [i for i in nameparts if i in service]
+    quality_list = [i for i in nameparts if i in quality]
+    codec_list = [i for i in nameparts if i in codec]
+    audio_list = [i for i in nameparts if i in audio]
+    color_list = [i for i in nameparts if i in color]
+    extra_list = [i for i in nameparts if i in extra]
+
     sorter = lambda x: (
         not x['lang'] == meta.preferredlanguage,
         meta.languages.index(x['lang']),
         not x['sync'] == 'true',
-        -core.difflib.SequenceMatcher(None, x['name'].lower(), meta.filename).ratio(),
+        -sum(word in x['name'].lower() for word in release_list) * 10,
+        -sum(word in x['name'].lower() for word in service_list) * 10,
+        -sum(word in x['name'].lower() for word in quality_list) * 10,
+        -sum(word in x['name'].lower() for word in codec_list) * 10,
+        -sum(word in x['name'].lower() for word in audio_list) * 2,
+        -sum(word in x['name'].lower() for word in color_list) * 2,
+        -sum(word in x['name'].lower() for word in extra_list) * 2,
+        -core.difflib.SequenceMatcher(None, x['name'].lower(), filename).ratio(),
         -x['rating'],
         not x['impaired'] == 'true',
         x['service'],
