@@ -120,43 +120,136 @@ def __prepare_results(core, meta, results):
     results = __apply_language_filter(meta, results)
     results = __sanitize_results(core, meta, results)
 
-    release = ['webdl', 'webdlrip', 'web', 'webrip', 'webr', 'webcap',
-               'bluray', 'bdrip', 'brip', 'brrip', 'bdmv', 'bd', 'remux', 'bdremux', 'uhdremux', 'uhdbdremux', 'uhdbluray',
-               'dvd', 'dvd5', 'dvd9', 'dvdr', 'dvdrip', 'dvdscr', 'scr', 'screener', 'r5', 'r6', 'bdscr', 'bdscr',
-               'avi', 'mp4', 'mkv', 'ts', 'm2ts', 'mts', 'mpeg', 'mpg', 'mov', 'wmv', 'flv', 'vob']
-    quality = ['4k', '2160p', '1080p', '720p', '480p', '360p', '240p', '144p']
-    service = ['amzn', 'hmax', 'max', 'nf', 'crav', 'dsnp', 'atvp', 'pcok', 'cr', 'sho', 'stan', 'tbs', 'tnt', 'usa', 'hbo', 'bbc', 'sky', 'skyq',
-               'netflix', 'amazon', 'primevideo', 'hulu', 'crunchyroll', 'disney', 'disneyplus', 'hbonow', 'hbogo', 'hbomax', 'cbs']
-    codec = ['x264', 'x265', '264', '265', 'h265', 'h264', 'hevc', 'avc', 'av1', 'vp9', 'vp8', 'divx', 'xvid']
-    audio = ['dts', 'dtshd', 'atmos', 'truehd', 'aac', 'ac', 'dd', 'ddp', 'ddp5', 'dd5', 'dd2', 'dd1', 'dd7', 'ddp7']
-    color = ['8bit', '10bit', '12bit']
-    extra = ['extended', 'cut', 'dc', 'remastered']
+    release_groups = [
+        ['bluray', 'bd', 'bdrip', 'brrip', 'bdmv', 'bdscr', 'remux', 'bdremux', 'uhdremux', 'uhdbdremux', 'uhdbluray'],
+        ['web', 'webdl', 'webrip', 'webr', 'webdlrip', 'webcap'],
+        ['dvd', 'dvd5', 'dvd9', 'dvdr', 'dvdrip', 'dvdscr'],
+        ['scr', 'screener', 'r5', 'r6']
+    ]
+    release = []
+    for group in release_groups:
+        release.extend(group)
+    release.extend(['avi', 'mp4', 'mkv', 'ts', 'm2ts', 'mts', 'mpeg', 'mpg', 'mov', 'wmv', 'flv', 'vob'])
 
-    filename = core.utils.unquote(meta.filename.lower())
-    nameparts = core.re.split(r'[.:;()\[\]{}\\\/\s\&€\#\=\$\?\!%\+\-_\\*]', filename)
+    quality_groups = [
+        ['4k', '2160p', '2160', '4kuhd', '4kultrahd', 'ultrahd', 'uhd'],
+        ['1080p', '1080'],
+        ['720p', '720'],
+        ['480p'],
+        ['360p', '240p', '144p'],
+    ]
+    quality = []
+    for group in quality_groups:
+        quality.extend(group)
+
+    service_groups = [
+        ['netflix', 'nflx', 'nf'],
+        ['amazon', 'amzn', 'primevideo'],
+        ['hulu', 'hlu'],
+        ['crunchyroll', 'cr'],
+        ['disney', 'disneyplus'],
+        ['hbo', 'hbonow', 'hbogo', 'hbomax', 'hmax'],
+        ['bbc'],
+        ['sky', 'skyq'],
+        ['syfy'],
+        ['atvp', 'atvplus'],
+        ['pcok', 'peacock'],
+    ]
+    service = []
+    for group in service_groups:
+        service.extend(group)
+
+    codec_groups = [
+        ['x264', 'h264', '264', 'avc'],
+        ['x265', 'h265', '265', 'hevc'],
+        ['av1', 'vp9', 'vp8', 'divx', 'xvid'],
+    ]
+    codec = []
+    for group in codec_groups:
+        codec.extend(group)
+
+    audio_groups = [
+        ['dts', 'dtshd', 'atmos', 'truehd'],
+        ['aac', 'ac'],
+        ['dd', 'ddp', 'ddp5', 'dd5', 'dd2', 'dd1', 'dd7', 'ddp7'],
+    ]
+    audio = []
+    for group in audio_groups:
+        audio.extend(group)
+
+    color_groups = [
+        ['hdr', '10bit', '12bit', 'hdr10', 'hdr10plus', 'dolbyvision', 'dolby', 'vision'],
+        ['sdr', '8bit'],
+    ]
+    color = []
+    for group in color_groups:
+        color.extend(group)
+
+    extra = ['extended', 'cut', 'remastered', 'proper']
+
+    filename = core.utils.unquote(meta.filename).lower()
+    regexsplitwords = r'[\s\.\:\;\(\)\[\]\{\}\\\/\&\€\'\`\#\@\=\$\?\!\%\+\-\_\*\^]'
+    nameparts = core.re.split(regexsplitwords, filename)
 
     release_list = [i for i in nameparts if i in release]
-    service_list = [i for i in nameparts if i in service]
     quality_list = [i for i in nameparts if i in quality]
+    service_list = [i for i in nameparts if i in service]
     codec_list = [i for i in nameparts if i in codec]
     audio_list = [i for i in nameparts if i in audio]
     color_list = [i for i in nameparts if i in color]
     extra_list = [i for i in nameparts if i in extra]
 
+    for item in release_list:
+        for group in release_groups:
+            if item in group:
+                release_list = group
+                break
+
+    for item in quality_list:
+        for group in quality_groups:
+            if item in group:
+                quality_list = group
+                break
+
+    for item in service_list:
+        for group in service_groups:
+            if item in group:
+                service_list = group
+                break
+
+    for item in codec_list:
+        for group in codec_groups:
+            if item in group:
+                codec_list = group
+                break
+
+    for item in audio_list:
+        for group in audio_groups:
+            if item in group:
+                audio_list = group
+                break
+
+    for item in color_list:
+        for group in color_groups:
+            if item in group:
+                color_list = group
+                break
+
     def sorter(x):
-        name = core.utils.unquote(x['name'].lower())
+        name = x['name'].lower()
+        nameparts = core.re.split(regexsplitwords, name)
 
         return (
             not x['lang'] == meta.preferredlanguage,
             meta.languages.index(x['lang']),
             not x['sync'] == 'true',
-            -sum(word in name for word in release_list) * 10,
-            -sum(word in name for word in service_list) * 10,
-            -sum(word in name for word in quality_list) * 10,
-            -sum(word in name for word in codec_list) * 10,
-            -sum(word in name for word in audio_list) * 2,
-            -sum(word in name for word in color_list) * 2,
-            -sum(word in name for word in extra_list) * 2,
+            -sum(i in nameparts for i in quality_list) * 10,
+            -sum(i in nameparts for i in release_list) * 10,
+            -sum(i in nameparts for i in codec_list) * 10,
+            -sum(i in nameparts for i in service_list) * 10,
+            -sum(i in nameparts for i in audio_list),
+            -sum(i in nameparts for i in color_list),
+            -sum(i in nameparts for i in extra_list),
             -core.difflib.SequenceMatcher(None, name, filename).ratio(),
             -x['rating'],
             not x['impaired'] == 'true',
