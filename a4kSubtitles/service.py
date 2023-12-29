@@ -28,13 +28,40 @@ def start(api):
         preferredlang = core.kodi.get_kodi_setting('locale.subtitlelanguage')
 
         try:
-            preferredlang_code = core.kodi.xbmc.convertLanguage(preferredlang, core.kodi.xbmc.ISO_639_2)
-            sub_lang_codes = [core.kodi.xbmc.convertLanguage(s, core.kodi.xbmc.ISO_639_2) for s in core.kodi.xbmc.Player().getAvailableSubtitleStreams()]
-            core.kodi.xbmc.Player().setSubtitleStream(sub_lang_codes.index(preferredlang_code))
-            has_subtitles = True
-        except: pass
+            def update_sub_stream():
+                if not core.kodi.get_bool_setting('general', 'auto_select'):
+                    return
+
+                prefer_sdh = core.kodi.get_bool_setting('general', 'prefer_sdh')
+                prefer_forced = core.kodi.get_bool_setting('general', 'prefer_forced')
+
+                preferredlang_code = core.kodi.xbmc.convertLanguage(preferredlang, core.kodi.xbmc.ISO_639_2)
+                sub_langs = [core.kodi.xbmc.convertLanguage(s, core.kodi.xbmc.ISO_639_2) for s in core.kodi.xbmc.Player().getAvailableSubtitleStreams()]
+
+                preferedlang_sub_indexes = [i for i, s in enumerate(sub_langs) if preferredlang_code == s]
+                if len(preferedlang_sub_indexes) == 0:
+                    return
+
+                select_index = -1
+                if prefer_sdh:
+                    select_index = preferedlang_sub_indexes[-1]
+                if select_index == -1 and not prefer_forced and len(preferedlang_sub_indexes) > 1:
+                    select_index = preferedlang_sub_indexes[1]
+                if select_index == -1:
+                    select_index = preferedlang_sub_indexes[0]
+
+                core.kodi.xbmc.Player().setSubtitleStream(select_index)
+                return True
+
+            has_subtitles = update_sub_stream()
+        except:
+            pass
 
         if has_subtitles:
+            continue
+
+        has_imdb = core.kodi.xbmc.getInfoLabel('VideoPlayer.IMDBNumber')
+        if not has_imdb:
             continue
 
         if not core.kodi.get_bool_setting('general', 'auto_download'):

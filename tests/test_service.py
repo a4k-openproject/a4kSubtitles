@@ -26,6 +26,13 @@ def __mock_get_cond_visibility(api, mock_data):
         api.core.kodi.xbmc.getCondVisibility = default
     return restore
 
+def __mock_get_info_label(api, mock_data):
+    default = api.core.kodi.xbmc.getInfoLabel
+    api.core.kodi.xbmc.getInfoLabel = lambda v: mock_data.get(v, False)
+    def restore():
+        api.core.kodi.xbmc.getInfoLabel = default
+    return restore
+
 def __mock_api_search(api):
     default = api.search
     api.search = lambda p: [{}]
@@ -91,6 +98,9 @@ def test_service_when_video_does_not_have_subtitles():
         'VideoPlayer.HasSubtitles': False,
         'VideoPlayer.SubtitlesEnabled': False,
     })
+    restore_get_info_label = __mock_get_info_label(a4ksubtitles_api, {
+        'VideoPlayer.IMDBNumber': 'tt1234567',
+    })
 
     executebuiltin_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'executebuiltin')
 
@@ -98,6 +108,7 @@ def test_service_when_video_does_not_have_subtitles():
 
     restore()
     restore_get_cond_visibility()
+    restore_get_info_label()
     executebuiltin_spy.restore()
 
     assert executebuiltin_spy.call_count == 1
@@ -114,6 +125,9 @@ def test_service_when_video_has_disabled_subtitles():
         'VideoPlayer.HasSubtitles': True,
         'VideoPlayer.SubtitlesEnabled': False,
     })
+    restore_get_info_label = __mock_get_info_label(a4ksubtitles_api, {
+        'VideoPlayer.IMDBNumber': 'tt1234567',
+    })
 
     executebuiltin_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'executebuiltin')
 
@@ -121,6 +135,7 @@ def test_service_when_video_has_disabled_subtitles():
 
     restore()
     restore_get_cond_visibility()
+    restore_get_info_label()
     executebuiltin_spy.restore()
 
     assert executebuiltin_spy.call_count == 1
@@ -137,6 +152,9 @@ def test_service_when_does_not_have_video_duration():
         'VideoPlayer.HasSubtitles': False,
         'VideoPlayer.SubtitlesEnabled': False,
     })
+    restore_get_info_label = __mock_get_info_label(a4ksubtitles_api, {
+        'VideoPlayer.IMDBNumber': 'tt1234567',
+    })
 
     executebuiltin_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'executebuiltin')
 
@@ -144,6 +162,7 @@ def test_service_when_does_not_have_video_duration():
 
     restore()
     restore_get_cond_visibility()
+    restore_get_info_label()
     executebuiltin_spy.restore()
 
     assert executebuiltin_spy.call_count == 0
@@ -161,6 +180,9 @@ def test_service_auto_download():
         'VideoPlayer.HasSubtitles': False,
         'VideoPlayer.SubtitlesEnabled': False,
     })
+    restore_get_info_label = __mock_get_info_label(a4ksubtitles_api, {
+        'VideoPlayer.IMDBNumber': 'tt1234567',
+    })
     restore_api_search = __mock_api_search(a4ksubtitles_api)
     expected_download_result = 'test_download_result'
     restore_api_download = __mock_api_download(a4ksubtitles_api, expected_download_result)
@@ -172,6 +194,7 @@ def test_service_auto_download():
 
     restore()
     restore_get_cond_visibility()
+    restore_get_info_label()
     restore_api_search()
     restore_api_download()
     executebuiltin_spy.restore()
