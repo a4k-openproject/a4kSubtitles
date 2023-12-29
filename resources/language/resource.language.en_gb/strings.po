@@ -37,7 +37,19 @@ msgid "Auto download first subtitle silently"
 msgstr ""
 
 msgctxt "#33105"
-msgid "Auto detect subs encoding"
+msgid "Auto detect subtitle encoding"
+msgstr ""
+
+msgctxt "#33106"
+msgid "Auto select embedded subtitle"
+msgstr ""
+
+msgctxt "#33107"
+msgid "Prefer SDH (embedded only)"
+msgstr ""
+
+msgctxt "#33108"
+msgid "Prefer forced (embedded only)"
 msgstr ""
 
 # Services

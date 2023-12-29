@@ -1,3 +1,8 @@
+* [v3.7.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.7.0):
+  * New option to auto select and enable embedded subtitles (was previously always enabled)
+  * New option to prefer forced subtitles on auto selection (was previously always enabled)
+  * New option to prefer SDH subtitles on auto selection
+
 * [v3.6.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.6.0):
   * Use group of title matches in the results ordering
 
