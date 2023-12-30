@@ -124,9 +124,6 @@ def parse_language(language):  # pragma: no cover
         return language
 
 def create_listitem(item):  # pragma: no cover
-    if item['lang'] == 'Brazilian':
-        item['lang'] = 'Portuguese (Brazil)'
-
     (item_name, item_ext) = os.path.splitext(item['name'])
     item_name = item_name.replace('.', ' ')
     item_ext = item_ext.upper()[1:]

@@ -75,9 +75,9 @@ msgstr ""
 
 # Labels
 msgctxt "#33301"
-msgid "Username (Optional)"
+msgid "Username"
 msgstr ""
 
 msgctxt "#33302"
-msgid "Password (Optional)"
+msgid "Password"
 msgstr ""

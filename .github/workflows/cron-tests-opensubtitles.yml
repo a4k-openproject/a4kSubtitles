@@ -19,7 +19,7 @@ jobs:
     - name: setup-python
       uses: actions/setup-python@v5
       with:
-        python-version: 3.8
+        python-version: 3.8.8
 
     - name: install
       run: |
@@ -27,5 +27,8 @@ jobs:
         python -m pip install -r requirements.txt
 
     - name: test
+      env:
+        A4KSUBTITLES_OPENSUBTITLES_USERNAME: ${{ secrets.A4KSUBTITLES_OPENSUBTITLES_USERNAME }}
+        A4KSUBTITLES_OPENSUBTITLES_PASSWORD: ${{ secrets.A4KSUBTITLES_OPENSUBTITLES_PASSWORD }}
       run: |
         pytest -v -k 'test_opensubtitles' ./tests/test_suite.py

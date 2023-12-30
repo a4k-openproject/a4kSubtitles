@@ -252,8 +252,8 @@ def test_opensubtitles():
 
     assert len(search.results) == 20
 
-    expected_result_name = 'Fantastic.Beasts.and.Where.to.Find.Them.2016.1080p.BluRay.x264.DTS-JYK.srt'
-    expected_result_name2 = 'Fantastic.Beasts.and.Where.to.Find.Them.2016.1080p.BluRay.x264.DTS-FGT.srt'
+    expected_result_name = 'Fantastic.Beasts.and.Where.to.Find.Them.2016.1080p.BluRay.x264.DTS-JYK'
+    expected_result_name2 = 'Fantastic.Beasts.and.Where.to.Find.Them.2016.1080p.BluRay.x264.DTS-FGT'
     assert search.results[0]['name'] == expected_result_name or search.results[0]['name'] == expected_result_name2
 
     __remove_all_cache(a4ksubtitles_api)
@@ -293,6 +293,8 @@ def test_opensubtitles_tvshow():
     # search
     settings = {
         'opensubtitles.enabled': 'true',
+        'opensubtitles.username': os.getenv('A4KSUBTITLES_OPENSUBTITLES_USERNAME', ''),
+        'opensubtitles.password': os.getenv('A4KSUBTITLES_OPENSUBTITLES_PASSWORD', ''),
     }
     search = __search_tvshow(a4ksubtitles_api, settings)
 
@@ -316,6 +318,8 @@ def test_opensubtitles_unicode_tvshow():
     # search
     settings = {
         'opensubtitles.enabled': 'true',
+        'opensubtitles.username': os.getenv('A4KSUBTITLES_OPENSUBTITLES_USERNAME', ''),
+        'opensubtitles.password': os.getenv('A4KSUBTITLES_OPENSUBTITLES_PASSWORD', ''),
     }
     search = __search_unicode_tvshow(a4ksubtitles_api, settings)
 
@@ -339,6 +343,8 @@ def test_opensubtitles_missing_imdb_id():
     # search
     settings = {
         'opensubtitles.enabled': 'true',
+        'opensubtitles.username': os.getenv('A4KSUBTITLES_OPENSUBTITLES_USERNAME', ''),
+        'opensubtitles.password': os.getenv('A4KSUBTITLES_OPENSUBTITLES_PASSWORD', ''),
     }
     video_meta = {
         'imdb_id': '',
@@ -354,6 +360,8 @@ def test_opensubtitles_missing_imdb_id_but_in_url():
     # search
     settings = {
         'opensubtitles.enabled': 'true',
+        'opensubtitles.username': os.getenv('A4KSUBTITLES_OPENSUBTITLES_USERNAME', ''),
+        'opensubtitles.password': os.getenv('A4KSUBTITLES_OPENSUBTITLES_PASSWORD', ''),
     }
     video_meta = {
         'imdb_id': '',
@@ -370,6 +378,8 @@ def test_opensubtitles_tvshow_missing_imdb_id():
     # search
     settings = {
         'opensubtitles.enabled': 'true',
+        'opensubtitles.username': os.getenv('A4KSUBTITLES_OPENSUBTITLES_USERNAME', ''),
+        'opensubtitles.password': os.getenv('A4KSUBTITLES_OPENSUBTITLES_PASSWORD', ''),
     }
     video_meta = {
         'imdb_id': '',
@@ -385,6 +395,8 @@ def test_opensubtitles_tvshow_missing_imdb_id_but_in_url():
     # search
     settings = {
         'opensubtitles.enabled': 'true',
+        'opensubtitles.username': os.getenv('A4KSUBTITLES_OPENSUBTITLES_USERNAME', ''),
+        'opensubtitles.password': os.getenv('A4KSUBTITLES_OPENSUBTITLES_PASSWORD', ''),
     }
     video_meta = {
         'imdb_id': '',
@@ -403,6 +415,8 @@ def test_opensubtitles_tvshow_missing_imdb_id_but_in_url_with_show_id_and_meta_f
     # search
     settings = {
         'opensubtitles.enabled': 'true',
+        'opensubtitles.username': os.getenv('A4KSUBTITLES_OPENSUBTITLES_USERNAME', ''),
+        'opensubtitles.password': os.getenv('A4KSUBTITLES_OPENSUBTITLES_PASSWORD', ''),
     }
     video_meta = {
         'imdb_id': '',

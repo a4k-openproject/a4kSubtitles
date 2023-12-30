@@ -32,7 +32,7 @@ jobs:
       if: "!startsWith(needs.validate.outputs.commit, 'chore:')"
       uses: actions/setup-python@v5
       with:
-        python-version: 3.8
+        python-version: 3.8.8
 
     - name: install
       if: "!startsWith(needs.validate.outputs.commit, 'chore:')"
@@ -47,6 +47,9 @@ jobs:
 
     - name: test
       if: "!startsWith(needs.validate.outputs.commit, 'chore:')"
+      env:
+        A4KSUBTITLES_OPENSUBTITLES_USERNAME: ${{ secrets.A4KSUBTITLES_OPENSUBTITLES_USERNAME }}
+        A4KSUBTITLES_OPENSUBTITLES_PASSWORD: ${{ secrets.A4KSUBTITLES_OPENSUBTITLES_PASSWORD }}
       run: |
         coverage run -m pytest -v
 
