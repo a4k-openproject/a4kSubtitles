@@ -90,11 +90,11 @@ def parse_search_response(core, service_name, meta, response):
         if meta.season != season or meta.episode != episode:
             return None
 
-        lang = match.group(3)
+        lang = core.utils.get_lang_id(match.group(3), core.kodi.xbmc.ENGLISH_NAME)
         if lang not in meta.languages:
             return None
 
-        lang_code = core.kodi.xbmc.convertLanguage(lang, core.kodi.xbmc.ISO_639_1)
+        lang_code = core.utils.get_lang_id(lang, core.kodi.xbmc.ISO_639_1)
 
         release_id = match.group(4)
         name = '%s.S%sE%s.%s.srt' % (meta.tvshow, meta.season.zfill(2), meta.episode.zfill(2), release_id)

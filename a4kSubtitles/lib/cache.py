@@ -9,6 +9,7 @@ from . import utils
 __meta_cache_filepath = os.path.join(kodi.addon_profile, 'last_meta.json')
 __tvshow_years_cache_filepath = os.path.join(kodi.addon_profile, 'tvshow_years_cache.json')
 __imdb_id_cache_filepath = os.path.join(kodi.addon_profile, 'imdb_id_cache.json')
+__tokens_cache_filepath = os.path.join(kodi.addon_profile, 'tokens_cache.json')
 results_filepath = os.path.join(kodi.addon_profile, 'last_results.json')
 
 def __get_cache(filepath):
@@ -58,3 +59,9 @@ def get_imdb_id_cache():
 
 def save_imdb_id_cache(data):
     return __save_cache(__imdb_id_cache_filepath, data)
+
+def get_tokens_cache():
+    return __get_cache(__tokens_cache_filepath)
+
+def save_tokens_cache(data):
+    return __save_cache(__tokens_cache_filepath, data)

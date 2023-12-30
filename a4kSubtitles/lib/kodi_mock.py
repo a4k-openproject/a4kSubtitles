@@ -6,6 +6,7 @@ import shutil
 
 from zipfile import ZipFile
 from xml.etree import ElementTree
+from .third_party import iso639
 
 try:  # pragma: no cover
     from urlparse import unquote
@@ -21,9 +22,10 @@ xbmc.executebuiltin = lambda _: None
 xbmc.getCleanMovieTitle = lambda t: t
 xbmc.getCondVisibility = lambda _: False
 
-xbmc.convertLanguage = lambda l, f: l[:f].lower()
-xbmc.ISO_639_1 = 2
-xbmc.ISO_639_2 = 3
+xbmc.convertLanguage = lambda l, f: iso639.Lang(l).asdict()[f]
+xbmc.ISO_639_1 = 'pt1'
+xbmc.ISO_639_2 = 'pt2t'
+xbmc.ENGLISH_NAME = 'name'
 
 __player = lambda: None
 __player.getPlayingFile = lambda: ''

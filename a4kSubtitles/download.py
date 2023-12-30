@@ -80,7 +80,7 @@ def __postprocess(core, filepath, lang_code):
             encoding = ''
             if core.utils.py3:
                 detection = core.utils.chardet.detect(text_bytes)
-                detected_lang_code = core.kodi.xbmc.convertLanguage(detection['language'], core.kodi.xbmc.ISO_639_2)
+                detected_lang_code = core.utils.get_lang_id(detection['language'], core.kodi.xbmc.ISO_639_2)
                 if detection['confidence'] == 1.0 or detected_lang_code == lang_code:
                     encoding = detection['encoding']
 
@@ -118,7 +118,7 @@ def download(core, params):
     core.kodi.xbmcvfs.mkdirs(core.utils.temp_dir)
 
     actions_args = params['action_args']
-    lang_code = core.kodi.xbmc.convertLanguage(actions_args['lang'], core.kodi.xbmc.ISO_639_2)
+    lang_code = core.utils.get_lang_id(actions_args['lang'], core.kodi.xbmc.ISO_639_2)
     filename = __insert_lang_code_in_filename(core, actions_args['filename'], lang_code)
     archivepath = core.os.path.join(core.utils.temp_dir, 'sub.zip')
 
