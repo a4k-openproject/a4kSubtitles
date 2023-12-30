@@ -4,9 +4,17 @@
 [![Kodi version](https://img.shields.io/badge/kodi%20versions-18--20-blue)](https://kodi.tv/) [![Coverage Status](https://coveralls.io/repos/github/a4k-openproject/a4kSubtitles/badge.svg?branch=master)](https://coveralls.io/github/a4k-openproject/a4kSubtitles?branch=master)
 
 ### General Status
-![general-service](https://github.com/a4k-openproject/a4kSubtitles/workflows/Service/badge.svg) ![general-api](https://github.com/a4k-openproject/a4kSubtitles/workflows/API/badge.svg) ![general-search](https://github.com/a4k-openproject/a4kSubtitles/workflows/Search/badge.svg) ![general-tvshow](https://github.com/a4k-openproject/a4kSubtitles/workflows/TVShow/badge.svg)
+[![Background Service](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-service.yml/badge.svg)](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-service.yml)
+[![API](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-api.yml/badge.svg)](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-api.yml)
+[![Search](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-search.yml/badge.svg)](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-search.yml)
+[![TVShows](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-tvshow.yml/badge.svg)](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-tvshow.yml)
+
 ### Providers Status
-![addic7ed](https://github.com/a4k-openproject/a4kSubtitles/workflows/Addic7ed/badge.svg) ![bsplayer](https://github.com/a4k-openproject/a4kSubtitles/workflows/BSPlayer/badge.svg) ![opensubtitles](https://github.com/a4k-openproject/a4kSubtitles/workflows/OpenSubtitles/badge.svg) ![podnadpisi](https://github.com/a4k-openproject/a4kSubtitles/workflows/Podnadpisi.NET/badge.svg) ![subscene](https://github.com/a4k-openproject/a4kSubtitles/workflows/Subscene/badge.svg)
+[![Addic7ed](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-addic7ed.yml/badge.svg)](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-addic7ed.yml)
+[![BSPlayer](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-bsplayer.yml/badge.svg)](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-bsplayer.yml)
+[![OpenSubtitles](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-opensubtitles.yml/badge.svg)](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-opensubtitles.yml)
+[![Podnadpisi.NET](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-podnadpisi.yml/badge.svg)](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-podnadpisi.yml)
+[![Subscene](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-subscene.yml/badge.svg)](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-subscene.yml)
 
 ## Description
 
