@@ -34,7 +34,7 @@ def start(api):
 
                 player_props = core.kodi.get_kodi_player_subtitles()
                 prefer_sdh = core.kodi.get_bool_setting('general', 'prefer_sdh')
-                prefer_forced = core.kodi.get_bool_setting('general', 'prefer_forced')
+                prefer_forced = not prefer_sdh and core.kodi.get_bool_setting('general', 'prefer_forced')
 
                 preferredlang_code = core.utils.get_lang_id(preferredlang, core.kodi.xbmc.ISO_639_2)
                 sub_langs = [core.utils.get_lang_id(s, core.kodi.xbmc.ISO_639_2) for s in core.kodi.xbmc.Player().getAvailableSubtitleStreams()]
