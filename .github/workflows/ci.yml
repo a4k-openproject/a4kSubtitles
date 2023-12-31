@@ -21,32 +21,32 @@ jobs:
       run: |
         python3 ./scripts/validate_commit.py
 
-  build:
+  tests:
     runs-on: windows-latest
     needs: validate
     steps:
     - uses: actions/checkout@v4
-      if: "!startsWith(needs.validate.outputs.commit, 'chore:')"
+      if: "${{ !startsWith(needs.validate.outputs.commit, 'chore:') }}"
 
     - name: setup-python
-      if: "!startsWith(needs.validate.outputs.commit, 'chore:')"
+      if: "${{ !startsWith(needs.validate.outputs.commit, 'chore:') }}"
       uses: actions/setup-python@v5
       with:
         python-version: 3.8
 
     - name: install
-      if: "!startsWith(needs.validate.outputs.commit, 'chore:')"
+      if: "${{ !startsWith(needs.validate.outputs.commit, 'chore:') }}"
       run: |
         python -m pip install --upgrade pip
         python -m pip install -r requirements.txt
 
     - name: lint
-      if: "!startsWith(needs.validate.outputs.commit, 'chore:')"
+      if: "${{ !startsWith(needs.validate.outputs.commit, 'chore:') }}"
       run: |
         flake8
 
     - name: test
-      if: "!startsWith(needs.validate.outputs.commit, 'chore:')"
+      if: "${{ !startsWith(needs.validate.outputs.commit, 'chore:') }}"
       env:
         A4KSUBTITLES_OPENSUBTITLES_USERNAME: ${{ secrets.A4KSUBTITLES_OPENSUBTITLES_USERNAME }}
         A4KSUBTITLES_OPENSUBTITLES_PASSWORD: ${{ secrets.A4KSUBTITLES_OPENSUBTITLES_PASSWORD }}
@@ -54,7 +54,7 @@ jobs:
         coverage run -m pytest -v
 
     - name: coverage
-      if: "!startsWith(needs.validate.outputs.commit, 'chore:')"
+      if: "${{ !startsWith(needs.validate.outputs.commit, 'chore:') }}"
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: |

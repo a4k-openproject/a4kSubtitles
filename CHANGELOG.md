@@ -1,7 +1,10 @@
+* [v3.9.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.9.0):
+  * Improve SDH and forced preferences handling.
+
 * [v3.8.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.8.0):
-* Switch to new OpenSubtitles API.
-  Note: username and password are now mandatory for using OpenSubtitles.
-* Fixes for Brazilian Portuguese language codes handling.
+  * Switch to new OpenSubtitles API.
+    Note: username and password are now mandatory for using OpenSubtitles.
+  * Fixes for Brazilian Portuguese language codes handling.
 
 * [v3.7.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.7.0):
   * New option to auto select and enable embedded subtitles (was previously always enabled)

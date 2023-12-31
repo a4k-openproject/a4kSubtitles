@@ -32,6 +32,7 @@ def start(api):
                 if not core.kodi.get_bool_setting('general', 'auto_select'):
                     return
 
+                player_props = core.kodi.get_kodi_player_subtitles()
                 prefer_sdh = core.kodi.get_bool_setting('general', 'prefer_sdh')
                 prefer_forced = core.kodi.get_bool_setting('general', 'prefer_forced')
 
@@ -43,12 +44,38 @@ def start(api):
                     return
 
                 select_index = -1
-                if prefer_sdh:
-                    select_index = preferedlang_sub_indexes[-1]
-                if select_index == -1 and not prefer_forced and len(preferedlang_sub_indexes) > 1:
-                    select_index = preferedlang_sub_indexes[1]
+                def find_sub_index():
+                    if 'subtitles' in player_props:
+                        for sub in player_props['subtitles']:
+                            subname = sub['name'].lower()
+                            if sub['language'] != preferredlang_code:
+                                continue
+                            if prefer_sdh and (sub['isimpaired'] or 'sdh' in subname or 'honorific' in subname):
+                                select_index = sub['index']
+                                break
+                            if prefer_forced and (sub['isforced'] or 'forced' in subname):
+                                select_index = sub['index']
+                                break
+
+                        if select_index == -1:
+                            for sub in player_props['subtitles']:
+                                subname = sub['name'].lower()
+                                if sub['isdefault'] or ('forced' not in subname and 'songs' not in subname):
+                                    select_index = sub['index']
+                                    break
+
+                find_sub_index()
+                if select_index == -1 and preferredlang_code == 'pob':
+                    preferredlang_code = 'por'
+                    find_sub_index()
+
                 if select_index == -1:
-                    select_index = preferedlang_sub_indexes[0]
+                    if prefer_sdh:
+                        select_index = preferedlang_sub_indexes[-1]
+                    if select_index == -1 and not prefer_forced and len(preferedlang_sub_indexes) > 1:
+                        select_index = preferedlang_sub_indexes[1]
+                    if select_index == -1:
+                        select_index = preferedlang_sub_indexes[0]
 
                 core.kodi.xbmc.Player().setSubtitleStream(select_index)
                 return True
