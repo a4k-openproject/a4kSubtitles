@@ -1,5 +1,8 @@
+* [v3.10.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.10.0):
+  * Small fix in SDH vs Forced flags checking.
+
 * [v3.9.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.9.0):
-  * Improve SDH and forced preferences handling.
+  * Improve SDH and Forced preferences handling.
 
 * [v3.8.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.8.0):
   * Switch to new OpenSubtitles API.
@@ -7,8 +10,8 @@
   * Fixes for Brazilian Portuguese language codes handling.
 
 * [v3.7.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.7.0):
-  * New option to auto select and enable embedded subtitles (was previously always enabled)
-  * New option to prefer forced subtitles on auto selection (was previously always enabled)
+  * New option to auto-select and enable embedded subtitles (was previously always enabled)
+  * New option to prefer Forced subtitles on auto selection (was previously always enabled)
   * New option to prefer SDH subtitles on auto selection
 
 * [v3.6.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.6.0):
