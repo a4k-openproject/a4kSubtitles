@@ -1,3 +1,6 @@
+* [v3.11.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.11.0):
+  * Fix auto-selection and add debug logs.
+
 * [v3.10.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.10.0):
   * Small fix in SDH vs Forced flags checking.
 
