@@ -15,26 +15,23 @@ def __get_debug_logenabled():
 
     return False
 
-def __log(message, level=xbmc.LOGDEBUG):
-    is_lazy_msg = callable(message)
-    if is_lazy_msg and level == xbmc.LOGDEBUG and not __get_debug_logenabled():
-        return
-
-    if is_lazy_msg:
-        message = message()
-
-    xbmc.log('{0}: {1}'.format(addon_id, message), level)
-
 try:
     notice_type = xbmc.LOGNOTICE
 except:
     notice_type = xbmc.LOGINFO
 
-def notice(message):
-    __log(message, notice_type)
+def __log(message, level):
+    if level == notice_type and not __get_debug_logenabled():
+        return
+
+    is_lazy_msg = callable(message)
+    if is_lazy_msg:
+        message = message()
+
+    xbmc.log('{0}: {1}'.format(addon_id, message), level)
 
 def error(message):
     __log(message, xbmc.LOGERROR)
 
 def debug(message):
-    __log(message, xbmc.LOGDEBUG)
+    __log(message, notice_type)

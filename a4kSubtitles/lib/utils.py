@@ -146,7 +146,7 @@ def cleanup_subtitles(core, sub_contents):
         )
 
         if line_contains_ad:
-            logger.notice('(detected ad) %s' % line.encode('ascii', errors='ignore'))
+            logger.debug('(detected ad) %s' % line.encode('ascii', errors='ignore'))
             if not re.match(r'^\{\d+\}\{\d+\}', line):
                 garbage = True
                 buffer = []

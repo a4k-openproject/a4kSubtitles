@@ -138,11 +138,12 @@ def parse_search_response(core, service_name, meta, response):
     def map_result(result):
         result = result['attributes']
         imdb_id = result.get('feature_details', {}).get('imdb_id', None)
-        if len(result['files']) == 0 or imdb_id is not None and ('tt%s' % imdb_id) != meta.imdb_id:
+        if len(result['files']) == 0 or imdb_id is not None and imdb_id != meta.imdb_id_as_int:
             return None
 
         filename = result['files'][0]['file_name']
         language = core.utils.get_lang_id(result['language'], core.kodi.xbmc.ENGLISH_NAME)
+
         return {
             'service_name': service_name,
             'service': service.display_name,
