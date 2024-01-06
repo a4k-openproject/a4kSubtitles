@@ -398,4 +398,9 @@ def get_meta(core):
             meta.tvshow_year_thread = threading.Thread(target=__scrape_tvshow_year, args=(core, meta))
             meta.tvshow_year_thread.start()
 
+    try:
+        if len(meta.imdb_id) > 2:
+            meta.imdb_id_as_int = int(meta.imdb_id[2:].lstrip('0'))
+    except: pass
+
     return meta

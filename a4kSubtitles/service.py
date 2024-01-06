@@ -69,10 +69,12 @@ def start(api):
                             sub_index = sub['index']
                             break
 
-                    if sub_index == -1:
+                    if sub_index is None:
                         for sub in player_props['subtitles']:
                             subname = sub['name'].lower()
-                            if sub['isdefault'] or ('forced' not in subname and 'songs' not in subname):
+                            if sub['language'] != preferredlang_code:
+                                continue
+                            if sub['isdefault'] or all(s not in subname for s in ['forced', 'songs', 'commentary']):
                                 core.logger.debug('found default subtitles: %s' % subname)
                                 sub_index = sub['index']
                                 break
