@@ -1,0 +1,24 @@
+Hi!
+
+just a little message from opensubtitles, I couldn't find any way to reach someone from the project so I try with a pull request ? 
+
+I saw in your release notes:
+
+>v3.8.0:
+>
+>Switch to new OpenSubtitles API. Note: username and password are now mandatory for using OpenSubtitles.
+
+Great that you use our new API, but there's a misunderstanding, users can get 5 free subtitles before creating an account, so you can try the download without a username/password set, 
+and only force authentication if the free download failed.  
+
+you can also catch the responses on the /login endpoint, if you get a 401, it's an authentication failed because of a bad login/password, and if it's a 400 it's because the user entered 
+his email instead of the username in the username field.
+
+I fixed that specific part yesterday on our extension, that will be hopefully soon published on the main repo with the version 1.0.4
+https://github.com/opensubtitlesdev/service.subtitles.opensubtitles-com
+
+if you got questions we'll be happy to talk, you can open a ticket here https://www.opensubtitles.com/en/contact . 
+
+kind regards
+
+opensubtitles
