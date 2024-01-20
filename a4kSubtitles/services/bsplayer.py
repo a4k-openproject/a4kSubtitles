@@ -111,7 +111,10 @@ def build_auth_request(core, service_name):
     return __get_request(core, service_name, action, params)
 
 def parse_auth_response(core, service_name, response):
-    response = __parse_response(core, service_name, response)
+    if response.status_code != 200 or not response.text:
+        return
+
+    response = __parse_response(core, service_name, response.text)
     if response is None:
         return
 

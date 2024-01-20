@@ -1,3 +1,6 @@
+* [v3.13.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.13.0):
+  * Show proper error message of wrong username for OpenSubtitles
+
 * [v3.12.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.12.0):
   * Fix OpenSubtitles not working for titles with IMDB ID less than 1_000_000
 
