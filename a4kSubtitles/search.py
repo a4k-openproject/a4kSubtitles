@@ -3,10 +3,7 @@
 def __auth_service(core, service_name, request):
     service = core.services[service_name]
     response = core.request.execute(core, request)
-    if response.status_code == 200 and response.text:
-        service.parse_auth_response(core, service_name, response.text)
-    elif service_name != 'bsplayer':
-        core.kodi.notification('%s authentication failed!' % service.display_name)
+    service.parse_auth_response(core, service_name, response)
 
 def __query_service(core, service_name, meta, request, results):
     try:

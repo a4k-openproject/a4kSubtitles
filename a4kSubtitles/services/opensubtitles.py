@@ -58,7 +58,14 @@ def build_auth_request(core, service_name):
     return request
 
 def parse_auth_response(core, service_name, response):
-    response = core.json.loads(response)
+    if response.status_code == 400:
+        core.kodi.notification('OpenSubtitles authentication failed! Bad username. Make sure you have entered your username and not your email in the username field.')
+        return
+    elif response.status_code != 200 or not response.text:
+        core.kodi.notification('OpenSubtitles authentication failed! Check your OpenSubtitles.com username and password.')
+        return
+
+    response = core.json.loads(response.text)
     token = response.get('token', None)
     base_url = response.get('base_url', __api_host)
     allowed_downloads = response.get('user', {}).get('allowed_downloads', 0)
