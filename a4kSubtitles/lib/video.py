@@ -330,6 +330,9 @@ def __get_basic_info():
 def get_meta(core):
     meta = __get_basic_info()
 
+    # For some reason, imdb_id does not contain an IMDB ID (example: tt14230458),
+    # but rather contains a TMDB (themoviedb.org) ID (example: 792307).
+    # This causes the search on (at least) OpenSubtitles to fail.
     if meta.imdb_id == '':
         cache_key = cache.hash_data(meta)
         imdb_id_cache = cache.get_imdb_id_cache()
