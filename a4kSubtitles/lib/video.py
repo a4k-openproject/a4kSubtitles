@@ -13,6 +13,7 @@ from . import logger, cache, utils, request
 __64k = 65536
 __longlong_format_char = 'q'
 __byte_size = struct.calcsize(__longlong_format_char)
+__imdb_id_prefix = 'tt'
 
 def __sum_64k_bytes(file, result):
     range_value = __64k / __byte_size
@@ -327,10 +328,14 @@ def __get_basic_info():
 
     return meta
 
+def __is_imdb_id(id: str) -> bool:
+    return id.startswith(__imdb_id_prefix)
+
 def get_meta(core):
     meta = __get_basic_info()
 
-    if meta.imdb_id == '':
+    # Depending on the used scraper, the imdb_id returned by Kodi might not actually be an IMDB ID.
+    if meta.imdb_id == '' or not __is_imdb_id(meta.imdb_id):
         cache_key = cache.hash_data(meta)
         imdb_id_cache = cache.get_imdb_id_cache()
         meta.imdb_id = imdb_id_cache.get(cache_key, '')
