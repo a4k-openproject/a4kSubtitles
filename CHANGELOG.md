@@ -1,3 +1,6 @@
+* [v3.14.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.14.0):
+  * Handle invalid `VideoPlayer.IMDBNumber` meta
+
 * [v3.13.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.13.0):
   * Show proper error message of wrong username for OpenSubtitles
 
