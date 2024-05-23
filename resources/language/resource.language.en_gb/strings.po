@@ -66,7 +66,7 @@ msgid "Podnadpisi"
 msgstr ""
 
 msgctxt "#33205"
-msgid "Subscene"
+msgid "SubDL"
 msgstr ""
 
 msgctxt "#33206"
@@ -80,4 +80,8 @@ msgstr ""
 
 msgctxt "#33302"
 msgid "Password"
+msgstr ""
+
+msgctxt "#33303"
+msgid "API Key"
 msgstr ""

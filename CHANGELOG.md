@@ -1,3 +1,7 @@
+* [v3.15.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.15.0):
+  * Remove Subscene
+  * Add SubDL
+
 * [v3.14.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.14.0):
   * Handle invalid `VideoPlayer.IMDBNumber` meta
 

@@ -17,7 +17,7 @@
         <setting id="bsplayer.enabled"      label="33202" type="bool" default="true"/>
         <setting id="opensubtitles.enabled" label="33201" type="bool" default="true"/>
         <setting id="podnadpisi.enabled"    label="33203" type="bool" default="true"/>
-        <setting id="subscene.enabled"      label="33205" type="bool" default="true"/>
+        <setting id="subdl.enabled"         label="33205" type="bool" default="true"/>
     </category>
     <!-- Accounts -->
     <category label="33003">
@@ -26,5 +26,9 @@
         <setting type="sep"/>
         <setting id="opensubtitles.username" label="33301" type="text" default=""/>
         <setting id="opensubtitles.password" label="33302" type="text" default="" option="hidden"/>
+        <!-- SubDL -->
+        <setting type="lsep" label="33205"/>
+        <setting type="sep"/>
+        <setting id="subdl.apikey" label="33303" type="text" default=""/>
     </category>
 </settings>
