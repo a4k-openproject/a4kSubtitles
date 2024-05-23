@@ -1,10 +1,10 @@
-name: Subscene
+name: SubDL
 on:
   push:
     branches:
       - master
     paths:
-      - '.github/workflows/cron-tests-subscene.yml'
+      - '.github/workflows/cron-tests-subdl.yml'
   schedule:
     - cron:  '0 7 * * *'
   workflow_dispatch: ~
@@ -28,4 +28,4 @@ jobs:
 
     - name: test
       run: |
-        pytest -v -k 'test_subscene' ./tests/test_suite.py
+        pytest -v -k 'test_subdl' ./tests/test_suite.py

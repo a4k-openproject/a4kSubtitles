@@ -14,7 +14,7 @@
 [![BSPlayer](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-bsplayer.yml/badge.svg)](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-bsplayer.yml)
 [![OpenSubtitles](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-opensubtitles.yml/badge.svg)](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-opensubtitles.yml)
 [![Podnadpisi.NET](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-podnadpisi.yml/badge.svg)](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-podnadpisi.yml)
-[![Subscene](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-subscene.yml/badge.svg)](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-subscene.yml)
+[![SubDL](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-subdl.yml/badge.svg)](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-subdl.yml)
 
 ## Description
 
@@ -23,7 +23,7 @@ Subtitle addon for KODI with support for multiple subtitle services:
 * BSPlayer
 * OpenSubtitles
 * Podnadpisi.NET
-* Subscene
+* SubDL
 
 ## Configuration
 ![configuration](https://media.giphy.com/media/kewuE4BgfOnFin0vEC/source.gif)

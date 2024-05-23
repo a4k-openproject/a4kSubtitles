@@ -27,13 +27,10 @@ def __retry(core, request, response, next, cfscrape, retry=0):
     if retry > 5:
         return None
 
-    if response.status_code in [503, 429, 409, 403]:
-        if response.status_code == 503:
-            core.time.sleep(2)
+    if response.status_code in [502, 503, 429, 409, 403]:
+        if response.status_code in [503, 403]:
             retry = 5
-        if response.status_code == 429:
-            core.time.sleep(3)
-        if response.status_code == 409:
+        else:
             core.time.sleep(3)
 
         retry += 1
