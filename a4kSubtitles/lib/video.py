@@ -294,24 +294,38 @@ def __update_info_from_imdb(core, meta, pagination_token=''):
     except:
         return
 
-def __get_basic_info():
+def __get_basic_info(core):
     meta = utils.DictAsObject({})
+    
+    if core.kodi.get_version_major() >= 20: #the InfoTagVideo API was added in kodi v20
+        videoInfo = xbmc.Player().getVideoInfoTag()
 
-    meta.year = xbmc.getInfoLabel('VideoPlayer.Year')
-    meta.season = xbmc.getInfoLabel('VideoPlayer.Season')
-    meta.episode = xbmc.getInfoLabel('VideoPlayer.Episode')
-    meta.tvshow = xbmc.getInfoLabel('VideoPlayer.TVShowTitle')
+        meta.year = videoInfo.getYear()
+        meta.season = videoInfo.getSeason()
+        meta.episode = videoInfo.getEpisode()
+        meta.tvshow = videoInfo.getTVShowTitle()
+        meta.title = videoInfo.getOriginalTitle()
+        if meta.title == '':
+            meta.title = videoInfo.getTitle()
+        meta.imdb_id =  videoInfo.getUniqueID('imdb')
+        filename_and_path = videoInfo.getFilenameAndPath()
+    else:
+        meta.year = xbmc.getInfoLabel('VideoPlayer.Year')
+        meta.season = xbmc.getInfoLabel('VideoPlayer.Season')
+        meta.episode = xbmc.getInfoLabel('VideoPlayer.Episode')
+        meta.tvshow = xbmc.getInfoLabel('VideoPlayer.TVShowTitle')
+        meta.title = xbmc.getInfoLabel('VideoPlayer.OriginalTitle')
+
+        if meta.title == '':
+            meta.title = xbmc.getInfoLabel('VideoPlayer.Title')
+        
+        meta.imdb_id = xbmc.getInfoLabel('VideoPlayer.IMDBNumber')
+        filename_and_path = xbmc.getInfoLabel('Player.FilenameAndPath')
+
     meta.tvshow_year = ''
-
-    meta.title = xbmc.getInfoLabel('VideoPlayer.OriginalTitle')
-    if meta.title == '':
-        meta.title = xbmc.getInfoLabel('VideoPlayer.Title')
-
     meta.filename = __get_filename(meta.title)
     meta.filename_without_ext = meta.filename
-    meta.imdb_id = xbmc.getInfoLabel('VideoPlayer.IMDBNumber')
-
-    filename_and_path = xbmc.getInfoLabel('Player.FilenameAndPath')
+    
     if meta.imdb_id == '':
         regex_result = re.search(r'.*(tt\d{7,}).*', filename_and_path, re.IGNORECASE)
         if regex_result:
@@ -329,7 +343,7 @@ def __is_imdb_id(id: str) -> bool:
     return id.startswith(__imdb_id_prefix)
 
 def get_meta(core):
-    meta = __get_basic_info()
+    meta = __get_basic_info(core)
 
     # Depending on the used scraper, the imdb_id returned by Kodi might not actually be an IMDB ID.
     if meta.imdb_id == '' or not __is_imdb_id(meta.imdb_id):
