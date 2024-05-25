@@ -1,12 +1,12 @@
 name: SubDL
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - '.github/workflows/cron-tests-subdl.yml'
-  schedule:
-    - cron:  '0 7 * * *'
+  # push:
+  #   branches:
+  #     - master
+  #   paths:
+  #     - '.github/workflows/cron-tests-subdl.yml'
+  # schedule:
+  #   - cron:  '0 7 * * *'
   workflow_dispatch: ~
 
 jobs:
