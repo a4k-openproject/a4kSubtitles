@@ -162,3 +162,18 @@ def get_int_setting(group, id=None):
 
 def get_bool_setting(group, id=None):
     return get_setting(group, id).lower() == 'true'
+
+def get_versionstring():
+    return xbmc.getInfoLabel('System.BuildVersionCode')
+
+def get_version():
+    return list(map(int, get_versionstring().split('.')))
+
+def get_version_major():
+    return get_version()[0]
+
+def get_version_minor():
+    return get_version()[1]
+
+def get_version_patch():
+    return get_version()[2]
