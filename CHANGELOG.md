@@ -1,3 +1,6 @@
+* [v3.16.1](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.16.1):
+  * Fix addons.xml.crc  
+
 * [v3.16.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.16.0):
   * Fix subtitle international characters encoding
   * Add SubSource
