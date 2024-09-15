@@ -18,6 +18,7 @@
         <setting id="opensubtitles.enabled" label="33201" type="bool" default="true"/>
         <setting id="podnadpisi.enabled"    label="33203" type="bool" default="true"/>
         <setting id="subdl.enabled"         label="33205" type="bool" default="true"/>
+        <setting id="subsource.enabled"     label="33207" type="bool" default="true"/>
     </category>
     <!-- Accounts -->
     <category label="33003">

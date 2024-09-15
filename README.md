@@ -24,6 +24,7 @@ Subtitle addon for KODI with support for multiple subtitle services:
 * OpenSubtitles
 * Podnadpisi.NET
 * SubDL
+* SubSource
 
 ## Configuration
 ![configuration](https://media.giphy.com/media/kewuE4BgfOnFin0vEC/source.gif)
