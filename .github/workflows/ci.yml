@@ -48,8 +48,6 @@ jobs:
     - name: test
       if: "${{ !startsWith(needs.validate.outputs.commit, 'chore:') }}"
       env:
-        A4KSUBTITLES_OPENSUBTITLES_USERNAME: ${{ secrets.A4KSUBTITLES_OPENSUBTITLES_USERNAME }}
-        A4KSUBTITLES_OPENSUBTITLES_PASSWORD: ${{ secrets.A4KSUBTITLES_OPENSUBTITLES_PASSWORD }}
         A4KSUBTITLES_SUBDL_APIKEY: ${{ secrets.A4KSUBTITLES_SUBDL_APIKEY }}
       run: |
         coverage run -m pytest -v -s --log-level=DEBUG

@@ -28,8 +28,6 @@ jobs:
 
     - name: test
       env:
-        A4KSUBTITLES_OPENSUBTITLES_USERNAME: ${{ secrets.A4KSUBTITLES_OPENSUBTITLES_USERNAME }}
-        A4KSUBTITLES_OPENSUBTITLES_PASSWORD: ${{ secrets.A4KSUBTITLES_OPENSUBTITLES_PASSWORD }}
         A4KSUBTITLES_SUBDL_APIKEY: ${{ secrets.A4KSUBTITLES_SUBDL_APIKEY }}
       run: |
         pytest -v -k 'test_opensubtitles' ./tests/test_suite.py

@@ -27,6 +27,9 @@ def __set_api_headers(core, service_name, request, token_cache=None):
         request['headers']['Authorization'] = 'Bearer %s' % token_cache['token']
 
 def build_auth_request(core, service_name):
+    if core.os.getenv('A4KSUBTITLES_TESTRUN') == 'true':
+        return
+
     cache = core.cache.get_tokens_cache()
     token_cache = cache.get(service_name, None)
     if token_cache is not None and 'ttl' in token_cache:
@@ -91,7 +94,7 @@ def parse_auth_response(core, service_name, response):
 def build_search_requests(core, service_name, meta):
     cache = core.cache.get_tokens_cache()
     token_cache = cache.get(service_name, None)
-    if token_cache is None:
+    if token_cache is None and core.os.getenv('A4KSUBTITLES_TESTRUN') != 'true':
         return []
 
     if meta.is_tvshow:
