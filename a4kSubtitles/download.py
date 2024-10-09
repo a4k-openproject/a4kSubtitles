@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+subtitles_exts = ['.srt', '.sub']
+subtitles_exts_secondary = ['.smi', '.ssa', '.aqt', '.jss', '.ass', '.rt', '.txt']
+subtitles_exts_all = subtitles_exts + subtitles_exts_secondary
 
 def __download(core, filepath, request):
     request['stream'] = True
@@ -7,6 +10,10 @@ def __download(core, filepath, request):
             core.shutil.copyfileobj(r.raw, f)
 
 def __extract_gzip(core, archivepath, filename):
+    if not any(filename.lower().endswith(ext) for ext in subtitles_exts_all):
+        # For now, we will use 'srt' to mark unknown file extensions as subtitles.
+        filename = filename + ".srt"
+
     filepath = core.os.path.join(core.utils.temp_dir, filename)
 
     if core.utils.py2:
@@ -25,8 +32,8 @@ def __extract_gzip(core, archivepath, filename):
     return filepath
 
 def __extract_zip(core, archivepath, filename, episodeid):
-    sub_exts = ['.srt', '.sub']
-    sub_exts_secondary = ['.smi', '.ssa', '.aqt', '.jss', '.ass', '.rt', '.txt']
+    sub_exts = subtitles_exts
+    sub_exts_secondary = subtitles_exts_secondary
 
     try:
         using_libvfs = False
@@ -39,9 +46,13 @@ def __extract_zip(core, archivepath, filename, episodeid):
         (dirs, files) = core.kodi.xbmcvfs.listdir('archive://%s' % archivepath_)
         namelist = [file.decode(core.utils.default_encoding) if core.utils.py2 else file for file in files]
 
-    subfile = core.utils.find_file_in_archive(core, namelist, sub_exts, episodeid)
-    if not subfile:
-        subfile = core.utils.find_file_in_archive(core, namelist, sub_exts_secondary, episodeid)
+    subfile = core.utils.find_file_in_archive(core, namelist, sub_exts + sub_exts_secondary, episodeid)
+
+    if subfile:
+        # Add the subtitle file extension.
+        subfilename_and_ext = subfile.rsplit(".", 1)
+        if len(subfilename_and_ext) > 1:
+            filename = filename + "." + subfilename_and_ext[-1]
 
     dest = core.os.path.join(core.utils.temp_dir, filename)
     if not subfile:
@@ -67,9 +78,15 @@ def __extract_zip(core, archivepath, filename, episodeid):
     return dest
 
 def __insert_lang_code_in_filename(core, filename, lang_code):
-    filename_chunks = core.utils.strip_non_ascii_and_unprintable(filename).split('.')
-    filename_chunks.insert(-1, lang_code)
-    return '.'.join(filename_chunks)
+    name = core.utils.strip_non_ascii_and_unprintable(filename)
+    nameparts = name.rsplit(".", 1)
+
+    # Because this can be called via "raw" subtitles where sub ext exists we will ensure it ends with the subtitle ext.
+    # Otherwise we will use "filename.lang_code" later the ext will be added on unzip process.
+    if len(nameparts) > 1 and ("." + nameparts[1] in subtitles_exts_all):
+        return ".".join([nameparts[0], lang_code, nameparts[1]])
+
+    return "{0}.{1}".format(name, lang_code)
 
 def __postprocess(core, filepath, lang_code):
     try:
@@ -111,6 +128,24 @@ def __postprocess(core, filepath, lang_code):
             f.write(text.encode(core.utils.default_encoding))
     except: pass
 
+def __copy_sub_local(core, subfile):
+    # Copy the subfile to local.
+    if core.os.getenv('A4KSUBTITLES_TESTRUN') == 'true':
+        return
+
+    media_name = core.os.path.splitext(core.os.path.basename(core.kodi.xbmc.getInfoLabel('Player.Filename')))[0]
+    sub_name, lang_code, extension = core.os.path.basename(subfile).rsplit(".", 2)
+    file_dest, folder_dest = None, None
+    if core.kodi.get_kodi_setting("subtitles.storagemode") == 0:
+        folder_dest = core.kodi.xbmc.getInfoLabel('Player.Folderpath')
+        file_dest = core.os.path.join(folder_dest, ".".join([media_name, lang_code, extension]))
+    elif core.kodi.get_kodi_setting("subtitles.storagemode") == 1:
+        folder_dest = core.kodi.get_kodi_setting("subtitles.custompath")
+        file_dest = core.os.path.join(folder_dest, ".".join([media_name, lang_code, extension]))
+
+    if file_dest and core.kodi.xbmcvfs.exists(folder_dest):
+        core.kodi.xbmcvfs.copy(subfile, file_dest)
+
 def download(core, params):
     core.logger.debug(lambda: core.json.dumps(params, indent=2))
 
@@ -120,6 +155,7 @@ def download(core, params):
     actions_args = params['action_args']
     lang_code = core.utils.get_lang_id(actions_args['lang'], core.kodi.xbmc.ISO_639_2)
     filename = __insert_lang_code_in_filename(core, actions_args['filename'], lang_code)
+    filename = core.utils.slugify_filename(filename)
     archivepath = core.os.path.join(core.utils.temp_dir, 'sub.zip')
 
     service_name = params['service_name']
@@ -140,6 +176,7 @@ def download(core, params):
     __postprocess(core, filepath, lang_code)
 
     if core.api_mode_enabled:
+        __copy_sub_local(core, filepath)
         return filepath
 
     listitem = core.kodi.xbmcgui.ListItem(label=filepath, offscreen=True)

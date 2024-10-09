@@ -274,7 +274,8 @@ def __update_info_from_imdb(core, meta, pagination_token=''):
                 meta.episode = str(result['series']['episodeNumber']['episodeNumber'])
         else:
             meta.tvshow = result['titleText']['text']
-            meta.tvshow_year = str(result['releaseDate']['year'])
+            if meta.tvshow_year == '':
+                meta.tvshow_year = str(result['releaseDate']['year'])
 
             episodes = result['episodes']['result']['edges']
             s_number = int(meta.season)
@@ -316,15 +317,11 @@ def __get_basic_info():
         if regex_result:
             meta.imdb_id = regex_result.group(1)
 
-    if meta.season == '':
-        regex_result = re.search(r'.*season=(\d{1,}).*', filename_and_path, re.IGNORECASE)
-        if regex_result:
-            meta.season = regex_result.group(1)
-
-    if meta.episode == '':
-        regex_result = re.search(r'.*episode=(\d{1,}).*', filename_and_path, re.IGNORECASE)
-        if regex_result:
-            meta.episode = regex_result.group(1)
+    if meta.season == '' or meta.episode == '':
+        filename_info = utils.extract_season_episode(meta.filename, zfill=0)
+        filename_path_info = utils.extract_season_episode(filename_and_path, zfill=0)
+        meta.season = meta.season or filename_path_info.season or filename_info.season
+        meta.episode = meta.episode or filename_path_info.episode or filename_info.episode
 
     return meta
 

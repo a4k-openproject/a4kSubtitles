@@ -28,6 +28,7 @@ xbmc.ISO_639_2 = 'pt2t'
 xbmc.ENGLISH_NAME = 'name'
 
 __player = lambda: None
+__player.isPlayingVideo = lambda: None
 __player.getPlayingFile = lambda: ''
 __player.getAvailableSubtitleStreams = lambda: []
 __player.setSubtitles = lambda s: None

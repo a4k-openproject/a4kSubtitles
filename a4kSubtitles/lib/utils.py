@@ -61,6 +61,9 @@ def strip_non_ascii_and_unprintable(text):
     result = ''.join(char for char in text if char in string.printable)
     return result.encode('ascii', errors='ignore').decode('ascii', errors='ignore')
 
+def slugify_filename(text):
+    return re.sub(r'[\\/*?:"<>|]', '_', text)
+
 def get_lang_id(language, lang_format):
     try:
         return get_lang_ids([language], lang_format)[0]
@@ -173,15 +176,16 @@ def get_json(path, filename):
     with open_file_wrapper(json_path)() as json_result:
         return json.load(json_result)
 
-def find_file_in_archive(core, namelist, exts, part_of_filename=''):
+def find_file_in_archive(core, namelist, exts, episode_number=''):
     first_ext_match = None
     exact_file = None
     for file in namelist:
         file_lower = file.lower()
         if any(file_lower.endswith(ext) for ext in exts):
+            sub_meta = extract_season_episode(file_lower, True)
             if not first_ext_match:
                 first_ext_match = file
-            if (part_of_filename == '' or part_of_filename in file_lower):
+            if (episode_number == '' or sub_meta.episode == episode_number):
                 exact_file = file
                 break
 
@@ -212,3 +216,46 @@ def extract_zipfile_member(zipfile, filename, dest):
         except:
             filename = filename.encode(default_encoding).decode(py3_zip_missing_utf8_flag_fallback_encoding)
             return zipfile.extract(filename, dest)
+
+def extract_season_episode(filename, episode_fallback=False, zfill=3):
+    episode_pattern = r'(?:e|ep.?|episode.?)(\d{1,5})'
+    season_pattern = r'(?:s|season.?)(\d{1,5})'
+    combined_pattern = r'\b(?:s|season)(\d{1,5})\s?[x|\-|\_|\s]\s?[a-z]?(\d{1,5})\b'
+    range_episodes_pattern = r'\b(?:.{1,4}e|ep|eps|episodes|\s)?(\d{1,5}?)(?:v.?)?\s?[\-|\~]\s?(\d{1,5})(?:v.?)?\b'
+    date_pattern = r'\b(\d{2,4}-\d{1,2}-\d{2,4})\b'
+
+    filename = re.sub(date_pattern, "", filename)
+    season_match = re.search(season_pattern, filename, re.IGNORECASE)
+    episode_match = re.search(episode_pattern, filename, re.IGNORECASE)
+    combined_match = re.search(combined_pattern, filename, re.IGNORECASE)
+    range_episodes_match = re.findall(range_episodes_pattern, filename, re.IGNORECASE)
+
+    season = season_match.group(1) if season_match else None
+    episode = episode_match.group(1) if episode_match else None
+    episodes_range = range(0)
+
+    if combined_match:
+        season = season if season else combined_match.group(1)
+        episode = episode if episode else combined_match.group(2)
+
+    if range_episodes_match:
+        range_start, range_end = map(int, range_episodes_match[-1])
+        episodes_range = range(range_start, range_end)
+
+    if episode_fallback and not episode:
+        # If no matches found, attempt to capture episode-like sequences
+        fallback_pattern = re.compile(r'\bE?P?(\d{1,5})v?\d?\b', re.IGNORECASE)
+        filename = re.sub(r'[\s\.\:\;\(\)\[\]\{\}\\\/\&\€\'\`\#\@\=\$\?\!\%\+\-\_\*\^]', " ", filename)
+        fallback_matches = fallback_pattern.findall(filename)
+
+        if fallback_matches:
+            # Assuming the last number in the fallback matches is the episode number
+            episode = fallback_matches[-1].lstrip("0").zfill(zfill)
+
+    return DictAsObject(
+        {
+            "season": season.lstrip("0").zfill(zfill) if season else "",
+            "episode": episode.lstrip("0").zfill(zfill) if episode else "",
+            "episodes_range": episodes_range
+        }
+    )

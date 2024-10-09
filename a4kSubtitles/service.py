@@ -4,6 +4,7 @@ def start(api):
     core = api.core
     monitor = core.kodi.xbmc.Monitor()
     has_done_subs_check = False
+    prev_playing_filename = ''
 
     while not monitor.abortRequested():
         if monitor.waitForAbort(1):
@@ -12,12 +13,20 @@ def start(api):
         if not core.kodi.get_bool_setting('general', 'auto_search'):
             continue
 
-        has_video = (core.kodi.xbmc.getCondVisibility('VideoPlayer.Content(movies)')
-                   or core.kodi.xbmc.getCondVisibility('VideoPlayer.Content(episodes)'))
+        has_video = core.kodi.xbmc.Player().isPlayingVideo()
+
         if not has_video and has_done_subs_check:
+            prev_playing_filename = ''
             has_done_subs_check = False
 
         has_video_duration = core.kodi.xbmc.getCondVisibility('Player.HasDuration')
+
+        # In-case episode changed.
+        if has_video:
+            playing_filename = core.kodi.xbmc.getInfoLabel('Player.Filenameandpath')
+            if prev_playing_filename != playing_filename:
+                has_done_subs_check = False
+                prev_playing_filename = playing_filename
 
         if not has_video or not has_video_duration or has_done_subs_check:
             continue
