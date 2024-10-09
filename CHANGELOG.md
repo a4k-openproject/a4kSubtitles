@@ -1,3 +1,16 @@
+* [v3.17.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.17.0):
+  * Fix: TV year being pulled incorrectly
+  * Fix: File name issues in both temp and media directories
+  * Fix: Subtitle file missing extension
+  * Fix: Incorrect episode selection when downloaded archive contains multiple subtitles
+  * Fix: Auto-download not working after the first selected episode in the playlist (A4K only works for the first media)
+  * Fix: Subtitle import issue due to "illegal characters"
+  * Improve: determination of subtitle episodes
+  * Improve: results parsing
+  * Feature: Auto-download now copies subtitles next to the video or to a custom location, based on Kodi's subtitle storage mode path
+  * SubSource: Now supports series in "absolute order", as used by some anime websites
+  * SubSource: Fixed issue of duplicated subtitle IDs with different names
+
 * [v3.16.1](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.16.1):
   * Fix addons.xml.crc  
 

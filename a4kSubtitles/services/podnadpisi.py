@@ -74,7 +74,7 @@ def parse_search_response(core, service_name, meta, response):
             'action_args': {
                 'url': '%s%s' % (__url, result['download']),
                 'lang': lang,
-                'filename': name
+                'filename': name,
             }
         }
 

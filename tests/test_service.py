@@ -19,6 +19,13 @@ def __mock_monitor(api):
         api.core.kodi.xbmc.Monitor = default
     return restore
 
+def __mock_is_playingvideo(api, mock_playing_state):
+    default = api.core.kodi.xbmc.Player().isPlayingVideo
+    api.core.kodi.xbmc.Player().isPlayingVideo = lambda: mock_playing_state
+    def restore():
+        api.core.kodi.xbmc.Player().isPlayingVideo = default
+    return restore
+
 def __mock_get_cond_visibility(api, mock_data):
     default = api.core.kodi.xbmc.getCondVisibility
     api.core.kodi.xbmc.getCondVisibility = lambda v: mock_data.get(v, False)
@@ -56,6 +63,27 @@ def __mock(api, settings):
         restore_settings()
     return restore
 
+def test_service_start_when_video_playing():
+    def test_playing_video(state):
+        a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+
+        restore = __mock(a4ksubtitles_api, {
+            'general.auto_search': 'True',
+        })
+        get_infolabel_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'getInfoLabel')
+        restore_isplayingvideo = __mock_is_playingvideo(a4ksubtitles_api, state)
+
+        service.start(a4ksubtitles_api)
+
+        restore()
+        restore_isplayingvideo()
+        get_infolabel_spy.restore()
+
+        return get_infolabel_spy.call_count
+
+    assert test_playing_video(True) != 0
+    assert test_playing_video(False) == 0
+
 def test_service_start_when_disabled():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
 
@@ -63,10 +91,12 @@ def test_service_start_when_disabled():
         'general.auto_search': 'false',
     })
     get_cond_visibility_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'getCondVisibility')
+    restore_isplayingvideo = __mock_is_playingvideo(a4ksubtitles_api, True)
 
     service.start(a4ksubtitles_api)
 
     restore()
+    restore_isplayingvideo()
     get_cond_visibility_spy.restore()
 
     assert get_cond_visibility_spy.call_count == 0
@@ -78,10 +108,12 @@ def test_service_start_when_enabled():
         'general.auto_search': 'true',
     })
     get_cond_visibility_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'getCondVisibility')
+    restore_isplayingvideo = __mock_is_playingvideo(a4ksubtitles_api, True)
 
     service.start(a4ksubtitles_api)
 
     restore()
+    restore_isplayingvideo()
     get_cond_visibility_spy.restore()
 
     assert get_cond_visibility_spy.call_count > 0
@@ -93,7 +125,6 @@ def test_service_when_video_does_not_have_subtitles():
         'general.auto_search': 'true',
     })
     restore_get_cond_visibility = __mock_get_cond_visibility(a4ksubtitles_api, {
-        'VideoPlayer.Content(episodes)': True,
         'Player.HasDuration': True,
         'VideoPlayer.HasSubtitles': False,
         'VideoPlayer.SubtitlesEnabled': False,
@@ -101,12 +132,14 @@ def test_service_when_video_does_not_have_subtitles():
     restore_get_info_label = __mock_get_info_label(a4ksubtitles_api, {
         'VideoPlayer.IMDBNumber': 'tt1234567',
     })
+    restore_isplayingvideo = __mock_is_playingvideo(a4ksubtitles_api, True)
 
     executebuiltin_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'executebuiltin')
 
     service.start(a4ksubtitles_api)
 
     restore()
+    restore_isplayingvideo()
     restore_get_cond_visibility()
     restore_get_info_label()
     executebuiltin_spy.restore()
@@ -120,7 +153,6 @@ def test_service_when_video_has_disabled_subtitles():
         'general.auto_search': 'true',
     })
     restore_get_cond_visibility = __mock_get_cond_visibility(a4ksubtitles_api, {
-        'VideoPlayer.Content(movies)': True,
         'Player.HasDuration': True,
         'VideoPlayer.HasSubtitles': True,
         'VideoPlayer.SubtitlesEnabled': False,
@@ -128,12 +160,14 @@ def test_service_when_video_has_disabled_subtitles():
     restore_get_info_label = __mock_get_info_label(a4ksubtitles_api, {
         'VideoPlayer.IMDBNumber': 'tt1234567',
     })
+    restore_isplayingvideo = __mock_is_playingvideo(a4ksubtitles_api, True)
 
     executebuiltin_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'executebuiltin')
 
     service.start(a4ksubtitles_api)
 
     restore()
+    restore_isplayingvideo()
     restore_get_cond_visibility()
     restore_get_info_label()
     executebuiltin_spy.restore()
@@ -147,7 +181,6 @@ def test_service_when_does_not_have_video_duration():
         'general.auto_search': 'true',
     })
     restore_get_cond_visibility = __mock_get_cond_visibility(a4ksubtitles_api, {
-        'VideoPlayer.Content(movies)': True,
         'Player.HasDuration': False,
         'VideoPlayer.HasSubtitles': False,
         'VideoPlayer.SubtitlesEnabled': False,
@@ -155,12 +188,14 @@ def test_service_when_does_not_have_video_duration():
     restore_get_info_label = __mock_get_info_label(a4ksubtitles_api, {
         'VideoPlayer.IMDBNumber': 'tt1234567',
     })
+    restore_isplayingvideo = __mock_is_playingvideo(a4ksubtitles_api, True)
 
     executebuiltin_spy = utils.spy_fn(a4ksubtitles_api.core.kodi.xbmc, 'executebuiltin')
 
     service.start(a4ksubtitles_api)
 
     restore()
+    restore_isplayingvideo()
     restore_get_cond_visibility()
     restore_get_info_label()
     executebuiltin_spy.restore()
@@ -175,7 +210,6 @@ def test_service_auto_download():
         'general.auto_download': 'true',
     })
     restore_get_cond_visibility = __mock_get_cond_visibility(a4ksubtitles_api, {
-        'VideoPlayer.Content(movies)': True,
         'Player.HasDuration': True,
         'VideoPlayer.HasSubtitles': False,
         'VideoPlayer.SubtitlesEnabled': False,
@@ -183,6 +217,7 @@ def test_service_auto_download():
     restore_get_info_label = __mock_get_info_label(a4ksubtitles_api, {
         'VideoPlayer.IMDBNumber': 'tt1234567',
     })
+    restore_isplayingvideo = __mock_is_playingvideo(a4ksubtitles_api, True)
     restore_api_search = __mock_api_search(a4ksubtitles_api)
     expected_download_result = 'test_download_result'
     restore_api_download = __mock_api_download(a4ksubtitles_api, expected_download_result)
@@ -193,6 +228,7 @@ def test_service_auto_download():
     service.start(a4ksubtitles_api)
 
     restore()
+    restore_isplayingvideo()
     restore_get_cond_visibility()
     restore_get_info_label()
     restore_api_search()
