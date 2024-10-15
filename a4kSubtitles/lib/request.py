@@ -72,15 +72,19 @@ def execute(core, request, progress=True, session=None):
             response = session.request(**request)
         exc = ''
     except:  # pragma: no cover
-        try:
-            if cfscrape:
+        if cfscrape:
+            try:
                 if not session:
                     session = cloudscraper.create_scraper(interpreter='native')
                 response = session.request(verify=False, **request)
-            else:
-                response = requests.request(verify=False, **request)
-            exc = ''
-        except:  # pragma: no cover
+                exc = ''
+            except:  # pragma: no cover
+                exc = traceback.format_exc()
+                response = lambda: None
+                response.text = ''
+                response.content = ''
+                response.status_code = 500
+        else:
             exc = traceback.format_exc()
             response = lambda: None
             response.text = ''

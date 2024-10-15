@@ -1,3 +1,6 @@
+* [v3.18.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.18.0):
+  * Use the newer InfoTagVideo KODI API (contributed by @kiamvdd)
+
 * [v3.17.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.17.0):
   * Fix: TV year being pulled incorrectly
   * Fix: File name issues in both temp and media directories
