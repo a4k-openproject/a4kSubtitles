@@ -1,3 +1,6 @@
+* [v3.18.1](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.18.1):
+  * Fix IMDB ID not found
+
 * [v3.18.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.18.0):
   * Use the newer InfoTagVideo KODI API (contributed by @kiamvdd)
 

@@ -4,7 +4,7 @@
 <addons>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="3.18.0"
+       version="3.18.1"
        provider-name="Unknown">
     <requires>
       <import addon="script.module.requests"/>
@@ -30,6 +30,9 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDL, Addic7ed
             <screenshot>screenshot-03.png</screenshot>
         </assets>
     <news>
+[v3.18.1]:
+  * Fix IMDB ID not found
+
 [v3.18.0]:
   * Use the newer InfoTagVideo KODI API (contributed by @kiamvdd)
 
