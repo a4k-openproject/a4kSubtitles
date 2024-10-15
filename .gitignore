@@ -131,3 +131,5 @@ dmypy.json
 .vscode/settings.json
 tmp
 .idea
+pyrightconfig.json
+.vim

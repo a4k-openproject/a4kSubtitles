@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="3.17.0"
+       version="3.18.0"
        provider-name="Unknown">
     <requires>
       <import addon="script.module.requests"/>
@@ -26,7 +26,10 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDL, Addic7ed
             <screenshot>screenshot-02.png</screenshot>
             <screenshot>screenshot-03.png</screenshot>
         </assets>
-        <news>
+    <news>
+[v3.18.0]:
+  * Use the newer InfoTagVideo KODI API (contributed by @kiamvdd)
+
 [v3.17.0]:
   * Fix: TV year being pulled incorrectly
   * Fix: File name issues in both temp and media directories

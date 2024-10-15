@@ -24,8 +24,10 @@ class A4kSubtitlesApi(object):
         os.environ[api_mode_env_name] = json.dumps(api_mode)
         self.core = importlib.import_module('a4kSubtitles.core')
 
-    def __mock_video_meta(self, meta):
+    def __mock_video_meta(self, meta={}):
         def get_info_label(label):
+            if label == 'System.BuildVersionCode':
+                return meta.get('version', '19.1.0')
             if label == 'VideoPlayer.Year':
                 return meta.get('year', '')
             if label == 'VideoPlayer.Season':
@@ -76,17 +78,13 @@ class A4kSubtitlesApi(object):
             self.core.kodi.addon.getSetting = default
         return restore
 
-    def search(self, params, settings=None, video_meta=None):
+    def search(self, params, settings={}, video_meta={}):
         restore_settings = None
         restore_video_meta = None
 
         try:
-            if settings:
-                restore_settings = self.mock_settings(settings)
-
-            if video_meta:
-                restore_video_meta = self.__mock_video_meta(video_meta)
-
+            restore_settings = self.mock_settings(settings)
+            restore_video_meta = self.__mock_video_meta(video_meta)
             return self.core.search(self.core, params)
         finally:
             if restore_settings:
