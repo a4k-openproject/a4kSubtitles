@@ -174,7 +174,7 @@ def test_search_missing_imdb_id():
         'languages': 'English',
         'preferredlanguage': '',
     }
-    a4ksubtitles_api.search(params)
+    a4ksubtitles_api.search(params, {}, {})
 
     log_error_spy.restore()
     log_error_spy.called_with('missing imdb id!')

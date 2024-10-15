@@ -296,6 +296,7 @@ def __update_info_from_imdb(core, meta, pagination_token=''):
 
 def __get_basic_info(core):
     meta = utils.DictAsObject({})
+    filename_and_path = ''
 
     if core.kodi.get_version_major() >= 20:  # The InfoTagVideo API was added in kodi v20
         video_info = xbmc.Player().getVideoInfoTag()
@@ -311,17 +312,24 @@ def __get_basic_info(core):
 
         meta.imdb_id = video_info.getUniqueID('imdb')
         filename_and_path = video_info.getFilenameAndPath()
-    else:
+
+    if not meta.year:
         meta.year = xbmc.getInfoLabel('VideoPlayer.Year')
+    if not meta.season:
         meta.season = xbmc.getInfoLabel('VideoPlayer.Season')
+    if not meta.episode:
         meta.episode = xbmc.getInfoLabel('VideoPlayer.Episode')
+    if not meta.tvshow:
         meta.tvshow = xbmc.getInfoLabel('VideoPlayer.TVShowTitle')
 
+    if not meta.title:
         meta.title = xbmc.getInfoLabel('VideoPlayer.OriginalTitle')
         if meta.title == '':
             meta.title = xbmc.getInfoLabel('VideoPlayer.Title')
 
+    if not meta.imdb_id:
         meta.imdb_id = xbmc.getInfoLabel('VideoPlayer.IMDBNumber')
+    if not filename_and_path:
         filename_and_path = xbmc.getInfoLabel('Player.FilenameAndPath')
 
     meta.tvshow_year = ''
