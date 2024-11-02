@@ -7,6 +7,20 @@ __getSub = __api + "getSub"
 __search = __api + "searchMovie"
 __download = __api + "downloadSub/"
 
+ss_to_code = {
+    "Big 5 code": "zh",
+    "Brazilian Portuguese": "pt-BR",
+    "Bulgarian": "bg",
+    "Chinese BG code": "zh",
+    "Farsi/Persian": "fa",
+    "Chinese(Simplified)": "zh-Hans",
+    "Chinese(Traditional)": "zh-Hant",
+    "French(France)": "fr-FR",
+    "Icelandic": "is",
+    "Spanish(Latin America)": "es-419",
+    "Spanish(Spain)": "es-ES"
+}
+
 def build_search_requests(core, service_name, meta):
     def get_movie(response):
         results = response.json()
@@ -57,6 +71,9 @@ def parse_search_response(core, service_name, meta, response):
     def map_result(result):
         name = result.get("releaseName", "")
         lang = result.get("lang")
+
+        if lang in ss_to_code:
+            lang = core.kodi.xbmc.convertLanguage(ss_to_code[lang], core.kodi.xbmc.ENGLISH_NAME)
 
         if lang not in meta.languages:
             return None

@@ -1,3 +1,6 @@
+* [v3.18.2](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.18.2):
+  * SubSource: Fix foreign languages
+
 * [v3.18.1](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.18.1):
   * Fix IMDB ID not found
 
