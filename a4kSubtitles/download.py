@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 subtitles_exts = ['.srt', '.sub']
-subtitles_exts_secondary = ['.smi', '.ssa', '.aqt', '.jss', '.ass', '.rt', '.txt']
+subtitles_exts_secondary = ['.smi', '.ssa', '.aqt', '.jss', '.ass', '.rt']
 subtitles_exts_all = subtitles_exts + subtitles_exts_secondary
 
 def __download(core, filepath, request):
