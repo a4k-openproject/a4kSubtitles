@@ -1,7 +1,7 @@
 <img align="left" width="115px" height="115px" src="icon.png">
 
 # a4kSubtitles
-[![Kodi version](https://img.shields.io/badge/kodi%20versions-19--20-blue)](https://kodi.tv/) [![Coverage Status](https://coveralls.io/repos/github/a4k-openproject/a4kSubtitles/badge.svg?branch=master)](https://coveralls.io/github/a4k-openproject/a4kSubtitles?branch=master)
+[![Kodi version](https://img.shields.io/badge/kodi%20versions-19--20-blue)](https://kodi.tv/)
 
 ### General Status
 [![Background Service](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-service.yml/badge.svg)](https://github.com/a4k-openproject/a4kSubtitles/actions/workflows/cron-tests-service.yml)
