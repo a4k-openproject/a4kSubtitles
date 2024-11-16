@@ -30,7 +30,6 @@ def __add_results(core, results, meta):  # pragma: no cover
     for item in results:
         listitem = core.kodi.create_listitem(item)
 
-        item['action_args'].setdefault("episodeid", meta.episode.zfill(3) if meta.episode else "")
         action_args = core.utils.quote_plus(core.json.dumps(item['action_args']))
 
         core.kodi.xbmcplugin.addDirectoryItem(
@@ -255,6 +254,9 @@ def __prepare_results(core, meta, results):
     def sorter(x):
         name = x['name'].lower()
         nameparts = core.re.split(regexsplitwords, name)
+
+        # Add episode number to action_args to detect the desired episode later during sub extraction.
+        x['action_args'].setdefault("episodeid", meta.episode.zfill(3) if meta.episode else "")
 
         cleaned_nameparts = list(filter(len, map(_filter_name, nameparts)))
         cleaned_file_nameparts = list(filter(len, map(_filter_name, meta_nameparts)))
