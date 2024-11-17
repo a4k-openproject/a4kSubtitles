@@ -5,7 +5,11 @@ subtitles_exts_all = subtitles_exts + subtitles_exts_secondary
 
 def __download(core, filepath, request):
     request['stream'] = True
-    with core.request.execute(core, request) as r:
+    response = core.request.execute(core, request)
+    if response.status_code >= 400:
+        raise Exception('Failed to download subtitle (HTTP: %s)' % response.status_code)
+
+    with response as r:
         with open(filepath, 'wb') as f:
             core.shutil.copyfileobj(r.raw, f)
 

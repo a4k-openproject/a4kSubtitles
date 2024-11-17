@@ -1,3 +1,8 @@
+* [v3.19.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.19.0):
+  * Lower OpenSubtitles token cache from 7 days to 1 day
+  * Fix auto download stopping after first failed subtitle download
+  * Fix wrong language set for results when multiple languages are configured (Thanks to @peno64)
+
 * [v3.18.3](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.18.3):
   * Auto Download: Fix selecting incorrect episode in archive file
 

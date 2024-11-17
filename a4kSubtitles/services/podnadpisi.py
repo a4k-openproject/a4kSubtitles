@@ -81,9 +81,17 @@ def parse_search_response(core, service_name, meta, response):
     return list(map(map_result, results['data']))
 
 def build_download_request(core, service_name, args):
+    def retry_download(response):
+        if response.status_code >= 500:
+            return {
+                'method': 'GET',
+                'url': args['url']
+            }
+
     request = {
         'method': 'GET',
-        'url': args['url']
+        'url': args['url'],
+        'error': lambda r: retry_download(r),
     }
 
     return request
