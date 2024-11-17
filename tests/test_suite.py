@@ -268,6 +268,9 @@ def test_opensubtitles():
 
     assert len(search.results) == 20
 
+    if a4ksubtitles_api.core.os.getenv('A4KSUBTITLES_TESTRUN') == 'true':
+        return
+
     # download
     item = search.results[0]
 
@@ -306,6 +309,9 @@ def test_opensubtitles_tvshow():
         'action_args': item['action_args']
     }
 
+    if a4ksubtitles_api.core.os.getenv('A4KSUBTITLES_TESTRUN') == 'true':
+        return
+
     filepath = a4ksubtitles_api.download(params, search.settings)
 
     assert filepath != ''
@@ -328,6 +334,9 @@ def test_opensubtitles_unicode_tvshow():
         'service_name': 'opensubtitles',
         'action_args': item['action_args']
     }
+
+    if a4ksubtitles_api.core.os.getenv('A4KSUBTITLES_TESTRUN') == 'true':
+        return
 
     filepath = a4ksubtitles_api.download(params, search.settings)
 

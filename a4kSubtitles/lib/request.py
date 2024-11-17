@@ -48,6 +48,7 @@ def execute(core, request, progress=True, session=None):
         core.progress_dialog.open()
 
     next = request.pop('next', None)
+    error = request.pop('error', None)
 
     cfscrape = 'cfscrape' in request
     request.pop('cfscrape', None)
@@ -98,6 +99,13 @@ def execute(core, request, progress=True, session=None):
 
     if next and response.status_code == 200:
         next_request = next(response)
+        if next_request:
+            return execute(core, next_request, progress, session)
+        else:
+            return None
+
+    if error and response.status_code >= 400:
+        next_request = error(response)
         if next_request:
             return execute(core, next_request, progress, session)
         else:

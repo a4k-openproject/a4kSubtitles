@@ -97,7 +97,6 @@ def get_lang_ids(languages, lang_format=kodi.xbmc.ISO_639_2):
             if lang_id is not None:
                 lang_ids.append(lang_id)
 
-        lang_ids.sort()
         return lang_ids
     except:
         return []

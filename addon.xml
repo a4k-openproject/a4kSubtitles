@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="3.18.3"
+       version="3.19.0"
        provider-name="Unknown">
     <requires>
       <import addon="script.module.requests"/>
@@ -27,6 +27,11 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDL, Addic7ed
             <screenshot>screenshot-03.png</screenshot>
         </assets>
     <news>
+[v3.19.0]:
+  * Lower OpenSubtitles token cache from 7 days to 1 day
+  * Fix auto download stopping after first failed subtitle download
+  * Fix wrong language set for results when multiple languages are configured (Thanks to @peno64)
+
 [v3.18.3]:
   * Auto Download: Fix selecting incorrect episode in archive file
 
