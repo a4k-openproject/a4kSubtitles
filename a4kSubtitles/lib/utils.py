@@ -217,9 +217,9 @@ def extract_zipfile_member(zipfile, filename, dest):
             return zipfile.extract(filename, dest)
 
 def extract_season_episode(filename, episode_fallback=False, zfill=3):
-    episode_pattern = r'(?:e|ep.?|episode.?)(\d{1,5})'
+    episode_pattern = r'(?:e|ep.?|episode.?)(\d{1,5})(?:v\d?)?'
     season_pattern = r'(?:s|season.?)(\d{1,5})'
-    combined_pattern = r'\b(?:s|season)(\d{1,5})\s?[x|\-|\_|\s]\s?[a-z]?(\d{1,5})\b'
+    combined_pattern = r'\b(?:s|season)(\d{1,5})\s?[x|\-|\_|\s]\s?[a-z]?(\d{1,5})(?:v\d?)?\b'
     range_episodes_pattern = r'\b(?:.{1,4}e|ep|eps|episodes|\s)?(\d{1,5}?)(?:v.?)?\s?[\-|\~]\s?(\d{1,5})(?:v.?)?\b'
     date_pattern = r'\b(\d{2,4}-\d{1,2}-\d{2,4})\b'
 
