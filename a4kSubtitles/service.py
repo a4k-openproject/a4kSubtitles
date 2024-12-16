@@ -10,7 +10,9 @@ def start(api):
         if monitor.waitForAbort(1):
             break
 
-        if not core.kodi.get_bool_setting('general', 'auto_search'):
+        player_props = core.kodi.get_kodi_player_subtitles()
+
+        if not core.kodi.get_bool_setting('general', 'auto_search') or not player_props['subtitleenabled']:
             continue
 
         has_video = core.kodi.xbmc.Player().isPlayingVideo()
@@ -35,15 +37,14 @@ def start(api):
         has_subtitles = False
 
         preferredlang = core.kodi.get_kodi_setting('locale.subtitlelanguage')
+        prefer_sdh = core.kodi.get_bool_setting('general', 'prefer_sdh')
+        prefer_forced = not prefer_sdh and (core.kodi.get_bool_setting('general', 'prefer_forced') or preferredlang == 'forced_only')
+        preferredlang = core.kodi.parse_language(preferredlang)
 
         try:
-            def update_sub_stream():
+            def update_sub_stream(player_props, preferredlang, prefer_sdh, prefer_forced):
                 if not core.kodi.get_bool_setting('general', 'auto_select'):
                     return
-
-                player_props = core.kodi.get_kodi_player_subtitles()
-                prefer_sdh = core.kodi.get_bool_setting('general', 'prefer_sdh')
-                prefer_forced = not prefer_sdh and core.kodi.get_bool_setting('general', 'prefer_forced')
 
                 preferredlang_code = core.utils.get_lang_id(preferredlang, core.kodi.xbmc.ISO_639_2)
                 sub_langs = [core.utils.get_lang_id(s, core.kodi.xbmc.ISO_639_2) for s in core.kodi.xbmc.Player().getAvailableSubtitleStreams()]
@@ -73,8 +74,13 @@ def start(api):
                             core.logger.debug('found SDH subtitles: %s' % subname)
                             sub_index = sub['index']
                             break
-                        if prefer_forced and (sub['isforced'] or 'forced' in subname):
-                            core.logger.debug('found forced subtitles: %s' % subname)
+                        if prefer_forced:
+                            if (sub['isforced'] or 'forced' in subname):
+                                core.logger.debug('found forced subtitles: %s' % subname)
+                                sub_index = sub['index']
+                                break
+                        elif not sub['isforced'] and 'forced' not in subname:
+                            core.logger.debug('found not forced subtitles: %s' % subname)
                             sub_index = sub['index']
                             break
 
@@ -107,10 +113,11 @@ def start(api):
                         core.logger.debug('no subtitles found for %s, fallback to first index from matched langs' % preferredlang)
                         sub_index = preferedlang_sub_indexes[0]
 
-                core.kodi.xbmc.Player().setSubtitleStream(sub_index)
+                if sub_index != player_props['currentsubtitle']['index']:
+                    core.kodi.xbmc.Player().setSubtitleStream(sub_index)
                 return True
 
-            has_subtitles = update_sub_stream()
+            has_subtitles = update_sub_stream(player_props, preferredlang, prefer_sdh, prefer_forced)
         except Exception as e:
             core.logger.debug('Error on update_sub_stream: %s' % e)
 
