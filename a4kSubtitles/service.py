@@ -10,9 +10,7 @@ def start(api):
         if monitor.waitForAbort(1):
             break
 
-        player_props = core.kodi.get_kodi_player_subtitles()
-
-        if not core.kodi.get_bool_setting('general', 'auto_search') or not player_props['subtitleenabled']:
+        if not core.kodi.get_bool_setting('general', 'auto_search'):
             continue
 
         has_video = core.kodi.xbmc.Player().isPlayingVideo()
@@ -42,8 +40,9 @@ def start(api):
         preferredlang = core.kodi.parse_language(preferredlang)
 
         try:
-            def update_sub_stream(player_props, preferredlang, prefer_sdh, prefer_forced):
-                if not core.kodi.get_bool_setting('general', 'auto_select'):
+            def update_sub_stream(preferredlang, prefer_sdh, prefer_forced):
+                player_props = core.kodi.get_kodi_player_subtitles()
+                if not core.kodi.get_bool_setting('general', 'auto_select') or not player_props['subtitleenabled']:
                     return
 
                 preferredlang_code = core.utils.get_lang_id(preferredlang, core.kodi.xbmc.ISO_639_2)
@@ -117,7 +116,7 @@ def start(api):
                     core.kodi.xbmc.Player().setSubtitleStream(sub_index)
                 return True
 
-            has_subtitles = update_sub_stream(player_props, preferredlang, prefer_sdh, prefer_forced)
+            has_subtitles = update_sub_stream(preferredlang, prefer_sdh, prefer_forced)
         except Exception as e:
             core.logger.debug('Error on update_sub_stream: %s' % e)
 
