@@ -73,13 +73,8 @@ def start(api):
                             core.logger.debug('found SDH subtitles: %s' % subname)
                             sub_index = sub['index']
                             break
-                        if prefer_forced:
-                            if (sub['isforced'] or 'forced' in subname):
-                                core.logger.debug('found forced subtitles: %s' % subname)
-                                sub_index = sub['index']
-                                break
-                        elif not sub['isforced'] and 'forced' not in subname:
-                            core.logger.debug('found not forced subtitles: %s' % subname)
+                        if prefer_forced and (sub['isforced'] or 'forced' in subname):
+                            core.logger.debug('found forced subtitles: %s' % subname)
                             sub_index = sub['index']
                             break
 
@@ -88,7 +83,7 @@ def start(api):
                             subname = sub['name'].lower()
                             if sub['language'] != preferredlang_code:
                                 continue
-                            if sub['isdefault'] or all(s not in subname for s in ['forced', 'songs', 'commentary']):
+                            if not sub['isforced'] and all(s not in subname for s in ['forced', 'songs', 'commentary']):
                                 core.logger.debug('found default subtitles: %s' % subname)
                                 sub_index = sub['index']
                                 break
