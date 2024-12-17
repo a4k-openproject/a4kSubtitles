@@ -35,16 +35,19 @@ def start(api):
         has_subtitles = False
 
         preferredlang = core.kodi.get_kodi_setting('locale.subtitlelanguage')
+        prefer_sdh = core.kodi.get_bool_setting('general', 'prefer_sdh')
+        prefer_forced = not prefer_sdh and (core.kodi.get_bool_setting('general', 'prefer_forced') or preferredlang == 'forced_only')
+        preferredlang = core.kodi.parse_language(preferredlang)
 
         try:
             def update_sub_stream():
                 if not core.kodi.get_bool_setting('general', 'auto_select'):
                     return
+                if preferredlang == None:
+                    core.logger.debug('no subtitle language found')
+                    return
 
                 player_props = core.kodi.get_kodi_player_subtitles()
-                prefer_sdh = core.kodi.get_bool_setting('general', 'prefer_sdh')
-                prefer_forced = not prefer_sdh and core.kodi.get_bool_setting('general', 'prefer_forced')
-
                 preferredlang_code = core.utils.get_lang_id(preferredlang, core.kodi.xbmc.ISO_639_2)
                 sub_langs = [core.utils.get_lang_id(s, core.kodi.xbmc.ISO_639_2) for s in core.kodi.xbmc.Player().getAvailableSubtitleStreams()]
 
@@ -83,7 +86,7 @@ def start(api):
                             subname = sub['name'].lower()
                             if sub['language'] != preferredlang_code:
                                 continue
-                            if sub['isdefault'] or all(s not in subname for s in ['forced', 'songs', 'commentary']):
+                            if not sub['isforced'] and all(s not in subname for s in ['forced', 'songs', 'commentary']):
                                 core.logger.debug('found default subtitles: %s' % subname)
                                 sub_index = sub['index']
                                 break
@@ -107,7 +110,8 @@ def start(api):
                         core.logger.debug('no subtitles found for %s, fallback to first index from matched langs' % preferredlang)
                         sub_index = preferedlang_sub_indexes[0]
 
-                core.kodi.xbmc.Player().setSubtitleStream(sub_index)
+                if sub_index != player_props['currentsubtitle']['index']:
+                    core.kodi.xbmc.Player().setSubtitleStream(sub_index)
                 return True
 
             has_subtitles = update_sub_stream()
