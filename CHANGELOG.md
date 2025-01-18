@@ -1,3 +1,6 @@
+* [v3.20.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.20.0):
+  * Auto download/selection improvements (by bbviking)
+
 * [v3.19.1](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.19.1):
   * Parse subtitles version
 
