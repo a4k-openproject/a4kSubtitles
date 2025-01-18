@@ -43,7 +43,7 @@ def start(api):
             def update_sub_stream():
                 if not core.kodi.get_bool_setting('general', 'auto_select'):
                     return
-                if preferredlang == None:
+                if preferredlang is None:
                     core.logger.debug('no subtitle language found')
                     return
 
