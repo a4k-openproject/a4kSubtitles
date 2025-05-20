@@ -77,6 +77,10 @@ msgctxt "#33207"
 msgid "SubSource"
 msgstr ""
 
+msgctxt "#33208"
+msgid "Subtitlecat.com"
+msgstr ""
+
 # Labels
 msgctxt "#33301"
 msgid "Username"

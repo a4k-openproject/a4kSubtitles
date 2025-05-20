@@ -17,6 +17,7 @@
         <setting id="bsplayer.enabled"      label="33202" type="bool" default="true"/>
         <setting id="opensubtitles.enabled" label="33201" type="bool" default="true"/>
         <setting id="podnadpisi.enabled"    label="33203" type="bool" default="true"/>
+        <setting id="subtitlecat.enabled"   label="33208" type="bool" default="true"/> 
         <setting id="subdl.enabled"         label="33205" type="bool" default="true"/>
         <setting id="subsource.enabled"     label="33207" type="bool" default="true"/>
     </category>

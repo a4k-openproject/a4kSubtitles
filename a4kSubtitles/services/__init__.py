@@ -10,7 +10,8 @@ __display_names = {
     'opensubtitles': 'OpenSubtitles',
     'podnadpisi': 'Podnadpisi',
     'subdl': 'SubDL',
-    'subsource': 'SubSource'
+    'subsource': 'SubSource',
+    'subtitlecat': 'Subtitlecat.com'
 }
 
 def __set_fn_if_missing(service, fn_name, fn):
