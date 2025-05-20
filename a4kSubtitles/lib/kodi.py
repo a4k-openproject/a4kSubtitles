@@ -35,7 +35,7 @@ else:  # pragma: no cover
     import xbmcgui
     import xbmcvfs
 
-addon = xbmcaddon.Addon('service.subtitles.a4ksubtitles')
+addon = xbmcaddon.Addon('service.subtitles.a4ksubtitlecat')
 addon_id = addon.getAddonInfo('id')
 addon_name = addon.getAddonInfo('name')
 addon_version = addon.getAddonInfo('version')
