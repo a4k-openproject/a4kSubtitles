@@ -62,7 +62,7 @@ def parse_search_response(core, service_name, meta, response):
 
     try:
         html_content = response.text
-        soup = BeautifulSoup(html_content, 'lxml')
+        soup = BeautifulSoup(html_content, 'html.parser')
     except Exception as e:
         core.logger.error(f"[{service_name}] Error creating BeautifulSoup object for search response: {e}")
         return results
@@ -108,7 +108,7 @@ def parse_search_response(core, service_name, meta, response):
             detail_response = system_requests.get(movie_page_full_url, headers={'User-Agent': __user_agent}, timeout=15)
             detail_response.raise_for_status()
             detail_html_content = detail_response.text
-            detail_soup = BeautifulSoup(detail_html_content, 'lxml')
+            detail_soup = BeautifulSoup(detail_html_content, 'html.parser')
         except Exception as e_detail:
             core.logger.error(f"[{service_name}] Failed to fetch/parse detail page {movie_page_full_url}: {e_detail}")
             continue
