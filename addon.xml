@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="service.subtitles.a4ksubtitlecat"
        name="a4kSubtitles (Subtitlecat Mod)"
-       version="3.20.0-scmod.2"
+       version="3.20.0-scmod.3"
        provider-name="sebvannistel">
     <requires>
       <import addon="xbmc.python" version="3.0.0"/> <!-- Make sure this is still here from previous advice! -->
