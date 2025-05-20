@@ -4,7 +4,10 @@
        version="3.20.0-scmod.1"
        provider-name="Unknown">
     <requires>
+      <import addon="xbmc.python" version="3.0.0"/> <!-- Make sure this is still here from previous advice! -->
       <import addon="script.module.requests"/>
+      <import addon="script.module.beautifulsoup4"/> <!-- ADD THIS LINE -->
+      <import addon="script.module.lxml" optional="true"/> <!-- ADD THIS LINE (optional but good) -->
       <import addon="vfs.libarchive" optional="true"/>
     </requires>
     <extension point="xbmc.subtitle.module" library="main.py"/>
