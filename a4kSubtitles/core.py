@@ -32,6 +32,7 @@ utils.core = core
 
 api_mode_enabled = True
 handle = None
+last_meta = None
 
 progress_dialog = None
 progress_text = ''

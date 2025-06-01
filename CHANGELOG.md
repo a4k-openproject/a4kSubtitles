@@ -1,3 +1,10 @@
+* [v3.21.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.21.0):
+  * Dynamic AI subtitles translation from English to the selected Preferred Language in KODI's settings
+    * Requires API Key
+    * Currently only OpenAI and NexosAI backends are supported
+    * For NexosAI model should be specified by ID, not name
+    * Turning AI translation disables usage of embedded subtitles
+
 * [v3.20.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.20.0):
   * Auto download/selection improvements (by bbviking)
 

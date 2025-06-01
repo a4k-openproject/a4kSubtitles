@@ -346,6 +346,8 @@ def __search(core, service_name, meta, results):
 
 def search(core, params):
     meta = core.video.get_meta(core)
+    core.last_meta = meta
+
     meta.languages = __parse_languages(core, core.utils.unquote(params['languages']).split(','))
     meta.preferredlanguage = core.kodi.parse_language(params['preferredlanguage'])
     core.logger.debug(lambda: core.json.dumps(meta, default=lambda o: '', indent=2))
