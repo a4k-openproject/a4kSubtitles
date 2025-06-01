@@ -153,6 +153,7 @@ def __copy_sub_local(core, subfile):
 def download(core, params):
     core.logger.debug(lambda: core.json.dumps(params, indent=2))
 
+    core.kodi.xbmcvfs.File(core.utils.suspend_service_file, 'w').close()
     core.shutil.rmtree(core.utils.temp_dir, ignore_errors=True)
     core.kodi.xbmcvfs.mkdirs(core.utils.temp_dir)
 
@@ -160,6 +161,7 @@ def download(core, params):
     lang_code = core.utils.get_lang_id(actions_args['lang'], core.kodi.xbmc.ISO_639_2)
     filename = __insert_lang_code_in_filename(core, actions_args['filename'], lang_code)
     filename = core.utils.slugify_filename(filename)
+    filename = filename.strip()
     archivepath = core.os.path.join(core.utils.temp_dir, 'sub.zip')
 
     service_name = params['service_name']
@@ -178,6 +180,7 @@ def download(core, params):
             filepath = __extract_zip(core, archivepath, filename, episodeid)
 
     __postprocess(core, filepath, lang_code)
+    core.kodi.xbmcvfs.delete(core.utils.suspend_service_file)
 
     if core.api_mode_enabled:
         __copy_sub_local(core, filepath)

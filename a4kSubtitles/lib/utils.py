@@ -42,6 +42,7 @@ py3 = not py2
 
 temp_dir = os.path.join(kodi.addon_profile, 'temp')
 data_dir = os.path.join(kodi.addon_profile, 'data')
+suspend_service_file = os.path.join(kodi.addon_profile, 'suspend_service')
 
 class DictAsObject(dict):
     def __getattr__(self, name):
@@ -100,6 +101,14 @@ def get_lang_ids(languages, lang_format=kodi.xbmc.ISO_639_2):
         return lang_ids
     except:
         return []
+
+def get_subfile_from_temp_dir():
+    if not os.path.exists(temp_dir):
+        return None
+    for file in os.listdir(temp_dir):
+        if file != 'sub.zip' and not file.endswith('.translated'):
+            return os.path.join(temp_dir, file.strip())
+    return None
 
 def wait_threads(threads):
     for thread in threads:
