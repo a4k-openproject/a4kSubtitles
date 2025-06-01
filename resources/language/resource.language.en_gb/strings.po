@@ -52,6 +52,22 @@ msgctxt "#33108"
 msgid "Prefer forced (embedded only)"
 msgstr ""
 
+msgctxt "#33109"
+msgid "Use AI for subtitle translation"
+msgstr ""
+
+msgctxt "#33110"
+msgid "AI Provider"
+msgstr ""
+
+msgctxt "#33111"
+msgid "AI API Key"
+msgstr ""
+
+msgctxt "#33112"
+msgid "AI Model"
+msgstr ""
+
 # Services
 msgctxt "#33201"
 msgid "OpenSubtitles"
@@ -88,4 +104,15 @@ msgstr ""
 
 msgctxt "#33303"
 msgid "API Key"
+msgstr ""
+
+## Select Options
+
+# AI Providers
+msgctxt "#43110"
+msgid "OpenAI"
+msgstr ""
+
+msgctxt "#43111"
+msgid "NexosAI"
 msgstr ""

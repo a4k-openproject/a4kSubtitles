@@ -6,6 +6,17 @@ def start(api):
     has_done_subs_check = False
     prev_playing_filename = ''
 
+    subfile = None
+    subfile_translated = None
+    ai_last_timestamp = 0
+    ai_max_range = 60
+    ai_step = ai_max_range / 2
+    ai_provider = ''
+    ai_api_key = ''
+    ai_model = ''
+    moviename = ''
+    target_language = ''
+
     while not monitor.abortRequested():
         if monitor.waitForAbort(1):
             break
@@ -18,6 +29,7 @@ def start(api):
         if not has_video and has_done_subs_check:
             prev_playing_filename = ''
             has_done_subs_check = False
+            subfile = None
 
         has_video_duration = core.kodi.xbmc.getCondVisibility('Player.HasDuration')
 
@@ -26,9 +38,35 @@ def start(api):
             playing_filename = core.kodi.xbmc.getInfoLabel('Player.Filenameandpath')
             if prev_playing_filename != playing_filename:
                 has_done_subs_check = False
+                subfile = None
                 prev_playing_filename = playing_filename
 
         if not has_video or not has_video_duration or has_done_subs_check:
+            continue
+
+        use_ai = core.kodi.get_bool_setting('general', 'use_ai')
+        if use_ai and subfile:
+            timestamp = core.kodi.xbmc.Player().getTime()
+            if ai_last_timestamp + ai_step > timestamp and timestamp > ai_last_timestamp:
+                continue
+
+            ai_last_timestamp = timestamp
+
+            core.logger.debug('Using AI to translate portion of subtitles between %s and %s seconds' % (ai_last_timestamp, ai_last_timestamp + ai_max_range))
+            core.utils.gptsubtrans.translate(
+                input_file=subfile,
+                target_language=target_language,
+                output_file=subfile_translated,
+                moviename=moviename,
+                provider=ai_provider,
+                api_key=ai_api_key,
+                model=ai_model,
+                begin_seconds=ai_last_timestamp,
+                end_seconds=ai_last_timestamp + ai_max_range,
+                log=core.logger.debug
+            )
+
+            core.kodi.xbmc.Player().setSubtitles(subfile_translated)
             continue
 
         has_done_subs_check = True
@@ -114,7 +152,8 @@ def start(api):
                     core.kodi.xbmc.Player().setSubtitleStream(sub_index)
                 return True
 
-            has_subtitles = update_sub_stream()
+            if not use_ai:
+                has_subtitles = update_sub_stream()
         except Exception as e:
             core.logger.debug('Error on update_sub_stream: %s' % e)
 
@@ -130,6 +169,12 @@ def start(api):
             continue
 
         languages = core.kodi.get_kodi_setting('subtitles.languages')
+        preferredlang_preai = preferredlang
+
+        if use_ai:
+            languages = ['English']
+            preferredlang = 'English'
+
         params = {
             'action': 'search',
             'languages': ','.join(languages),
@@ -140,6 +185,59 @@ def start(api):
         for result in results:
             try:
                 subfile = api.download(result)
-                core.kodi.xbmc.Player().setSubtitles(subfile)
+
+                if not subfile:
+                    core.logger.debug('No subtitle file found for %s' % result)
+                    continue
+
+                if not use_ai or preferredlang == preferredlang_preai:
+                    core.logger.debug('Setting subtitles: %s' % subfile)
+                    core.kodi.xbmc.Player().setSubtitles(subfile)
+                else:
+                    core.logger.debug('Using AI to translate subtitles: %s' % subfile)
+                    subfile_translated = subfile + '.translated'
+
+                    ai_provider = core.kodi.get_setting('general', 'ai_provider')
+                    if ai_provider is None or ai_provider == '':
+                        ai_provider = '0'
+
+                    if ai_provider == '0':
+                        ai_provider = 'OpenAI'
+                    else:
+                        ai_provider = 'NexosAI'
+
+                    if ai_provider not in ['OpenAI', 'NexosAI']:
+                        core.logger.error('Invalid AI provider: %s' % ai_provider)
+                        continue
+
+                    ai_api_key = core.kodi.get_setting('general', 'ai_api_key')
+                    ai_model = core.kodi.get_setting('general', 'ai_model')
+                    moviename = '%s (%s)' % (core.last_meta.title, core.last_meta.year) if core.last_meta else ''
+                    target_language = core.utils.get_lang_id(preferredlang_preai, core.kodi.xbmc.ISO_639_2)
+
+                    core.logger.debug('Translating subtitles with AI provider: %s, model: %s' % (ai_provider, ai_model))
+                    core.logger.debug('Moviename: %s, target_language: %s' % (moviename, target_language))
+
+                    ai_last_timestamp = core.kodi.xbmc.Player().getTime()
+
+                    core.utils.gptsubtrans.translate(
+                        input_file=subfile,
+                        target_language=target_language,
+                        output_file=subfile_translated,
+                        moviename=moviename,
+                        provider=ai_provider,
+                        api_key=ai_api_key,
+                        model=ai_model,
+                        begin_seconds=ai_last_timestamp,
+                        end_seconds=ai_last_timestamp + ai_max_range,
+                        log=core.logger.debug
+                    )
+
+                    core.kodi.xbmc.Player().setSubtitles(subfile_translated)
+                    has_done_subs_check = False
+
                 break
-            except: pass
+            except:
+                import traceback
+                core.logger.error('Error downloading or setting subtitles: %s' % traceback.format_exc())
+                continue

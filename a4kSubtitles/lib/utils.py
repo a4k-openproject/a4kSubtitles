@@ -10,7 +10,7 @@ from . import kodi
 from . import logger
 
 try:
-    from .third_party import chardet, iso639
+    from .third_party import chardet, iso639, gptsubtrans
 except: pass
 
 try:  # pragma: no cover
