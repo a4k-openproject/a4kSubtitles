@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="3.21.0"
+       version="3.21.1"
        provider-name="Unknown">
     <requires>
       <import addon="script.module.requests"/>
@@ -27,12 +27,13 @@ Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDL, Addic7ed
             <screenshot>screenshot-03.png</screenshot>
         </assets>
     <news>
-[v3.21.0]:
+[v3.21.1]:
   * Dynamic AI subtitles translation from English to the selected Preferred Language in KODI's settings
     * Requires API Key
     * Currently only OpenAI and NexosAI backends are supported
     * For NexosAI model should be specified by ID, not name
-    * Turning AI translation disables usage of embedded subtitles
+    * Turning AI translation on - disables usage of embedded subtitles
+    * Currently only supported when using auto-search or auto-download feature
 
 [v3.20.0]:
   * Auto download/selection improvements (by bbviking)

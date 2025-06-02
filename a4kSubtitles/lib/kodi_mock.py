@@ -85,6 +85,16 @@ def __mkdirs(f):
     except Exception: pass
 xbmcvfs.mkdirs = __mkdirs
 
+def __delete(f):
+    try: shutil.rmtree(f)
+    except Exception: pass
+xbmcvfs.delete = __delete
+
+def __exists(f):
+    try: return os.path.exists(f)
+    except Exception: return False
+xbmcvfs.exists = __exists
+
 __archive_proto = 'archive://'
 def __listdir(archive_uri):
     archive_path = unquote(archive_uri).replace(__archive_proto, '')
@@ -101,7 +111,7 @@ def __copy(src_uri, dest):
         os.rename(os.path.join(dest_dir, member), dest)
 xbmcvfs.copy = __copy
 
-def __File(_):
+def __File(_, mode='r'):
     return __File
 __File.size = lambda: 0
 __File.hash = lambda: 0
