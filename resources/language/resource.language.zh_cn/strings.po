@@ -46,7 +46,7 @@ msgstr "自动选择内嵌字幕"
 
 msgctxt "#33107"
 msgid "Prefer SDH (embedded only)"
-msgstr "优先选择SDH（仅限内嵌）"
+msgstr "优先选择 SDH（仅限内嵌）"
 
 msgctxt "#33108"
 msgid "Prefer forced (embedded only)"
@@ -54,19 +54,19 @@ msgstr "优先选择强制字幕（仅限内嵌）"
 
 msgctxt "#33109"
 msgid "Use AI for subtitle translation"
-msgstr "使用AI进行字幕翻译"
+msgstr "使用 AI 进行字幕翻译"
 
 msgctxt "#33110"
 msgid "AI Provider"
-msgstr "AI提供商"
+msgstr "AI 提供商"
 
 msgctxt "#33111"
 msgid "AI API Key"
-msgstr "AI接口密钥"
+msgstr "AI API 密钥"
 
 msgctxt "#33112"
 msgid "AI Model"
-msgstr "AI模型"
+msgstr "AI 模型"
 
 # 服务
 msgctxt "#33201"
@@ -104,7 +104,7 @@ msgstr "密码"
 
 msgctxt "#33303"
 msgid "API Key"
-msgstr "接口密钥"
+msgstr "API 密钥"
 
 ## 选择选项
 
