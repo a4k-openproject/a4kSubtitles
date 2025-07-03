@@ -1,1 +1,119 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
 
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_cn\n"
+
+# 分类
+msgctxt "#33001"
+msgid "General"
+msgstr "通用"
+
+msgctxt "#33002"
+msgid "Services"
+msgstr "服务"
+
+msgctxt "#33003"
+msgid "Accounts"
+msgstr "账户"
+
+# 通用
+msgctxt "#33101"
+msgid "Request timeout"
+msgstr "请求超时"
+
+msgctxt "#33102"
+msgid "Results limit"
+msgstr "结果限制"
+
+msgctxt "#33103"
+msgid "Auto search"
+msgstr "自动搜索"
+
+msgctxt "#33104"
+msgid "Auto download first subtitle silently"
+msgstr "自动静默下载第一个字幕"
+
+msgctxt "#33105"
+msgid "Auto detect subtitle encoding"
+msgstr "自动检测字幕编码"
+
+msgctxt "#33106"
+msgid "Auto select embedded subtitle"
+msgstr "自动选择内嵌字幕"
+
+msgctxt "#33107"
+msgid "Prefer SDH (embedded only)"
+msgstr "优先选择SDH（仅限内嵌）"
+（注：SDH指字幕中包含对声音等非对话元素的描述，适合听障人士）
+
+msgctxt "#33108"
+msgid "Prefer forced (embedded only)"
+msgstr "优先选择强制字幕（仅限内嵌）"
+
+msgctxt "#33109"
+msgid "Use AI for subtitle translation"
+msgstr "使用AI进行字幕翻译"
+
+msgctxt "#33110"
+msgid "AI Provider"
+msgstr "AI提供商"
+
+msgctxt "#33111"
+msgid "AI API Key"
+msgstr "AI接口密钥"
+
+msgctxt "#33112"
+msgid "AI Model"
+msgstr "AI模型"
+
+# 服务
+msgctxt "#33201"
+msgid "OpenSubtitles"
+msgstr "OpenSubtitles（开源字幕）"
+
+msgctxt "#33202"
+msgid "BSPlayer"
+msgstr "BSPlayer（播放器）"
+
+msgctxt "#33203"
+msgid "Podnadpisi"
+msgstr "Podnadpisi（字幕网站）"
+
+msgctxt "#33205"
+msgid "SubDL"
+msgstr "SubDL（字幕网站）"
+
+msgctxt "#33206"
+msgid "Addic7ed"
+msgstr "Addic7ed（字幕网站）"
+
+msgctxt "#33207"
+msgid "SubSource"
+msgstr "SubSource（字幕来源）"
+
+# 标签
+msgctxt "#33301"
+msgid "Username"
+msgstr "用户名"
+
+msgctxt "#33302"
+msgid "Password"
+msgstr "密码"
+
+msgctxt "#33303"
+msgid "API Key"
+msgstr "接口密钥"
+
+## 选择选项
+
+# AI提供商
+msgctxt "#43110"
+msgid "OpenAI"
+msgstr "OpenAI（开放人工智能）"
+
+msgctxt "#43111"
+msgid "NexosAI"
+msgstr "NexosAI（奈克萨斯人工智能）"
