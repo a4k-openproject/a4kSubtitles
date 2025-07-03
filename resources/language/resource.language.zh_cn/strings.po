@@ -47,7 +47,6 @@ msgstr "自动选择内嵌字幕"
 msgctxt "#33107"
 msgid "Prefer SDH (embedded only)"
 msgstr "优先选择SDH（仅限内嵌）"
-（注：SDH指字幕中包含对声音等非对话元素的描述，适合听障人士）
 
 msgctxt "#33108"
 msgid "Prefer forced (embedded only)"
