@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-__api = "https://api.subsource.net/api/"
+__api = "https://api.subsource.net/v1"
 
-__getMovie = __api + "getMovie"
-__getSub = __api + "getSub"
-__search = __api + "searchMovie"
-__download = __api + "downloadSub/"
+__search = __api + "/movie/search"
+__getSub = __api + "/subtitle/"
+__download = __getSub + "download/"
 
 ss_to_code = {
     "Big 5 code": "zh",
@@ -24,33 +23,35 @@ ss_to_code = {
 def build_search_requests(core, service_name, meta):
     def get_movie(response):
         results = response.json()
-        found = results.get("found", [])
-        movie_name = ""
+        found = results.get("results", [])
+        movie_url = ""
         seasons = []
 
         for res in found:
-            incorrect_type = res.get("type", "Movie") == "Movie" and meta.is_tvshow
-            incorrect_movie = meta.is_movie and meta.imdb_id and res.get("imdb") and res["imdb"] != meta.imdb_id
-            if incorrect_type or incorrect_movie:
+            incorrect_type = res.get("type", "movie").lower() == "movie" and meta.is_tvshow
+            incorrect_movie = meta.is_movie and str(res.get("releaseYear")) != str(meta.year)
+            incorrect_tvshow = meta.is_tvshow and str(res.get("releaseYear")) != str(meta.tvshow_year)
+            if incorrect_type or incorrect_movie or incorrect_tvshow:
                 continue
-            movie_name = res["linkName"]
-            seasons = res.get("seasons")
+            movie_url = res["link"]
+            seasons = res.get("seasons", [])
             break
 
-        params = {"movieName": movie_name, "langs": meta.languages}
+        params = {"language": ",".join(meta.languages).lower()}
         if meta.is_tvshow:
-            season = seasons[0].get("number") if len(seasons) == 1 else meta.season
-            params["season"] = "season-" + str(season)
-        return {"method": "POST", "url": __getMovie, "data": params}
+            season = seasons[0] if len(seasons) == 1 else seasons[max(0, int(meta.season) - 1)]
+            movie_url = season["link"].replace("season=", "season-")
+
+        return {"method": "GET", "url": __api + movie_url, "params": params}
 
     name = (meta.title if meta.is_movie else meta.tvshow)
     year = meta.tvshow_year if meta.is_tvshow else meta.year
 
-    params = {"query": name + " " + year}
+    params = {"query": name + " " + year, "includeSeasons": True}
     request = {
         "method": "POST",
         "url": __search,
-        "data": params,
+        "json": params,
         "next": lambda gm: get_movie(gm)
     }
     return [request]
@@ -65,12 +66,12 @@ def parse_search_response(core, service_name, meta, response):
 
     service = core.services[service_name]
 
-    if "subs" not in results:
+    if "subtitles" not in results:
         return []
 
     def map_result(result):
-        name = result.get("releaseName", "")
-        lang = result.get("lang")
+        name = result.get("release_info", "")
+        lang = result.get("language", "").capitalize()
 
         if lang in ss_to_code:
             lang = core.kodi.xbmc.convertLanguage(ss_to_code[lang], core.kodi.xbmc.ENGLISH_NAME)
@@ -78,7 +79,8 @@ def parse_search_response(core, service_name, meta, response):
         if lang not in meta.languages:
             return None
 
-        rating = result.get("rating", 0)
+        rating = 10 if result.get("rating") == "good" else 0 
+
         lang_code = core.utils.get_lang_id(lang, core.kodi.xbmc.ISO_639_1)
         return {
             "service_name": service_name,
@@ -87,33 +89,30 @@ def parse_search_response(core, service_name, meta, response):
             "name": name,
             "rating": rating,
             "lang_code": lang_code,
-            "sync": "true" if meta.filename_without_ext in result["releaseName"] else "false",
-            "impaired": "true" if result.get("hi", 0) != 0 else "false",
+            "sync": "true" if meta.filename_without_ext in result["release_info"] else "false",
+            "impaired": "true" if result.get("hearing_impaired", 0) != 0 else "false",
             "color": "teal",
             "action_args": {
-                "url": "{}#{}".format(result["subId"], name),
+                "url": "{}#{}".format(result["id"], name),
                 "lang": lang,
                 "filename": name,
-                "full_link": result["fullLink"],
+                "full_link": result["link"],
             },
         }
 
-    return list(map(map_result, results["subs"]))
+    return list(map(map_result, results["subtitles"]))
 
 
 def build_download_request(core, service_name, args):
-    *_, movie, lang, sub_id = args["full_link"].split("/")
-    params = {"movie": movie, "lang": lang, "id": sub_id}
 
     def downloadsub(response):
         result = response.json()
-        download_token = result["sub"]["downloadToken"]
+        download_token = result["subtitle"]["download_token"]
         return {"method": "GET", "url": __download + download_token, "stream": True}
 
     request = {
-        "method": "POST",
-        "url": __getSub,
-        "data": params,
+        "method": "GET",
+        "url": __getSub + args["full_link"],
         "next": lambda dw: downloadsub(dw)
     }
 
