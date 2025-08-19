@@ -1,3 +1,6 @@
+* [v3.21.2](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.21.2):
+  * SubSource: Fix and update API
+
 * [v3.21.1](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.21.1):
   * Dynamic AI subtitles translation from English to the selected Preferred Language in KODI's settings
     * Requires API Key
