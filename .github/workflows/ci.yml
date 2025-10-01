@@ -49,5 +49,6 @@ jobs:
       if: "${{ !startsWith(needs.validate.outputs.commit, 'chore:') }}"
       env:
         A4KSUBTITLES_SUBDL_APIKEY: ${{ secrets.A4KSUBTITLES_SUBDL_APIKEY }}
+        A4KSUBTITLES_SUBSOURCE_APIKEY: ${{ secrets.A4KSUBTITLES_SUBSOURCE_APIKEY }}
       run: |
         coverage run -m pytest -v -s --log-level=DEBUG

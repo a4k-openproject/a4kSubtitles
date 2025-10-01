@@ -35,5 +35,9 @@
         <setting type="lsep" label="33205"/>
         <setting type="sep"/>
         <setting id="subdl.apikey" label="33303" type="text" default=""/>
+        <!-- Subsource -->
+        <setting type="lsep" label="33207"/>
+        <setting type="sep"/>
+        <setting id="subsource.apikey" label="33304" type="text" default=""/>
     </category>
 </settings>

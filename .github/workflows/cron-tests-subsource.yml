@@ -27,5 +27,7 @@ jobs:
         python -m pip install -r requirements.txt
 
     - name: test
+      env:
+        A4KSUBTITLES_SUBSOURCE_APIKEY: ${{ secrets.A4KSUBTITLES_SUBSOURCE_APIKEY }}
       run: |
         pytest -v -k 'test_subsource' ./tests/test_suite.py

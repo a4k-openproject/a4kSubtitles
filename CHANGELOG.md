@@ -1,3 +1,6 @@
+* [v3.21.3](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.21.3):
+  * SubSource: Fix and update API (now requires API key)
+
 * [v3.21.2](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.21.2):
   * SubSource: Fix and update API
 
