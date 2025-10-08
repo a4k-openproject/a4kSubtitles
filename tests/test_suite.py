@@ -707,6 +707,7 @@ def test_subsource():
     # search
     settings = {
         'subsource.enabled': 'true',
+        'subsource.apikey': os.getenv('A4KSUBTITLES_SUBSOURCE_APIKEY'),
     }
     search = __search_movie(a4ksubtitles_api, settings)
 
@@ -733,6 +734,7 @@ def test_subsource_tvshow():
     # search
     settings = {
         'subsource.enabled': 'true',
+        'subsource.apikey': os.getenv('A4KSUBTITLES_SUBSOURCE_APIKEY'),
     }
 
     if os.getenv('CI', None) is not None:
@@ -763,6 +765,7 @@ def test_subsource_arabic():
     # search
     settings = {
         'subsource.enabled': 'true',
+        'subsource.apikey': os.getenv('A4KSUBTITLES_SUBSOURCE_APIKEY'),
     }
 
     if os.getenv('CI', None) is not None:
