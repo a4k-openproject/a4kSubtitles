@@ -1,0 +1,7 @@
+version: '3.8'
+services:
+  stremio-subsource-addon:
+    build: ./stremio-subsource-addon
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
