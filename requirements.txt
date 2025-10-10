@@ -1,4 +1,3 @@
+Flask
+IMDbPY
 requests
-pytest
-flake8
-coverage

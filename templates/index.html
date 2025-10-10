@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SubSource Stremio Addon</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #5a3e8d;
+        }
+        code {
+            background: #eee;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: "Courier New", Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SubSource Stremio Addon</h1>
+        <p>This addon provides subtitles from SubSource, a multi-language subtitle provider.</p>
+
+        <h2>Configuration</h2>
+        <p>This addon requires a SubSource API key. You must set the <code>SUBSOURCE_API_KEY</code> environment variable before running the addon.</p>
+
+        <h2>Installation</h2>
+        <p>To install this addon, copy the following URL and paste it into the Stremio addon search bar:</p>
+        <p><code>{{ request.url_root }}manifest.json</code></p>
+        <p>Alternatively, you can click the button below to install the addon directly in Stremio.</p>
+        <a href="stremio://{{ request.url_root }}manifest.json">
+            <button>Install in Stremio</button>
+        </a>
+    </div>
+</body>
+</html>
