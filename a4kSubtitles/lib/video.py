@@ -193,6 +193,14 @@ def __update_info_from_imdb(core, meta, pagination_token=''):
                         releaseDate {
                             year
                         }
+                        releaseDates(first: 5) {
+                            edges {
+                                node {
+                                    country { text }
+                                    year
+                                }
+                            }
+                        }
                         series {
                             series {
                                 id,
@@ -264,6 +272,9 @@ def __update_info_from_imdb(core, meta, pagination_token=''):
         result = json.loads(response.text)
         result = result['data']['titles'][0]
 
+        if result['series'] is not None:
+            meta.tv_show_imdb_id = result['series']['series']['id']
+
         if result['episodes'] is None:
             meta.title = result['titleText']['text']
             meta.year = str(result['releaseDate']['year'])
@@ -275,7 +286,11 @@ def __update_info_from_imdb(core, meta, pagination_token=''):
         else:
             meta.tvshow = result['titleText']['text']
             if meta.tvshow_year == '':
-                meta.tvshow_year = str(result['releaseDate']['year'])
+                releasesDates = result['releaseDates']
+                if releasesDates is not None and len(releasesDates['edges']) > 0:
+                    meta.tvshow_year = str(releasesDates['edges'][0]['node']['year'])
+                else:
+                    meta.tvshow_year = str(result['releaseDate']['year'])
 
             episodes = result['episodes']['result']['edges']
             s_number = int(meta.season)
@@ -346,6 +361,8 @@ def __get_basic_info(core):
         filename_path_info = utils.extract_season_episode(filename_and_path, zfill=0)
         meta.season = meta.season or filename_path_info.season or filename_info.season
         meta.episode = meta.episode or filename_path_info.episode or filename_info.episode
+
+    meta.tv_show_imdb_id = meta.imdb_id
 
     return meta
 

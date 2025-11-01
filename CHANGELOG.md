@@ -1,3 +1,7 @@
+* [v3.21.4](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.21.4):
+  * SubSource: Fix foreign language handling in the new API.
+  * Metainfo: Fix IMDb release year to correctly pull the first release date for TV shows.
+
 * [v3.21.3](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.21.3):
   * SubSource: Fix and update API (now requires API key)
 
