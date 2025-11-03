@@ -106,6 +106,10 @@ msgctxt "#33303"
 msgid "API Key"
 msgstr ""
 
+msgctxt "#33304"
+msgid "API Key"
+msgstr ""
+
 ## Select Options
 
 # AI Providers
