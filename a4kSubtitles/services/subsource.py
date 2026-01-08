@@ -143,7 +143,6 @@ def build_search_requests(core, service_name, meta):
             movie_id = res["movieId"]
             break
 
-
         required_languages = [
             code_langs.get(core.utils.get_lang_id(kodi_lang, core.kodi.xbmc.ISO_639_1), (kodi_lang.lower(),))
             for kodi_lang in meta.languages

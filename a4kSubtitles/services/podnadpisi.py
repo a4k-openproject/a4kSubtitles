@@ -59,7 +59,7 @@ def parse_search_response(core, service_name, meta, response):
 
         name = '%s.srt' % name
         lang_code = result['language']
-        lang = meta.languages[lang_ids.index(lang_code)]
+        lang = meta.languages[lang_ids.index(lang_code)] if lang_code in lang_ids else lang_code
 
         return {
             'service_name': service_name,
