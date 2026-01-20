@@ -682,6 +682,13 @@ def test_addic7ed_tvshow():
     }
     search = __search_tvshow(a4ksubtitles_api, settings)
 
+    # addic7ed is often blocked by Cloudflare on CI, skip if no results
+    if len(search.results) == 0:
+        if os.getenv('CI', None) is not None:
+            pytest.skip('addic7ed blocked by Cloudflare on CI')
+        else:
+            raise AssertionError('Expected results from addic7ed')
+
     # download
     item = search.results[0]
 
