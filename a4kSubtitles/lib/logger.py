@@ -22,7 +22,7 @@ except:
 
 def __log(message, level):
     is_lazy_msg = callable(message)
-    if is_lazy_msg and level == xbmc.LOGDEBUG and not __get_debug_logenabled():
+    if is_lazy_msg and level == notice_type and not __get_debug_logenabled():
         return
 
     if is_lazy_msg:
