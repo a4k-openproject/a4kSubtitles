@@ -40,13 +40,18 @@ __monitor.abortRequested = lambda: False
 __monitor.waitForAbort = lambda _: False
 xbmc.Monitor = lambda: __monitor
 
-def __log(msg, label):
-    print(msg)
-xbmc.log = __log
 xbmc.LOGDEBUG = 'debug'
 xbmc.LOGINFO = 'info'
 xbmc.LOGERROR = 'error'
 xbmc.LOGNOTICE = 'notice'
+
+def __log(msg, label):
+    # In test mode, only show errors unless A4KSUBTITLES_DEBUG is set
+    if os.environ.get('A4KSUBTITLES_TESTRUN') and not os.environ.get('A4KSUBTITLES_DEBUG'):
+        if label not in [xbmc.LOGERROR]:
+            return
+    print(msg)
+xbmc.log = __log
 
 # xbmcaddon
 xbmcaddon = lambda: None
