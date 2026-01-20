@@ -727,6 +727,10 @@ def test_addic7ed_tvshow():
     assert filepath != ''
 
 def test_subsource():
+    # subsource requires an API key, skip on CI if missing
+    if not os.getenv('A4KSUBTITLES_SUBSOURCE_APIKEY') and os.getenv('CI', None) is not None:
+        pytest.skip('subsource API key missing on CI')
+
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
     __remove_all_cache(a4ksubtitles_api)
 
@@ -754,6 +758,10 @@ def test_subsource():
     assert filepath != ''
 
 def test_subsource_tvshow():
+    # subsource requires an API key, skip on CI if missing
+    if not os.getenv('A4KSUBTITLES_SUBSOURCE_APIKEY') and os.getenv('CI', None) is not None:
+        pytest.skip('subsource API key missing on CI')
+
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
     __remove_all_cache(a4ksubtitles_api)
 
@@ -785,6 +793,10 @@ def test_subsource_tvshow():
     assert filepath != ''
 
 def test_subsource_arabic():
+    # subsource requires an API key, skip on CI if missing
+    if not os.getenv('A4KSUBTITLES_SUBSOURCE_APIKEY') and os.getenv('CI', None) is not None:
+        pytest.skip('subsource API key missing on CI')
+
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
     __remove_all_cache(a4ksubtitles_api)
 
