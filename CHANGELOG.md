@@ -1,3 +1,6 @@
+* [v3.23.1](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.23.1):
+  * Fix overwriting existing subtitles during auto-download.
+
 * [v3.23.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.23.0):
   * Fix Podnadpisi download handling.
   * Reduce logs verbosity without debug enabled.

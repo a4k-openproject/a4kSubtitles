@@ -226,7 +226,7 @@ def start(api):
                         core.logger.debug('no subtitles found for %s, fallback to first index from matched langs' % preferredlang)
                         sub_index = preferedlang_sub_indexes[0]
 
-                if sub_index != player_props['currentsubtitle']['index']:
+                if not player_props['currentsubtitle'] or sub_index != player_props['currentsubtitle']['index']:
                     core.kodi.xbmc.Player().setSubtitleStream(sub_index)
                 return True
 
