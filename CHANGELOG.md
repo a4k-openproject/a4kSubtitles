@@ -1,3 +1,20 @@
+* [v3.23.1](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.23.1):
+  * Fix overwriting existing subtitles during auto-download.
+
+* [v3.23.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.23.0):
+  * Fix Podnadpisi download handling.
+  * Reduce logs verbosity without debug enabled.
+
+* [v3.22.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.22.0):
+  * Fix Podnadpisi service returning incorrect language codes.
+
+* [v3.21.5](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.21.5):
+  * SubSource: Fix language handling so all regional variants are detected instead of only one.
+
+* [v3.21.4](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.21.4):
+  * SubSource: Fix foreign language handling in the new API.
+  * Metainfo: Fix IMDb release year to correctly pull the first release date for TV shows.
+
 * [v3.21.3](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.21.3):
   * SubSource: Fix and update API (now requires API key)
 

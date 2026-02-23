@@ -61,7 +61,7 @@ def parse_search_response(core, service_name, meta, response):
     def map_result(result):
         filename = result['release_name']
         lang_code = result['language'].lower()
-        lang = meta.languages[lang_ids.index(lang_code)]
+        lang = meta.languages[lang_ids.index(lang_code)] if lang_code in lang_ids else lang_code
 
         return {
             'service_name': service_name,

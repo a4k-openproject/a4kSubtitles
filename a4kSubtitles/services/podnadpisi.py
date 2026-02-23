@@ -43,10 +43,14 @@ def parse_search_response(core, service_name, meta, response):
     lang_ids = core.utils.get_lang_ids(meta.languages, core.kodi.xbmc.ISO_639_1)
 
     def map_result(result):
+        # Skip results that don't have publish_id (required for download)
+        if 'publish_id' not in result:
+            return None
+
         name = ''
         last_similarity = -1
 
-        for release_name in result['custom_releases']:
+        for release_name in result.get('custom_releases', []):
             similarity = core.difflib.SequenceMatcher(None, release_name, meta.filename_without_ext).ratio()
             if similarity > last_similarity:
                 last_similarity = similarity
@@ -58,8 +62,8 @@ def parse_search_response(core, service_name, meta, response):
                 name = '%s S%sE%s' % (meta.tvshow, meta.season.zfill(2), meta.episode.zfill(2))
 
         name = '%s.srt' % name
-        lang_code = result['language']
-        lang = meta.languages[lang_ids.index(lang_code)]
+        lang_code = result.get('language', '')
+        lang = meta.languages[lang_ids.index(lang_code)] if lang_code in lang_ids else lang_code
 
         return {
             'service_name': service_name,
@@ -68,17 +72,18 @@ def parse_search_response(core, service_name, meta, response):
             'name': name,
             'rating': 0,
             'lang_code': lang_code,
-            'sync': 'true' if meta.filename_without_ext in result['custom_releases'] else 'false',
-            'impaired': 'true' if 'hearing_impaired' in result['flags'] else 'false',
+            'sync': 'true' if meta.filename_without_ext in result.get('custom_releases', []) else 'false',
+            'impaired': 'true' if 'hearing_impaired' in result.get('flags', []) else 'false',
             'color': 'orange',
             'action_args': {
-                'url': '%s%s' % (__url, result['download']),
+                'url': '%s/subtitles/%s/download' % (__url, result['publish_id']),
                 'lang': lang,
                 'filename': name,
             }
         }
 
-    return list(map(map_result, results['data']))
+    mapped_results = [map_result(r) for r in results.get('data', [])]
+    return [r for r in mapped_results if r is not None]
 
 def build_download_request(core, service_name, args):
     def retry_download(response):
