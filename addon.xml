@@ -11,10 +11,9 @@
     <extension point="xbmc.service" library="main_service.py" />
     <extension point="xbmc.addon.metadata">
         <summary lang="en">a4kSubtitles - Multi-Source Subtitles Addon</summary>
-        <description>
-Multi-source subtitles addon optimized for Seren and a4kScrapers.
-Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDL, Addic7ed
-        </description>
+        <summary lang="zh_cn">a4kSubtitles - 多源字幕插件</summary>
+        <description lang="en">Multi-source subtitles addon optimized for Seren and a4kScrapers.Supports: OpenSubtitles, BSPlayer, Podnadpisi.NET, SubDL, Addic7ed</description>
+        <description lang="zh_cn">针对 Seren 和 a4kScrapers 优化的多源字幕插件。支持：OpenSubtitles、BSPlayer、Podnadpisi.NET、SubDL、Addic7ed</description>
         <platform>all</platform>
         <reuselanguageinvoker>true</reuselanguageinvoker>
         <license>MIT License</license>
