@@ -160,7 +160,11 @@ def download(core, params):
 
     actions_args = params['action_args']
     lang_code = core.utils.get_lang_id(actions_args['lang'], core.kodi.xbmc.ISO_639_2)
-    filename = __insert_lang_code_in_filename(core, actions_args['filename'], lang_code)
+    filename = actions_args['filename']
+    if not any(filename.lower().endswith(ext) for ext in subtitles_exts_all):
+        # For now, we will use 'srt' to mark unknown file extensions as subtitles.
+        filename = filename + ".srt"
+    filename = __insert_lang_code_in_filename(core, filename, lang_code)
     filename = core.utils.slugify_filename(filename)
     filename = filename.strip()
     archivepath = core.os.path.join(core.utils.temp_dir, 'sub.zip')
