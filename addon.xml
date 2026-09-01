@@ -6,6 +6,7 @@
     <requires>
       <import addon="script.module.requests"/>
       <import addon="vfs.libarchive" optional="true"/>
+      <import addon="vfs.rar" optional="true"/>
     </requires>
     <extension point="xbmc.subtitle.module" library="main.py"/>
     <extension point="xbmc.service" library="main_service.py" />
