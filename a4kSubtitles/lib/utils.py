@@ -231,6 +231,7 @@ def extract_season_episode(filename, episode_fallback=False, zfill=3):
     episode_pattern = r'(?:e|ep.?|episode.?)(\d{1,5})(?:v\d?)?'
     season_pattern = r'(?:s|season.?)(\d{1,5})'
     combined_pattern = r'\b(?:s|season)(\d{1,5})\s?[x|\-|\_|\s]\s?[a-z]?(\d{1,5})(?:v\d?)?\b'
+    numbered_pattern = r'\b(\d{1,2})x(\d{1,3})\b'
     range_episodes_pattern = r'\b(?:.{1,4}e|ep|eps|episodes|\s)?(\d{1,5}?)(?:v.?)?\s?[\-|\~]\s?(\d{1,5})(?:v.?)?\b'
     date_pattern = r'\b(\d{2,4}-\d{1,2}-\d{2,4})\b'
 
@@ -247,6 +248,12 @@ def extract_season_episode(filename, episode_fallback=False, zfill=3):
     if combined_match:
         season = season if season else combined_match.group(1)
         episode = episode if episode else combined_match.group(2)
+    else:
+        # Season packs often name their files 2x04.srt
+        numbered_match = re.search(numbered_pattern, filename, re.IGNORECASE)
+        if numbered_match:
+            season = season if season else numbered_match.group(1)
+            episode = episode if episode else numbered_match.group(2)
 
     if range_episodes_match:
         range_start, range_end = map(int, range_episodes_match[-1])
