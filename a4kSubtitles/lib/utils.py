@@ -67,6 +67,15 @@ def strip_non_ascii_and_unprintable(text):
 def slugify_filename(text):
     return re.sub(r'[\\/*?:"<>|]', '_', text)
 
+def shorten_filename(filename, lang_code, max_length=100):
+    # A season pack's release name lists every release, and on Windows the path in the temp folder must stay within 260 characters
+    if len(filename) <= max_length:
+        return filename
+    base, sep, tail = filename.rpartition('.' + lang_code)
+    if not sep:
+        return filename[:max_length]
+    return base[:max_length - len(sep) - len(tail)].rstrip(' ._') + sep + tail
+
 def get_lang_id(language, lang_format):
     try:
         return get_lang_ids([language], lang_format)[0]
