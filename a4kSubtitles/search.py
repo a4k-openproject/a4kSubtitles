@@ -94,19 +94,16 @@ def __apply_language_filter(meta, results):
     return list(filter(lambda x: x and x['lang'] in meta.languages, results))
 
 def __apply_limit(core, all_results, meta):
-    limit = core.kodi.get_int_setting('general.results_limit')
-    lang_limit = int(limit / len(meta.languages))
-    if lang_limit * len(meta.languages) < limit:
-        lang_limit += 1
-
-    results = []
-    for lang in meta.languages:
-        lang_results = list(filter(lambda x: x['lang'] == lang, all_results))
-        if len(lang_results) < lang_limit:
-            lang_limit += lang_limit - len(lang_results)
-        results.extend(lang_results[:lang_limit])
-
-    return results[:limit]
+    # `all_results` is already in priority order: __prepare_results sorts it
+    # with `sorter`, whose first key is `not x['lang'] == meta.preferredlanguage`
+    # and whose second is `meta.languages.index(x['lang'])`, so the preferred
+    # language leads, the other requested languages follow in request order,
+    # and within a language the quality keys rank the rows. Any other
+    # language is therefore filler: it only reaches the list once the
+    # preferred one has run out. A per-language quota instead of this slice
+    # would hand seats to the filler while preferred rows are still waiting,
+    # and would disturb the ranking the sorter just computed.
+    return all_results[:core.kodi.get_int_setting('general.results_limit')]
 
 def __prepare_results(core, meta, results):
     results = __apply_language_filter(meta, results)
@@ -306,7 +303,10 @@ def __prepare_results(core, meta, results):
     return results
 
 def __parse_languages(core, languages):
-    return list({language for language in (core.kodi.parse_language(x) for x in languages) if language is not None})
+    # dict.fromkeys, not a set: de-duplicated but in REQUEST order, so
+    # `meta.languages.index` (the sorter's second key) is deterministic
+    # instead of per-process hash order.
+    return list(dict.fromkeys(language for language in (core.kodi.parse_language(x) for x in languages) if language is not None))
 
 def __chain_auth_and_search_threads(core, auth_thread, search_thread):
     auth_thread.start()
