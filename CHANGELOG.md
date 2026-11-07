@@ -1,3 +1,7 @@
+* [v3.26.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.26.0):
+  * Auto-load: try the quick OpenSubtitles results first, so subtitles load within about a second; the full search runs only when none of them loads.
+  * Add a quick search to the API for other add-ons (A4kSubtitlesApi.quick_search).
+
 * [v3.25.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.25.0):
   * OpenSubtitles: Quick results with no account needed (new service, on by default).
   * Remove duplicate OpenSubtitles results when both OpenSubtitles services find the same file.
