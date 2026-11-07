@@ -163,6 +163,7 @@ def download(core, params):
     filename = __insert_lang_code_in_filename(core, actions_args['filename'], lang_code)
     filename = core.utils.slugify_filename(filename)
     filename = filename.strip()
+    filename = core.utils.shorten_filename(filename, lang_code)
     archivepath = core.os.path.join(core.utils.temp_dir, 'sub.zip')
 
     service_name = params['service_name']
