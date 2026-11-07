@@ -6,6 +6,7 @@ def __auth_service(core, service_name, request):
     service.parse_auth_response(core, service_name, response)
 
 __results_ttl = 4 * 60 * 60  # seconds a saved last_results.json may be replayed
+__quick_timeout = 5  # seconds a quick search may take before it returns no rows
 
 def __is_transport_error(response):
     # None is not an error here: request chains return None for "nothing found".
@@ -381,6 +382,9 @@ def __search(core, service_name, meta, results, failed):
     core.utils.wait_threads(threads)
 
 def search(core, params):
+    # params['quick']: only services with `quick = True` run, the last_results cache is neither read nor written
+    # (a saved quick-only set would be replayed for the next full search), and the search gives up after __quick_timeout.
+    quick = params.get('quick', False)
     meta = core.video.get_meta(core)
     core.last_meta = meta
 
@@ -396,9 +400,12 @@ def search(core, params):
     threads = []
     searched = []
     failed = []
-    (results, force_search, created) = __get_last_results(core, meta)
+    (results, force_search, created) = ([], [], None) if quick else __get_last_results(core, meta)
     cached_count = len(results)
     for service_name in core.services:
+        if quick and not getattr(core.services[service_name], 'quick', False):
+            continue
+
         if len(results) > 0 and (__has_results(service_name, results) or service_name not in force_search):
             continue
 
@@ -447,11 +454,15 @@ def search(core, params):
         if cancellation_token.iscanceled:
             return
         final_results = __prepare_results(core, meta, results)
-        if not failed:  # a cached set missing a service that failed would hide it until the TTL ends
+        if not failed and not quick:  # a cached set missing a service that failed would hide it until the TTL ends
             __save_results(core, meta, final_results, created)
         ready_queue.put(__complete_search(core, final_results, meta))
 
     core.threading.Thread(target=check_cancellation).start()
     core.threading.Thread(target=wait_all_results).start()
 
-    return ready_queue.get()
+    try:
+        return ready_queue.get(timeout=__quick_timeout if quick else None)
+    except core.utils.queue.Empty:
+        core.logger.warning('quick search - no answer in %s s' % __quick_timeout)
+        return []

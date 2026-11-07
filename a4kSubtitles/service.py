@@ -1,5 +1,16 @@
 # -*- coding: utf-8 -*-
 
+def __quick_then_full(core, api, params, preferredlang):
+    # Quick rows in the preferred language load within seconds; the full search runs only when none of them loads.
+    try:
+        quick_results = [r for r in api.quick_search(params) or [] if r['lang'] == preferredlang]
+    except Exception:
+        core.logger.error('quick search failed, falling back to the full search')
+        quick_results = []
+    if quick_results:
+        yield quick_results
+    yield api.search(params) or []
+
 def start(api):
     core = api.core
     core.kodi.xbmcvfs.delete(core.utils.suspend_service_file)
@@ -259,50 +270,53 @@ def start(api):
             'preferredlanguage': preferredlang
         }
 
-        results = api.search(params)
-        for result in results:
-            try:
-                subfile = api.download(result)
-                last_subfile = subfile
+        for results in __quick_then_full(core, api, params, preferredlang):
+            for result in results:
+                try:
+                    subfile = api.download(result)
+                    last_subfile = subfile
 
-                if not subfile:
-                    core.logger.debug('No subtitle file found for %s' % result)
+                    if not subfile:
+                        core.logger.debug('No subtitle file found for %s' % result)
+                        continue
+
+                    if not use_ai or preferredlang == preferredlang_preai:
+                        core.logger.debug('Setting subtitles: %s' % subfile)
+                        core.kodi.xbmc.Player().setSubtitles(subfile)
+                    else:
+                        core.logger.debug('Using AI to translate subtitles: %s' % subfile)
+                        subfile_translated = subfile + '.translated'
+
+                        moviename = '%s (%s)' % (core.last_meta.title, core.last_meta.year) if core.last_meta else ''
+                        target_language = core.utils.get_lang_id(preferredlang_preai, core.kodi.xbmc.ISO_639_2)
+
+                        core.logger.debug('Translating subtitles with AI provider: %s, model: %s' % (ai_provider, ai_model))
+                        core.logger.debug('Moviename: %s, target_language: %s' % (moviename, target_language))
+
+                        ai_last_timestamp = core.kodi.xbmc.Player().getTime()
+
+                        core.utils.gptsubtrans.translate(
+                            input_file=subfile,
+                            target_language=target_language,
+                            output_file=subfile_translated,
+                            moviename=moviename,
+                            provider=ai_provider,
+                            api_key=ai_api_key,
+                            model=ai_model,
+                            begin_seconds=ai_last_timestamp,
+                            end_seconds=ai_last_timestamp + ai_max_range,
+                            log=core.logger.debug
+                        )
+
+                        core.kodi.xbmc.Player().setSubtitles(subfile_translated)
+                        ai_tries = 0
+                        has_done_subs_check = False
+
+                    break
+                except:
+                    import traceback
+                    core.logger.error('Error downloading or setting subtitles: %s' % traceback.format_exc())
                     continue
-
-                if not use_ai or preferredlang == preferredlang_preai:
-                    core.logger.debug('Setting subtitles: %s' % subfile)
-                    core.kodi.xbmc.Player().setSubtitles(subfile)
-                else:
-                    core.logger.debug('Using AI to translate subtitles: %s' % subfile)
-                    subfile_translated = subfile + '.translated'
-
-                    moviename = '%s (%s)' % (core.last_meta.title, core.last_meta.year) if core.last_meta else ''
-                    target_language = core.utils.get_lang_id(preferredlang_preai, core.kodi.xbmc.ISO_639_2)
-
-                    core.logger.debug('Translating subtitles with AI provider: %s, model: %s' % (ai_provider, ai_model))
-                    core.logger.debug('Moviename: %s, target_language: %s' % (moviename, target_language))
-
-                    ai_last_timestamp = core.kodi.xbmc.Player().getTime()
-
-                    core.utils.gptsubtrans.translate(
-                        input_file=subfile,
-                        target_language=target_language,
-                        output_file=subfile_translated,
-                        moviename=moviename,
-                        provider=ai_provider,
-                        api_key=ai_api_key,
-                        model=ai_model,
-                        begin_seconds=ai_last_timestamp,
-                        end_seconds=ai_last_timestamp + ai_max_range,
-                        log=core.logger.debug
-                    )
-
-                    core.kodi.xbmc.Player().setSubtitles(subfile_translated)
-                    ai_tries = 0
-                    has_done_subs_check = False
-
-                break
-            except:
-                import traceback
-                core.logger.error('Error downloading or setting subtitles: %s' % traceback.format_exc())
-                continue
+            else:
+                continue  # nothing from this batch loaded: try the next one
+            break

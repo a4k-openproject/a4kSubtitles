@@ -140,3 +140,52 @@ def test_search_summary_skips_empty_rows(monkeypatch):
     records = __capture_logs(monkeypatch, core)
     __search.__log_summary(core, ['svca'], [], [__row('svca'), None], 0)
     assert any('svca: 1' in m for (_, m) in records), records
+
+def test_quick_search_runs_only_enabled_quick_services_and_skips_the_cache(monkeypatch, tmp_path):
+    core, _, _ = __setup(monkeypatch, tmp_path)
+    quick_a, quick_c = __service('svca'), __service('svcc')
+    quick_a.quick = quick_c.quick = True
+    monkeypatch.setattr(core, 'services', {'svca': quick_a, 'svcb': __service('svcb'), 'svcc': quick_c})
+    restore = api.A4kSubtitlesApi({'kodi': True}).mock_settings({'svca.enabled': 'true', 'svcb.enabled': 'true', 'svcc.enabled': 'false', 'general.results_limit': '20'})
+    try:
+        with open(core.cache.results_filepath, 'w') as f:
+            f.write('not json')  # a cache read would be skipped anyway; it must stay untouched
+        results = core.search(core, {'languages': 'English', 'preferredlanguage': 'English', 'quick': True})
+        assert [r['service_name'] for r in results] == ['svca']
+        with open(core.cache.results_filepath) as f:
+            assert f.read() == 'not json'
+
+        os.remove(core.cache.results_filepath)
+        full = core.search(core, {'languages': 'English', 'preferredlanguage': 'English'})
+        assert sorted(r['service_name'] for r in full) == ['svca', 'svcb']
+    finally:
+        restore()
+
+def test_quick_search_gives_up_after_its_timeout(monkeypatch, tmp_path):
+    import threading
+    core, _, search = __setup(monkeypatch, tmp_path)
+    release = threading.Event()
+    slow = __service('svca')
+    slow.quick = True
+    slow.parse_search_response = lambda core_, name, meta, response: release.wait(5) and [__row(name)]
+    monkeypatch.setattr(core, 'services', {'svca': slow})
+    monkeypatch.setattr(__search, '__quick_timeout', 0.2)
+    try:
+        assert core.search(core, {'languages': 'English', 'preferredlanguage': 'English', 'quick': True}) == []
+    finally:
+        release.set()
+        search()  # restores the settings mock
+
+def test_api_quick_search_is_search_in_quick_mode(monkeypatch):
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    calls = []
+    monkeypatch.setattr(a4ksubtitles_api.core, 'search', lambda core, params: calls.append(params) or ['row'])
+    assert hasattr(a4ksubtitles_api, 'quick_search')
+    params = {'languages': 'English', 'preferredlanguage': 'English'}
+    assert a4ksubtitles_api.quick_search(params) == ['row']
+    assert calls == [dict(params, quick=True)]
+    assert 'quick' not in params
+
+def test_only_opensubtitles_quick_is_a_quick_service():
+    core = api.A4kSubtitlesApi({'kodi': True}).core
+    assert [name for name, s in core.services.items() if getattr(s, 'quick', False)] == ['opensubtitles_quick']

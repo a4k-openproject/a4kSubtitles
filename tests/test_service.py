@@ -40,11 +40,12 @@ def __mock_get_info_label(api, mock_data):
         api.core.kodi.xbmc.getInfoLabel = default
     return restore
 
-def __mock_api_search(api):
-    default = api.search
+def __mock_api_search(api, quick_results=()):
+    default, default_quick = api.search, api.quick_search
     api.search = lambda p: [{}]
+    api.quick_search = lambda p: list(quick_results)
     def restore():
-        api.search = default
+        api.search, api.quick_search = default, default_quick
     return restore
 
 def __mock_api_download(api, result=None):
@@ -238,3 +239,53 @@ def test_service_auto_download():
     assert executebuiltin_spy.call_count == 0
     assert setsubtitles_spy.call_count == 1
     setsubtitles_spy.called_with(expected_download_result)
+
+def __auto_load(monkeypatch, quick_results, full_results, downloads):
+    # One auto-load pass with the preferred language English; returns (subtitle set, full searches run).
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    core = a4ksubtitles_api.core
+    restore = __mock(a4ksubtitles_api, {'general.auto_search': 'true', 'general.auto_download': 'true'})
+    monkeypatch.setattr(core.kodi, 'get_kodi_setting', lambda name, *args: ['English', 'Spanish'] if name == 'subtitles.languages' else 'English')
+    monkeypatch.setattr(core.kodi.xbmc, 'getCondVisibility', lambda v: True)
+    monkeypatch.setattr(core.kodi.xbmc, 'getInfoLabel', lambda v: 'tt3183660' if v == 'VideoPlayer.IMDBNumber' else '')
+    monkeypatch.setattr(core.kodi.xbmc.Player(), 'isPlayingVideo', lambda: True)
+
+    full_searches = []
+    def quick_search(params):
+        if isinstance(quick_results, Exception):
+            raise quick_results
+        return quick_results
+    def search(params):
+        full_searches.append(params)
+        return full_results
+    monkeypatch.setattr(a4ksubtitles_api, 'quick_search', quick_search)
+    monkeypatch.setattr(a4ksubtitles_api, 'search', search)
+    monkeypatch.setattr(a4ksubtitles_api, 'download', lambda row: downloads.get(row['name']))
+    subtitles = []
+    monkeypatch.setattr(core.kodi.xbmc.Player(), 'setSubtitles', subtitles.append)
+
+    try:
+        service.start(a4ksubtitles_api)
+    finally:
+        restore()
+    return subtitles, len(full_searches)
+
+def __row(name, lang='English'):
+    return {'name': name, 'lang': lang}
+
+__downloads = {'quick-en': 'quick-en.srt', 'quick-es': 'quick-es.srt', 'full-en': 'full-en.srt'}
+
+def test_service_auto_load_uses_quick_result_without_full_search(monkeypatch):
+    assert __auto_load(monkeypatch, [__row('quick-es', 'Spanish'), __row('quick-en')], [__row('full-en')], __downloads) == (['quick-en.srt'], 0)
+
+def test_service_auto_load_falls_back_when_quick_has_no_preferred_language(monkeypatch):
+    assert __auto_load(monkeypatch, [__row('quick-es', 'Spanish')], [__row('full-en')], __downloads) == (['full-en.srt'], 1)
+
+def test_service_auto_load_falls_back_when_quick_finds_nothing(monkeypatch):
+    assert __auto_load(monkeypatch, [], [__row('full-en')], __downloads) == (['full-en.srt'], 1)
+
+def test_service_auto_load_falls_back_when_quick_fails(monkeypatch):
+    assert __auto_load(monkeypatch, RuntimeError('boom'), [__row('full-en')], __downloads) == (['full-en.srt'], 1)
+
+def test_service_auto_load_falls_back_when_quick_download_fails(monkeypatch):
+    assert __auto_load(monkeypatch, [__row('quick-broken')], [__row('full-en')], __downloads) == (['full-en.srt'], 1)

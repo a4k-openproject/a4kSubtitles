@@ -4,6 +4,7 @@
 __host = 'opensubtitles-v3.strem.io'  # public OpenSubtitles mirror API
 __download_domain = '.' + __host.split('.', 1)[1]
 __timeout = 5
+quick = True  # runs in quick searches (search params['quick'], A4kSubtitlesApi.quick_search)
 
 def __retry_once(request):
     def validate(response):

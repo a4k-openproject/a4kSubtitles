@@ -96,6 +96,23 @@ class A4kSubtitlesApi(object):
             if restore_video_meta:
                 restore_video_meta()
 
+    def quick_search(self, params, settings=None, video_meta=None):
+        """Search only the quick services (today: OpenSubtitles with no account), within about 5 seconds.
+
+        Feature-detect it with hasattr(api, 'quick_search'), and fall back to search() when it
+        returns no row you want.
+
+        params: the same as search(): 'languages' (comma-separated English language names, e.g.
+        'English,Spanish') and 'preferredlanguage'. The video meta comes from the playing item, as
+        for search(): an IMDb id is required, and a show also needs its season and episode.
+
+        Returns the same rows as search(), best first: dicts with 'service_name', 'service',
+        'lang', 'lang_code', 'name', 'sync', 'impaired', 'rating' and 'action_args'. A row passes
+        unchanged to download(row), which returns the subtitle file path. Returns [] when no quick
+        service is enabled, nothing matched or the services did not answer in time.
+        """
+        return self.search(dict(params, quick=True), settings, video_meta)
+
     def download(self, params, settings=None):
         restore_settings = None
 

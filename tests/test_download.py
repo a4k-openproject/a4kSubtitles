@@ -117,3 +117,16 @@ def test_download_keeps_utf8_text_when_chardet_is_unsure(download, monkeypatch):
     filepath = download('opensubtitles', {'filename': __name + '.srt', 'raw': True}, b'\xef\xbb\xbf' + text.encode('utf-8'))
     with open(filepath, 'rb') as f:
         assert f.read().decode('utf-8').strip() == text.strip()
+
+def test_download_quick_row_unchanged(download):
+    import json
+    import types
+    core = download.core
+    service = core.services['opensubtitles_quick']
+    domain = getattr(service, '__host').split('.', 1)[1]
+    body = {'subtitles': [{'id': '1', 'lang': 'eng', 'url': 'https://files.%s/file/1' % domain, 'subtitleFileName': __name + '.srt'}]}
+    meta = core.utils.DictAsObject({'languages': ['English']})
+    [row] = service.parse_search_response(core, 'opensubtitles_quick', meta, types.SimpleNamespace(text=json.dumps(body)))
+
+    filepath = download(row['service_name'], row['action_args'], __srt)
+    assert os.path.basename(filepath) == __name + '.eng.srt'
