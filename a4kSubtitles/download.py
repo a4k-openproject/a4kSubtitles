@@ -2,6 +2,7 @@
 subtitles_exts = ['.srt', '.sub']
 subtitles_exts_secondary = ['.smi', '.ssa', '.aqt', '.jss', '.ass', '.rt']
 subtitles_exts_all = subtitles_exts + subtitles_exts_secondary
+raw_exts = subtitles_exts_all + ['.vtt']  # raw downloads only: archives are searched for subtitles_exts_all
 archive_magics = (b'PK\x03\x04', b'PK\x05\x06', b'Rar!\x1a\x07', b'7z\xbc\xaf\x27\x1c')  # zip, empty zip, rar, 7z
 
 def __download(core, filepath, request):
@@ -14,6 +15,20 @@ def __download(core, filepath, request):
         with open(filepath, 'wb') as f:
             r.raw.decode_content = True
             core.shutil.copyfileobj(r.raw, f)
+
+    return response
+
+def __detect_raw_ext(core, response, filepath):
+    # The name had no subtitle extension: try the URL path, then Content-Type, then a WEBVTT sniff.
+    path_ext = core.os.path.splitext(core.request.urlparse(response.url).path)[1].lower()
+    if path_ext in raw_exts:
+        return path_ext
+    if 'vtt' in response.headers.get('Content-Type', '').lower():
+        return '.vtt'
+    with open(filepath, 'rb') as f:
+        if f.read(64).lstrip(b'\xef\xbb\xbf').startswith(b'WEBVTT'):
+            return '.vtt'
+    return '.srt'
 
 def __extract_gzip(core, archivepath, filename):
     if not any(filename.lower().endswith(ext) for ext in subtitles_exts_all):
@@ -93,7 +108,7 @@ def __insert_lang_code_in_filename(core, filename, lang_code):
 
     # Because this can be called via "raw" subtitles where sub ext exists we will ensure it ends with the subtitle ext.
     # Otherwise we will use "filename.lang_code" later the ext will be added on unzip process.
-    if len(nameparts) > 1 and ("." + nameparts[1] in subtitles_exts_all):
+    if len(nameparts) > 1 and ("." + nameparts[1].lower() in raw_exts):
         return ".".join([nameparts[0], lang_code, nameparts[1]])
 
     return "{0}.{1}".format(name, lang_code)
@@ -105,7 +120,14 @@ def __postprocess(core, filepath, lang_code):
 
         if core.kodi.get_bool_setting('general.use_chardet'):
             encoding = ''
-            if core.utils.py3:
+            try:
+                # Text that decodes as UTF-8 is UTF-8: chardet often rates it below 1.0, and the code page
+                # fallback below then turned UTF-8 Arabic into cp1256 mojibake.
+                text_bytes.decode('utf-8-sig')
+                encoding = 'utf-8-sig'
+            except UnicodeDecodeError: pass
+
+            if not encoding and core.utils.py3:
                 detection = core.utils.chardet.detect(text_bytes)
                 detected_lang_code = core.utils.get_lang_id(detection['language'], core.kodi.xbmc.ISO_639_2)
                 if detection['confidence'] == 1.0 or detected_lang_code == lang_code:
@@ -177,10 +199,9 @@ def __download_to(core, params, work_dir):
     actions_args = params['action_args']
     lang_code = core.utils.get_lang_id(actions_args['lang'], core.kodi.xbmc.ISO_639_2)
     filename = actions_args['filename']
-    if actions_args.get('raw', False) and not any(filename.lower().endswith(ext) for ext in subtitles_exts_all):
-        # Raw downloads are saved under this name as is, so mark an unknown extension as 'srt'.
-        # Zip and gzip extraction add the extension themselves.
-        filename = filename + ".srt"
+    # Raw downloads keep this name; one with no subtitle extension gets it after the download.
+    # Zip and gzip extraction add the extension themselves.
+    raw_needs_ext = actions_args.get('raw', False) and not any(filename.lower().endswith(ext) for ext in raw_exts)
     filename = __insert_lang_code_in_filename(core, filename, lang_code)
     filename = core.utils.slugify_filename(filename)
     filename = filename.strip()
@@ -193,7 +214,11 @@ def __download_to(core, params, work_dir):
 
     if actions_args.get('raw', False):
         filepath = core.os.path.join(work_dir, filename)
-        __download(core, filepath, request)
+        response = __download(core, filepath, request)
+        if raw_needs_ext:
+            filepath_with_ext = filepath + __detect_raw_ext(core, response, filepath)
+            core.os.rename(filepath, filepath_with_ext)
+            filepath = filepath_with_ext
     else:
         __download(core, archivepath, request)
         if actions_args.get('gzip', False):

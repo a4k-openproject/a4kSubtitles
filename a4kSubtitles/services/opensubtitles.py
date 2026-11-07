@@ -47,7 +47,9 @@ def build_auth_request(core, service_name):
     password = core.kodi.get_setting(service_name, 'password')
 
     if username == '' or password == '':
-        core.kodi.notification('OpenSubtitles now requires authentication! Enter username/password in the addon Settings->Accounts or disable the service.')
+        # With no account the opensubtitles_quick service still brings OpenSubtitles results.
+        if not core.kodi.get_bool_setting('opensubtitles_quick', 'enabled'):
+            core.kodi.notification('OpenSubtitles now requires authentication! Enter username/password in the addon Settings->Accounts or disable the service.')
         return
 
     request = {
@@ -175,6 +177,7 @@ def parse_search_response(core, service_name, meta, response):
             'sync': 'true' if result.get('moviehash_match', False) else 'false',
             'impaired': 'true' if result['hearing_impaired'] else 'false',
             'color': 'springgreen',
+            'dedup_key': 'opensubtitles:%s' % result['legacy_subtitle_id'] if result.get('legacy_subtitle_id') else None,
             'action_args': {
                 'url': result['files'][0]['file_id'],
                 'lang': language,

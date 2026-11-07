@@ -93,6 +93,10 @@ msgctxt "#33207"
 msgid "SubSource"
 msgstr ""
 
+msgctxt "#33208"
+msgid "OpenSubtitles (quick, no account needed)"
+msgstr ""
+
 # Labels
 msgctxt "#33301"
 msgid "Username"

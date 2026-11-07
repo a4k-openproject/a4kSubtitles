@@ -8,6 +8,7 @@ __display_names = {
     'addic7ed': 'Addic7ed',
     'bsplayer': 'BSPlayer',
     'opensubtitles': 'OpenSubtitles',
+    'opensubtitles_quick': 'OpenSubtitles',
     'podnadpisi': 'Podnadpisi',
     'subdl': 'SubDL',
     'subsource': 'SubSource'

@@ -12,8 +12,10 @@ __name = 'Fantastic.Beasts.2016.1080p.BluRay.x264-JYK'
 class __Response(object):
     status_code = 200
 
-    def __init__(self, data):
+    def __init__(self, data, url='https://example.com/download/1', headers=None):
         self.raw = io.BytesIO(data)
+        self.url = url
+        self.headers = headers or {}
 
     def __enter__(self):
         return self
@@ -33,8 +35,8 @@ def download(monkeypatch, tmp_path):
     monkeypatch.setattr(core.utils, 'temp_dir', str(tmp_path / 'temp'))
     monkeypatch.setattr(core, 'api_mode_enabled', True)
 
-    def run(service_name, action_args, payload):
-        monkeypatch.setattr(core.request, 'execute', lambda core_, request: __Response(payload))
+    def run(service_name, action_args, payload, **response):
+        monkeypatch.setattr(core.request, 'execute', lambda core_, request: __Response(payload, **response))
         args = dict({'lang': 'English', 'url': 'https://example.com/download/1'}, **action_args)
         return core.download(core, {'service_name': service_name, 'action_args': args})
 
@@ -89,3 +91,29 @@ def test_download_refuses_zip_without_subtitle(download):
 def test_download_zip_name_has_one_subtitle_extension(download, service_name, filename, member, expected):
     filepath = download(service_name, {'filename': filename}, __zip(member))
     assert os.path.basename(filepath) == expected
+
+__vtt = b'WEBVTT\n\n00:00:01.000 --> 00:00:02.000\nHello\n'
+
+@pytest.mark.parametrize('filename, payload, response, expected', [
+    (__name + '.srt', __srt, {}, __name + '.eng.srt'),
+    (__name + '.SRT', __srt, {}, __name + '.eng.SRT'),
+    (__name + '.vtt', __vtt, {}, __name + '.eng.vtt'),
+    (__name, __srt, {'url': 'https://example.com/file/1.ass'}, __name + '.eng.ass'),
+    (__name, __vtt, {'headers': {'Content-Type': 'text/vtt; charset=utf-8'}}, __name + '.eng.vtt'),
+    (__name, b'\xef\xbb\xbf' + __vtt, {'headers': {'Content-Type': 'application/octet-stream'}}, __name + '.eng.vtt'),
+    (__name, __srt, {'headers': {'Content-Type': 'application/x-subrip'}}, __name + '.eng.srt'),
+], ids=['name', 'name-upper', 'name-vtt', 'url-path', 'content-type', 'sniff', 'fallback'])
+def test_download_raw_extension(download, filename, payload, response, expected):
+    filepath = download('opensubtitles', {'filename': filename, 'raw': True}, payload, **response)
+    assert os.path.basename(filepath) == expected
+
+def test_download_keeps_utf8_text_when_chardet_is_unsure(download, monkeypatch):
+    # chardet often rates UTF-8 below 1.0; the code page fallback must not re-decode valid UTF-8.
+    core = download.core
+    monkeypatch.setattr(core.kodi.addon, 'getSetting', lambda id: 'true' if id == 'general.use_chardet' else '')
+    monkeypatch.setattr(core.utils, 'code_pages', {'eng': 'cp1252'})
+    monkeypatch.setattr(core.utils.chardet, 'detect', lambda data: {'encoding': 'cp1252', 'confidence': 0.7, 'language': ''})
+    text = u'1\n00:00:01,000 --> 00:00:02,000\nCaf\u00e9, d\u00e9j\u00e0 vu\n'
+    filepath = download('opensubtitles', {'filename': __name + '.srt', 'raw': True}, b'\xef\xbb\xbf' + text.encode('utf-8'))
+    with open(filepath, 'rb') as f:
+        assert f.read().decode('utf-8').strip() == text.strip()

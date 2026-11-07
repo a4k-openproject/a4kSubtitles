@@ -33,7 +33,7 @@ def __query_service(core, service_name, meta, request, results, failed):
             'status_code': response.status_code if response else 'N/A'
         }, indent=2))
     finally:
-        core.progress_text = core.progress_text.replace(service.display_name, '')
+        core.progress_text = core.progress_text.replace(service.display_name, '', 1)  # two services share 'OpenSubtitles'
         core.kodi.update_progress(core)
 
 def __add_results(core, results, meta):  # pragma: no cover
@@ -105,10 +105,18 @@ def __sanitize_results(core, meta, results):
     temp_dict = {}
 
     for result in results:
-        temp_dict[result['action_args']['url']] = result
         result['name'] = core.utils.unquote(result['name'])
+        # Rows of one file from two services share a dedup_key (both OpenSubtitles services do).
+        key = result.get('dedup_key') or result['action_args']['url']
+        kept = temp_dict.get(key)
+        if kept is None or __dedup_rank(result) > __dedup_rank(kept):
+            temp_dict[key] = result
 
     return list(temp_dict.values())
+
+def __dedup_rank(result):
+    # Keep the synced row; else the one whose download spends no OpenSubtitles account quota.
+    return (result.get('sync') == 'true', result['service_name'] != 'opensubtitles')
 
 def __apply_language_filter(meta, results):
     return list(filter(lambda x: x and x['lang'] in meta.languages, results))

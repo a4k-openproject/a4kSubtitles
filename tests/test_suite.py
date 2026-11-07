@@ -462,6 +462,50 @@ def test_opensubtitles_tvshow_missing_imdb_id_but_in_url_with_show_id_and_meta_f
 
     assert len(search.results) > 0
 
+def __opensubtitles_quick_download(a4ksubtitles_api, search):
+    item = search.results[0]
+    assert item['service_name'] == 'opensubtitles_quick'
+
+    params = {
+        'action': 'download',
+        'service_name': 'opensubtitles_quick',
+        'action_args': item['action_args']
+    }
+
+    filepath = a4ksubtitles_api.download(params, search.settings)
+
+    assert filepath.endswith('.eng.srt')
+    with open(filepath, 'r', encoding='utf-8') as f:
+        assert '-->' in f.read()
+
+def test_opensubtitles_quick():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_all_cache(a4ksubtitles_api)
+
+    settings = {
+        'opensubtitles_quick.enabled': 'true',
+    }
+    search = __search_movie(a4ksubtitles_api, settings)
+
+    assert len(search.results) > 0
+    assert all(r['lang'] == 'English' and r['service'] == 'OpenSubtitles' for r in search.results)
+
+    __opensubtitles_quick_download(a4ksubtitles_api, search)
+
+def test_opensubtitles_quick_tvshow():
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    __remove_all_cache(a4ksubtitles_api)
+
+    settings = {
+        'opensubtitles_quick.enabled': 'true',
+    }
+    search = __search_tvshow(a4ksubtitles_api, settings)
+
+    assert len(search.results) > 0
+    assert any('s03e01' in r['name'].lower() for r in search.results)
+
+    __opensubtitles_quick_download(a4ksubtitles_api, search)
+
 def test_bsplayer():
     a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
     __remove_all_cache(a4ksubtitles_api)
