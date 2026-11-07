@@ -1,3 +1,9 @@
+* [v3.25.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.25.0):
+  * OpenSubtitles: Quick results with no account needed (new service, on by default).
+  * Remove duplicate OpenSubtitles results when both OpenSubtitles services find the same file.
+  * Keep UTF-8 subtitles as UTF-8 instead of guessing a code page.
+  * Detect .vtt subtitles in direct downloads.
+
 * [v3.24.3](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.24.3):
   * Keep a few results in your other languages when the preferred language fills the results limit.
   * Pick the right episode from season packs named like 2x04 (by @sjq42).

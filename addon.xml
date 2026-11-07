@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="service.subtitles.a4ksubtitles"
        name="a4kSubtitles"
-       version="3.24.3"
+       version="3.25.0"
        provider-name="Unknown">
     <requires>
       <import addon="script.module.requests"/>
@@ -26,6 +26,12 @@
             <screenshot>screenshot-03.png</screenshot>
         </assets>
     <news>
+[v3.25.0]:
+  * OpenSubtitles: Quick results with no account needed (new service, on by default).
+  * Remove duplicate OpenSubtitles results when both OpenSubtitles services find the same file.
+  * Keep UTF-8 subtitles as UTF-8 instead of guessing a code page.
+  * Detect .vtt subtitles in direct downloads.
+
 [v3.24.3]:
   * Keep a few results in your other languages when the preferred language fills the results limit.
   * Pick the right episode from season packs named like 2x04 (by @sjq42).
