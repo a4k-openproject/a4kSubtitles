@@ -106,6 +106,7 @@ def build_search_requests(core, service_name, meta):
         query = '%s %s' % (meta.title, meta.year)
 
     lang_ids = core.utils.get_lang_ids(meta.languages, core.kodi.xbmc.ISO_639_1)
+    lang_ids = ['pt-PT' if lid == 'pt' else lid for lid in lang_ids]
 
     params = {
         'query': query,
@@ -155,7 +156,14 @@ def parse_search_response(core, service_name, meta, response):
             return None
 
         filename = result['files'][0]['file_name']
-        language = core.utils.get_lang_id(result['language'], core.kodi.xbmc.ENGLISH_NAME)
+        raw_lang = result['language']
+        if raw_lang.lower() in ('pt-pt', 'pt'):
+            language = next(
+                (lang for lang in meta.languages if 'portuguese' in lang.lower() and 'brazil' not in lang.lower()),
+                'Portuguese'
+            )
+        else:
+            language = core.utils.get_lang_id(raw_lang, core.kodi.xbmc.ENGLISH_NAME)
 
         return {
             'service_name': service_name,
