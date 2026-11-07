@@ -5,10 +5,20 @@ def __auth_service(core, service_name, request):
     response = core.request.execute(core, request)
     service.parse_auth_response(core, service_name, response)
 
-def __query_service(core, service_name, meta, request, results):
+__results_ttl = 4 * 60 * 60  # seconds a saved last_results.json may be replayed
+
+def __is_transport_error(response):
+    # None is not an error here: request chains return None for "nothing found".
+    return response is not None and (response.status_code >= 500 or response.status_code == 429)
+
+def __query_service(core, service_name, meta, request, results, failed):
     try:
         service = core.services[service_name]
         response = core.request.execute(core, request)
+
+        if __is_transport_error(response):
+            failed.append(service_name)
+            core.logger.warning('%s - search failed: %s (HTTP %s)' % (service_name, core.request.host(request['url']), response.status_code))
 
         if response and response.status_code == 200 and response.text:
             service_results = service.parse_search_response(core, service_name, meta, response)
@@ -43,7 +53,11 @@ def __add_results(core, results, meta):  # pragma: no cover
 def __has_results(service_name, results):
     return any(map(lambda r: r['service_name'] == service_name, results))
 
-def __save_results(core, meta, results):
+def __log_summary(core, searched, failed, results, cached_count):
+    rows = ['%s: %s' % (name, 'failed' if name in failed else sum(1 for r in results if r and r['service_name'] == name)) for name in searched]
+    core.logger.info('search - %s; %d rows from cache' % (', '.join(rows) or 'no service searched', cached_count))
+
+def __save_results(core, meta, results, created):
     try:
         if len(results) == 0:
             return
@@ -51,6 +65,8 @@ def __save_results(core, meta, results):
         json_data = core.json.dumps({
             'hash': meta_hash,
             'timestamp': core.time.time(),
+            # When the full search ran; a replay that refreshes bsplayer keeps it, so the TTL still ends.
+            'created': created or core.time.time(),
             'results': results
         }, indent=2)
         with open(core.cache.results_filepath, 'w') as f:
@@ -68,7 +84,11 @@ def __get_last_results(core, meta):
 
         meta_hash = core.cache.get_meta_hash(meta)
         if last_results['hash'] != meta_hash:
-            return ([], [])
+            return ([], [], None)
+
+        created = last_results.get('created', last_results['timestamp'])
+        if core.time.time() - created > __results_ttl:
+            return ([], [], None)
 
         has_bsplayer_results = __has_results('bsplayer', last_results['results'])
         has_bsplayer_results_expired = core.time.time() - last_results['timestamp'] > 3 * 60
@@ -76,10 +96,10 @@ def __get_last_results(core, meta):
             last_results['results'] = list(filter(lambda r: r['service_name'] != 'bsplayer', last_results['results']))
             force_search.append('bsplayer')
 
-        return (last_results['results'], force_search)
+        return (last_results['results'], force_search, created)
     except: pass
 
-    return ([], [])
+    return ([], [], None)
 
 def __sanitize_results(core, meta, results):
     temp_dict = {}
@@ -98,12 +118,20 @@ def __apply_limit(core, all_results, meta):
     # with `sorter`, whose first key is `not x['lang'] == meta.preferredlanguage`
     # and whose second is `meta.languages.index(x['lang'])`, so the preferred
     # language leads, the other requested languages follow in request order,
-    # and within a language the quality keys rank the rows. Any other
-    # language is therefore filler: it only reaches the list once the
-    # preferred one has run out. A per-language quota instead of this slice
-    # would hand seats to the filler while preferred rows are still waiting,
-    # and would disturb the ranking the sorter just computed.
-    return all_results[:core.kodi.get_int_setting('general.results_limit')]
+    # and within a language the quality keys rank the rows. The preferred
+    # language keeps the bulk of the cap, but up to min(5, limit // 4) seats
+    # go to the best-ranked rows of the other requested languages so they
+    # never vanish entirely. Both halves are taken in sorted order and the
+    # preferred half goes first, so the sorter's order is kept.
+    limit = core.kodi.get_int_setting('general.results_limit')
+    preferred = [r for r in all_results if r['lang'] == meta.preferredlanguage]
+    others = [r for r in all_results if r['lang'] != meta.preferredlanguage]
+    if not preferred or not others:
+        return all_results[:limit]
+
+    reserved = min(5, limit // 4, len(others))
+    preferred = preferred[:limit - reserved]
+    return preferred + others[:limit - len(preferred)]
 
 def __prepare_results(core, meta, results):
     results = __apply_language_filter(meta, results)
@@ -332,14 +360,14 @@ def __complete_search(core, results, meta):
 
     __add_results(core, results, meta)  # pragma: no cover
 
-def __search(core, service_name, meta, results):
+def __search(core, service_name, meta, results, failed):
     service = core.services[service_name]
     requests = service.build_search_requests(core, service_name, meta)
     core.logger.debug(lambda: '%s - %s' % (service_name, core.json.dumps(requests, default=lambda o: '', indent=2)))
 
     threads = []
     for request in requests:
-        thread = core.threading.Thread(target=__query_service, args=(core, service_name, meta, request, results))
+        thread = core.threading.Thread(target=__query_service, args=(core, service_name, meta, request, results, failed))
         threads.append(thread)
 
     core.utils.wait_threads(threads)
@@ -358,7 +386,10 @@ def search(core, params):
         return
 
     threads = []
-    (results, force_search) = __get_last_results(core, meta)
+    searched = []
+    failed = []
+    (results, force_search, created) = __get_last_results(core, meta)
+    cached_count = len(results)
     for service_name in core.services:
         if len(results) > 0 and (__has_results(service_name, results) or service_name not in force_search):
             continue
@@ -374,11 +405,13 @@ def search(core, params):
         if auth_request:
             auth_thread = core.threading.Thread(target=__auth_service, args=(core, service_name, auth_request))
 
-        search_thread = core.threading.Thread(target=__search, args=(core, service_name, meta, results))
+        search_thread = core.threading.Thread(target=__search, args=(core, service_name, meta, results, failed))
+        searched.append(service_name)
 
         threads.append((auth_thread, search_thread))
 
     if len(threads) == 0:
+        __log_summary(core, searched, failed, results, cached_count)
         return __complete_search(core, results, meta)
 
     core.progress_text = core.progress_text[:-1]
@@ -402,10 +435,12 @@ def search(core, params):
 
     def wait_all_results():
         __wait_threads(core, threads)
+        __log_summary(core, searched, failed, results, cached_count)
         if cancellation_token.iscanceled:
             return
         final_results = __prepare_results(core, meta, results)
-        __save_results(core, meta, final_results)
+        if not failed:  # a cached set missing a service that failed would hide it until the TTL ends
+            __save_results(core, meta, final_results, created)
         ready_queue.put(__complete_search(core, final_results, meta))
 
     core.threading.Thread(target=check_cancellation).start()

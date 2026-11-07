@@ -5,10 +5,12 @@ import urllib3
 import re
 import time
 import ssl
+import sys
 import traceback
 from .kodi import get_int_setting
 from . import logger
 from requests import adapters
+from requests.compat import urlparse
 from .third_party.cloudscraper import cloudscraper
 
 class TLSAdapter(adapters.HTTPAdapter):
@@ -22,6 +24,18 @@ class TLSAdapter(adapters.HTTPAdapter):
                                                            ssl_context=ctx)
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+def host(url):
+    return urlparse(url).hostname
+
+def __failed_response(request):
+    # Exception text from requests carries the full URL (query keys included): log the host and the type only.
+    logger.warning('%s %s - request failed: %s' % (request['method'], host(request['url']), sys.exc_info()[0].__name__))
+    response = lambda: None
+    response.text = ''
+    response.content = ''
+    response.status_code = 500
+    return response
 
 def __retry(core, request, response, next, cfscrape, retry=0):
     if retry > 5:
@@ -60,7 +74,7 @@ def execute(core, request, progress=True, session=None):
     if next:
         request.pop('stream', None)
 
-    logger.debug('%s ^ - %s, %s' % (request['method'], request['url'], core.json.dumps(request.get('params', {}))))
+    logger.debug(lambda: '%s ^ - %s, %s' % (request['method'], request['url'], core.json.dumps(request.get('params', {}))))
     try:
         if cfscrape:
             request.pop('cfscrape', None)
@@ -81,17 +95,11 @@ def execute(core, request, progress=True, session=None):
                 exc = ''
             except:  # pragma: no cover
                 exc = traceback.format_exc()
-                response = lambda: None
-                response.text = ''
-                response.content = ''
-                response.status_code = 500
+                response = __failed_response(request)
         else:
             exc = traceback.format_exc()
-            response = lambda: None
-            response.text = ''
-            response.content = ''
-            response.status_code = 500
-    logger.debug('%s $ - %s - %s, %s' % (request['method'], request['url'], response.status_code, exc))
+            response = __failed_response(request)
+    logger.debug(lambda: '%s $ - %s - %s, %s' % (request['method'], request['url'], response.status_code, exc))
 
     alt_request = validate(response)
     if alt_request:

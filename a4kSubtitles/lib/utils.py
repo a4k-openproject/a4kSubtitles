@@ -114,12 +114,13 @@ def get_lang_ids(languages, lang_format=kodi.xbmc.ISO_639_2):
         return []
 
 def get_subfile_from_temp_dir():
-    if not os.path.exists(temp_dir):
+    # Every download has its own subdir under temp_dir: the newest subtitle is the current one.
+    try:
+        subfiles = [os.path.join(root, file) for (root, _, files) in os.walk(temp_dir)
+                    for file in files if file != 'sub.zip' and not file.endswith('.translated')]
+        return max(subfiles, key=os.path.getmtime) if subfiles else None
+    except OSError:  # a download pruned a dir while we looked
         return None
-    for file in os.listdir(temp_dir):
-        if file != 'sub.zip' and not file.endswith('.translated'):
-            return os.path.join(temp_dir, file.strip())
-    return None
 
 def wait_threads(threads):
     for thread in threads:

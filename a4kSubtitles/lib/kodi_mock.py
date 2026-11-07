@@ -42,6 +42,7 @@ xbmc.Monitor = lambda: __monitor
 
 xbmc.LOGDEBUG = 'debug'
 xbmc.LOGINFO = 'info'
+xbmc.LOGWARNING = 'warning'
 xbmc.LOGERROR = 'error'
 xbmc.LOGNOTICE = 'notice'
 

@@ -83,14 +83,41 @@ def test_limit_fills_preferred_first_then_filler():
         assert __counts(results) == {'French': 3, 'English': 27}, (languages, __counts(results))
         __assert_blocked(results, 'French')
 
-def test_limit_gives_the_whole_cap_to_the_preferred_language():
-    # 40 French + 40 English at a limit of 30: English is filler only, so
-    # it gets nothing. The per-language split this replaces gave 15/15.
+def test_limit_keeps_a_floor_for_the_other_languages():
+    # 40 French + 40 English at a limit of 30: the preferred language keeps
+    # the bulk, min(5, 30 // 4) = 5 seats stay with English. Preferred rows
+    # still come first.
     for languages in (['French', 'English'], ['English', 'French']):
         results = __prepare(__rows('French', 40) + __rows('English', 40),
                             languages, 'French')
         assert len(results) == 30, languages
-        assert __counts(results) == {'French': 30}, (languages, __counts(results))
+        assert __counts(results) == {'French': 25, 'English': 5}, (languages, __counts(results))
+        __assert_blocked(results, 'French')
+
+def test_limit_floor_scales_with_the_limit():
+    # min(5, limit // 4): 5 at a limit of 20, 2 at a limit of 8.
+    for (limit, expected) in (('20', {'French': 15, 'English': 5}), ('8', {'French': 6, 'English': 2})):
+        results = __prepare(__rows('French', 40) + __rows('English', 40),
+                            ['French', 'English'], 'French', limit)
+        assert __counts(results) == expected, (limit, __counts(results))
+        __assert_blocked(results, 'French')
+
+def test_limit_floor_takes_only_what_the_other_languages_have():
+    # A single English row takes one seat; French fills the other 19.
+    results = __prepare(__rows('French', 40) + __rows('English', 1),
+                        ['French', 'English'], 'French', '20')
+    assert __counts(results) == {'French': 19, 'English': 1}, __counts(results)
+    __assert_blocked(results, 'French')
+
+def test_limit_other_languages_fill_when_the_preferred_runs_out():
+    results = __prepare(__rows('French', 3) + __rows('English', 40),
+                        ['French', 'English'], 'French', '20')
+    assert __counts(results) == {'French': 3, 'English': 17}, __counts(results)
+    __assert_blocked(results, 'French')
+
+def test_limit_with_a_single_language_is_a_plain_cap():
+    results = __prepare(__rows('French', 40), ['French'], 'French', '20')
+    assert __counts(results) == {'French': 20}, __counts(results)
 
 def test_limit_honours_english_as_the_preferred_language():
     # The mirror case: English preferred, French is the filler.

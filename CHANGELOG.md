@@ -1,3 +1,14 @@
+* [v3.24.3](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.24.3):
+  * Keep a few results in your other languages when the preferred language fills the results limit.
+  * Pick the right episode from season packs named like 2x04 (by @sjq42).
+  * Keep downloaded subtitle names short enough for Windows paths (by @sjq42).
+  * OpenSubtitles: Fix Portuguese (pt) searches (by @SolGarlic).
+  * Save subtitles with an unknown extension as .srt (by @peno64).
+  * Podnadpisi: Fix downloads saved as .srt.srt.
+  * Fail a download that returns an empty file or an archive instead of a subtitle.
+  * Expire cached search results after 4 hours, and do not cache a search in which a service failed.
+  * Log failed requests by host only, never the full URL.
+
 * [v3.24.2](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.24.2):
   * Replace the two IMDb pages that are no longer reachable with API lookups, fixing TV show detection for titles shared by multiple shows.
 

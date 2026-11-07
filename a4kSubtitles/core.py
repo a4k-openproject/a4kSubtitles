@@ -12,6 +12,7 @@ import time
 import hashlib
 import re
 import zipfile
+import tempfile
 from datetime import datetime, timedelta
 from base64 import b64encode
 from xml.etree import ElementTree

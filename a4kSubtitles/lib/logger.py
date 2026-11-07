@@ -35,3 +35,9 @@ def error(message):
 
 def debug(message):
     __log(message, notice_type)
+
+def warning(message):
+    __log(message, xbmc.LOGWARNING)
+
+def info(message):
+    __log(message, notice_type)
