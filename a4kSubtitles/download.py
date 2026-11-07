@@ -161,8 +161,9 @@ def download(core, params):
     actions_args = params['action_args']
     lang_code = core.utils.get_lang_id(actions_args['lang'], core.kodi.xbmc.ISO_639_2)
     filename = actions_args['filename']
-    if not any(filename.lower().endswith(ext) for ext in subtitles_exts_all):
-        # For now, we will use 'srt' to mark unknown file extensions as subtitles.
+    if actions_args.get('raw', False) and not any(filename.lower().endswith(ext) for ext in subtitles_exts_all):
+        # Raw downloads are saved under this name as is, so mark an unknown extension as 'srt'.
+        # Zip and gzip extraction add the extension themselves.
         filename = filename + ".srt"
     filename = __insert_lang_code_in_filename(core, filename, lang_code)
     filename = core.utils.slugify_filename(filename)
