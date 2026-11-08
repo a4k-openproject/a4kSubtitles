@@ -289,3 +289,51 @@ def test_service_auto_load_falls_back_when_quick_fails(monkeypatch):
 
 def test_service_auto_load_falls_back_when_quick_download_fails(monkeypatch):
     assert __auto_load(monkeypatch, [__row('quick-broken')], [__row('full-en')], __downloads) == (['full-en.srt'], 1)
+
+def __set_when_playing(monkeypatch, times, playing=lambda n: True, filename=lambda n: 'movie.mkv', caching=lambda n: False):
+    # Drives the wait helper with per-step player state; returns (returned value, subtitles set, waits taken).
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    core = a4ksubtitles_api.core
+    player = core.kodi.xbmc.Player()
+    waits = []
+    step = lambda: len(waits)
+    monitor = lambda: None
+    monitor.waitForAbort = lambda t: waits.append(t) and False
+    monkeypatch.setattr(player, 'getTime', lambda: times(step()))
+    monkeypatch.setattr(player, 'isPlayingVideo', lambda: playing(step()))
+    monkeypatch.setattr(core.kodi.xbmc, 'getInfoLabel', lambda v: filename(step()) if v == 'Player.Filenameandpath' else '')
+    monkeypatch.setattr(core.kodi.xbmc, 'getCondVisibility', lambda v: caching(step()) if v == 'Player.Caching' else False)
+    subtitles = []
+    monkeypatch.setattr(player, 'setSubtitles', subtitles.append)
+    result = getattr(service, '__set_subtitles_when_playing')(core, monitor, 'movie.mkv', 'en.srt')
+    return result, subtitles, len(waits)
+
+def test_set_subtitles_waits_until_position_passes_two_seconds(monkeypatch):
+    assert __set_when_playing(monkeypatch, lambda n: n * 0.5) == (True, ['en.srt'], 4)
+
+def test_set_subtitles_waits_while_caching(monkeypatch):
+    assert __set_when_playing(monkeypatch, lambda n: 5.0, caching=lambda n: n < 3) == (True, ['en.srt'], 3)
+
+def test_set_subtitles_returns_at_once_when_already_playing(monkeypatch):
+    assert __set_when_playing(monkeypatch, lambda n: 300.0) == (True, ['en.srt'], 0)
+
+def test_set_subtitles_gives_up_waiting_after_the_bound(monkeypatch):
+    assert __set_when_playing(monkeypatch, lambda n: 0.0) == (True, ['en.srt'], 40)
+
+def test_set_subtitles_skipped_when_playback_stops(monkeypatch):
+    assert __set_when_playing(monkeypatch, lambda n: 0.0, playing=lambda n: n < 2) == (False, [], 2)
+
+def test_set_subtitles_skipped_when_file_changes(monkeypatch):
+    assert __set_when_playing(monkeypatch, lambda n: 0.0, filename=lambda n: 'movie.mkv' if n < 2 else 'next.mkv') == (False, [], 2)
+
+def test_set_subtitles_skipped_on_abort(monkeypatch):
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    core = a4ksubtitles_api.core
+    monitor = lambda: None
+    monitor.waitForAbort = lambda t: True
+    monkeypatch.setattr(core.kodi.xbmc.Player(), 'isPlayingVideo', lambda: True)
+    monkeypatch.setattr(core.kodi.xbmc, 'getInfoLabel', lambda v: 'movie.mkv')
+    subtitles = []
+    monkeypatch.setattr(core.kodi.xbmc.Player(), 'setSubtitles', subtitles.append)
+    assert getattr(service, '__set_subtitles_when_playing')(core, monitor, 'movie.mkv', 'en.srt') is False
+    assert subtitles == []

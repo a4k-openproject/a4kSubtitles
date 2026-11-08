@@ -30,6 +30,7 @@ xbmc.ENGLISH_NAME = 'name'
 __player = lambda: None
 __player.isPlayingVideo = lambda: None
 __player.getPlayingFile = lambda: ''
+__player.getTime = lambda: 0.0
 __player.getAvailableSubtitleStreams = lambda: []
 __player.setSubtitles = lambda s: None
 __player.setSubtitleStream = lambda i: None
