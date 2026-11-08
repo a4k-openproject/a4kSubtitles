@@ -116,6 +116,7 @@ def __remove_all_cache(a4ksubtitles_api):
     __remove_meta_cache(a4ksubtitles_api)
     __remove_tvshow_years_cache(a4ksubtitles_api)
     __remove_last_results(a4ksubtitles_api)
+    a4ksubtitles_api.core.last_meta = None  # get_meta reuses it for the same item
 
 def __search(a4ksubtitles_api, settings={}, video_meta={}, languages='English'):
     search = lambda: None
@@ -530,7 +531,7 @@ def test_bsplayer():
     request_execute_spy = utils.spy_fn(a4ksubtitles_api.core.request, 'execute')
     __search_movie(a4ksubtitles_api, settings)
 
-    assert request_execute_spy.call_count == 1
+    assert request_execute_spy.call_count == 0  # meta reused from core.last_meta, results from last_results
 
     request_execute_spy.restore()
 

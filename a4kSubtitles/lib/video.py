@@ -342,9 +342,7 @@ def __get_basic_info(core):
 def __is_imdb_id(id: str) -> bool:
     return id.startswith(__imdb_id_prefix)
 
-def get_meta(core):
-    meta = __get_basic_info(core)
-
+def __get_full_meta(core, meta):
     # Depending on the used scraper, the imdb_id returned by Kodi might not actually be an IMDB ID.
     if meta.imdb_id == '' or not __is_imdb_id(meta.imdb_id):
         cache_key = cache.hash_data(meta)
@@ -395,6 +393,19 @@ def get_meta(core):
             meta[key] = str(value).strip()
 
         cache.save_meta_cache(meta)
+
+    return meta
+
+def get_meta(core):
+    meta = __get_basic_info(core)
+    basic_hash = cache.hash_data(meta)
+
+    # A quick search that falls back to a full one asks twice for the same item: one IMDb request.
+    if core.last_meta and core.last_meta.basic_hash == basic_hash:
+        meta = utils.DictAsObject(core.last_meta)
+    else:
+        meta = __get_full_meta(core, meta)
+        meta.basic_hash = basic_hash
 
     meta.is_tvshow = meta.tvshow != ''
     meta.is_movie = not meta.is_tvshow

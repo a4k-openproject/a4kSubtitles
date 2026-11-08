@@ -189,3 +189,34 @@ def test_api_quick_search_is_search_in_quick_mode(monkeypatch):
 def test_only_opensubtitles_quick_is_a_quick_service():
     core = api.A4kSubtitlesApi({'kodi': True}).core
     assert [name for name, s in core.services.items() if getattr(s, 'quick', False)] == ['opensubtitles_quick']
+
+def test_quick_then_full_search_makes_one_imdb_request(monkeypatch, tmp_path):
+    a4ksubtitles_api = api.A4kSubtitlesApi({'kodi': True})
+    core = a4ksubtitles_api.core
+    hosts = []
+
+    def execute(core_, request):
+        hosts.append(request['url'].split('/')[2])
+        return types.SimpleNamespace(status_code=200, text='{}', content='{}')
+
+    quick = __service('svca')
+    quick.quick = True
+    quick.parse_search_response = lambda core_, name, meta, response: []  # quick finds nothing: fall back
+    monkeypatch.setattr(core, 'services', {'svca': quick, 'svcb': __service('svcb')})
+    monkeypatch.setattr(core.request, 'execute', execute)
+    monkeypatch.setattr(core.cache, 'results_filepath', str(tmp_path / 'last_results.json'))
+    monkeypatch.setattr(core.cache, '__meta_cache_filepath', str(tmp_path / 'last_meta.json'))
+    monkeypatch.setattr(core, 'last_meta', None)
+    monkeypatch.setattr(core, 'progress_text', '')
+    params = {'languages': 'English', 'preferredlanguage': 'English'}
+    settings = {'svca.enabled': 'true', 'svcb.enabled': 'true', 'general.results_limit': '20'}
+    video_meta = {'imdb_id': 'tt0133093', 'title': 'The Matrix', 'year': '1999', 'filename': 'The.Matrix.1999.1080p.BluRay.x264.mkv'}
+
+    assert a4ksubtitles_api.quick_search(params, settings, video_meta) == []
+    assert len(a4ksubtitles_api.search(params, settings, video_meta)) == 1
+    assert hosts.count('graphql.imdb.com') == 1
+    assert hosts.count('svcb.example') == 1
+
+    video_meta['imdb_id'] = 'tt0234215'  # another item asks IMDb again
+    a4ksubtitles_api.search(params, settings, video_meta)
+    assert hosts.count('graphql.imdb.com') == 2
