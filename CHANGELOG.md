@@ -1,3 +1,7 @@
+* [v3.26.1](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.26.1):
+  * Auto-load: set the subtitle only once the video is actually playing (not while it buffers, and after a resume once playback moves), which avoids a black picture on some Android boxes.
+  * Auto-load: one IMDb lookup when a quick search falls back to a full one.
+
 * [v3.26.0](https://github.com/newt-sc/a4kSubtitles/releases/tag/service.subtitles.a4ksubtitles%2Fservice.subtitles.a4ksubtitles-3.26.0):
   * Auto-load: try the quick OpenSubtitles results first, so subtitles load within about a second; the full search runs only when none of them loads.
   * Add a quick search to the API for other add-ons (A4kSubtitlesApi.quick_search).
