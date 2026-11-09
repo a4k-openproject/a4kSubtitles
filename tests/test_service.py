@@ -246,7 +246,7 @@ def __auto_load(monkeypatch, quick_results, full_results, downloads):
     core = a4ksubtitles_api.core
     restore = __mock(a4ksubtitles_api, {'general.auto_search': 'true', 'general.auto_download': 'true'})
     monkeypatch.setattr(core.kodi, 'get_kodi_setting', lambda name, *args: ['English', 'Spanish'] if name == 'subtitles.languages' else 'English')
-    monkeypatch.setattr(core.kodi.xbmc, 'getCondVisibility', lambda v: True)
+    monkeypatch.setattr(core.kodi.xbmc, 'getCondVisibility', lambda v: v != 'Player.Caching')
     monkeypatch.setattr(core.kodi.xbmc, 'getInfoLabel', lambda v: 'tt3183660' if v == 'VideoPlayer.IMDBNumber' else '')
     monkeypatch.setattr(core.kodi.xbmc.Player(), 'isPlayingVideo', lambda: True)
 
@@ -312,13 +312,28 @@ def test_set_subtitles_waits_until_position_passes_two_seconds(monkeypatch):
     assert __set_when_playing(monkeypatch, lambda n: n * 0.5) == (True, ['en.srt'], 4)
 
 def test_set_subtitles_waits_while_caching(monkeypatch):
-    assert __set_when_playing(monkeypatch, lambda n: 5.0, caching=lambda n: n < 3) == (True, ['en.srt'], 3)
+    # First sample once caching ends (n=3, 6.5 s), set once it has advanced 2 s (n=7).
+    assert __set_when_playing(monkeypatch, lambda n: 5.0 + n * 0.5, caching=lambda n: n < 3) == (True, ['en.srt'], 7)
 
-def test_set_subtitles_returns_at_once_when_already_playing(monkeypatch):
-    assert __set_when_playing(monkeypatch, lambda n: 300.0) == (True, ['en.srt'], 0)
+def test_set_subtitles_waits_for_a_resumed_play_to_advance(monkeypatch):
+    # A resume reports its start point before the first frame: 1200 s for 4 checks, then advancing.
+    assert __set_when_playing(monkeypatch, lambda n: 1200.0 + max(0, n - 3) * 0.5) == (True, ['en.srt'], 7)
+
+def test_set_subtitles_waits_for_a_resumed_play_while_caching(monkeypatch):
+    # Caching while already past the resume point: the first sample is taken only after caching ends.
+    assert __set_when_playing(monkeypatch, lambda n: 1200.0 + n * 0.5, caching=lambda n: n < 3) == (True, ['en.srt'], 7)
 
 def test_set_subtitles_gives_up_waiting_after_the_bound(monkeypatch):
+    # Not caching but not advancing (paused): set after the 10 s bound.
     assert __set_when_playing(monkeypatch, lambda n: 0.0) == (True, ['en.srt'], 40)
+
+def test_set_subtitles_keeps_waiting_while_caching_past_the_bound(monkeypatch):
+    # Caching for 15 s, then playing: still waits for the position to advance, not set at 10 s.
+    assert __set_when_playing(monkeypatch, lambda n: max(0, n - 60) * 0.5, caching=lambda n: n < 60) == (True, ['en.srt'], 64)
+
+def test_set_subtitles_skipped_when_caching_past_the_cache_bound(monkeypatch):
+    # Never stops caching: no set at all after the 60 s cache bound.
+    assert __set_when_playing(monkeypatch, lambda n: 0.0, caching=lambda n: True) == (False, [], 240)
 
 def test_set_subtitles_skipped_when_playback_stops(monkeypatch):
     assert __set_when_playing(monkeypatch, lambda n: 0.0, playing=lambda n: n < 2) == (False, [], 2)
