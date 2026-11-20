@@ -233,6 +233,7 @@ def __update_info_from_imdb(core, meta, pagination_token=''):
         'headers': {
             'content-type': 'application/json',
             'referer': 'https://www.imdb.com/',  # without it the API responds with 403
+            'x-imdb-client-name': 'imdb-web-next',  # the IMDb edge (CloudFront) blocks requests without it
         },
         'timeout': 10
     }
